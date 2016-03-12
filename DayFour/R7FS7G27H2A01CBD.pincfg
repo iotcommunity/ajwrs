@@ -483,7 +483,7 @@
   </v1:configSetting>
   <v1:configSetting configurationId="p101.gpio_drivecapacity" altId="p101.gpio_speed.gpio_speed_high"/>
   <v1:configSetting configurationId="p404.gpio_mode" altId="p404.gpio_mode.gpio_mode_peripheral"/>
-  <v1:configSetting configurationId="sci8.cts8_rts8_ss8" altId="sci8.cts8_rts8_ss8.none"></v1:configSetting>
+  <v1:configSetting configurationId="sci8.cts8_rts8_ss8" altId="sci8.cts8_rts8_ss8.none"/>
   <v1:configSetting configurationId="external_memory_interface.sdcs" altId="external_memory_interface.sdcs.p611">
     <v1:connectionSetting altId="p611.external_memory_interface.sdcs"/>
   </v1:configSetting>
