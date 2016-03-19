@@ -1,96 +1,86 @@
 /* HAL-only entry function */
 #include "hal_data.h"
+
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
-#define BUFFER_LENGTH   255
-// Create global variable to hold transmission station
+// Buffer Sizes
+#define OUTPUT_BUFFER_SIZE 1024
+
+// Output Buffer
+char outputBuffer[OUTPUT_BUFFER_SIZE];
+
 volatile bool transmitComplete;
-volatile bool receiveComplete;
-volatile int bufferIndex;
-uint8_t receiveData[BUFFER_LENGTH];
 
-// Redefine puts to handle printf output
-int puts(const char *str)
+// Custom printf prototype
+int _printf (const char *format, ...);
+
+// Custom printf Implementation
+int _printf (const char *format, ...)
 {
-    // Set Transmit Flag to false
-    transmitComplete = false;
+    // Temporary Buffer
+   char buffer[OUTPUT_BUFFER_SIZE];
 
-    // Write String to UART
-    g_uart.p_api->write(g_uart.p_ctrl, (const uint8_t *)str, strlen(str));
+   // Variable Argument List
+   va_list arg;
 
-    // Wait until flag is set
-    while (!transmitComplete) {}
+   int done;
 
-    // Reset Flag
-    transmitComplete = false;
+   // Get Variable Arguments
+   va_start (arg, format);
 
-    return 0;
+   // Pass format string and arguments to string formatter
+   done = vsnprintf(buffer, OUTPUT_BUFFER_SIZE, format, arg);
+
+   // Start Transmission
+   transmitComplete = false;
+   g_uart.p_api->write (g_uart.p_ctrl, buffer, done);
+
+   while (!transmitComplete)
+   {
+   }
+
+   // End Variable Arguments
+   va_end (arg);
+
+   return done;
 }
 
-/*
-// Redefine gets to handle scanf input
-char* gets (char *str)
+// Callback Function for UART interrupts
+void user_uart_callback(uart_callback_args_t * p_args)
 {
-    receiveComplete = false;
-    char lastChar = 0;
-
-    while(lastChar != '\n')
-    {
-        g_uart.p_api->read(g_uart.p_ctrl, (uint8_t const *)&receiveData[bufferIndex], 1);
-
-        while(!receiveComplete){}
-        lastChar = receiveData[bufferIndex];
-        bufferIndex++;
-    }
-
-    return str;
-}
-*/
-
-// Callback function to set Transmit Done flag when transmission is complete
-void user_uart_callback(uart_callback_args_t *p_args)
-{
+    // Get Event Type
     switch (p_args->event)
     {
+        // Transmission Complete
         case UART_EVENT_TX_COMPLETE:
-            // Set Transmit Complete Flag
             transmitComplete = true;
-            break;
+        break;
 
-        case UART_EVENT_RX_COMPLETE:
-            // Set Receive Complete Flag
-            receiveComplete = true;
-            break;
-        default:
-            break;
+        defaut: break;
     }
 }
 
 void hal_entry(void)
 {
-    // Initialize UART Variables
-    transmitComplete = false;
-    receiveComplete = false;
-    bufferIndex = 0;
+    // Open UART
+    g_uart.p_api->open (g_uart.p_ctrl, g_uart.p_cfg);
 
-    //memset(receiveData, 0, BUFFER_LENGTH);
+    // Use TTY100 commands to clear screen and reset screen pointer
+    _printf("\033[2J"); // Clear Screen
+    _printf("\033[H"); // Return Home
+    _printf("\033[3J"); // Clear Back Buffer
 
-    // Open the UART driver
-    g_uart.p_api->open(g_uart.p_ctrl, g_uart.p_cfg);
+    // Print Header
+    _printf("Day Six - printf Redirection, Part 2\r\n");
 
-//    while(true)
-//    {
-        transmitComplete = false;
+    // Verify printf functions with format specifiers
+    _printf("          String: %s\r\n", "This is a string");
+    _printf("     Integer (5): %d\r\n", 5);
+    _printf("Float (3.141592): %f\r\n", 3.141592);
 
-        printf("Command: ");
-
-//        bufferIndex = 0;
-//        receiveComplete = false;
-//        //scanf("%s", receiveData);
-//
-//        transmitComplete = false;
-//        printf("%s", receiveData);
-//    }
+    while (true)
+    {
+    }
 }
-
