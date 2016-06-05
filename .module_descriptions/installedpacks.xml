@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<synergyEditorModuleInfo>
+  <synergyEditorPacksList>
+    <pack descriptionsadded="true" path="C:\Renesas\e2_studio\internal\projectgen\arm\packs\Renesas.Synergy.1.0.0.pack" shortname="Renesas.Synergy.1.0.0.pack"/>
+    <pack descriptionsadded="true" path="C:\Renesas\e2_studio\internal\projectgen\arm\packs\Renesas.Synergy.1.1.0.pack" shortname="Renesas.Synergy.1.1.0.pack"/>
+    <pack descriptionsadded="true" path="C:\Renesas\e2_studio\internal\projectgen\arm\packs\Renesas.SynergyBlinky.1.0.0.pack" shortname="Renesas.SynergyBlinky.1.0.0.pack"/>
+    <pack descriptionsadded="true" path="C:\Renesas\e2_studio\internal\projectgen\arm\packs\Renesas.SynergyBlinky.1.1.0.pack" shortname="Renesas.SynergyBlinky.1.1.0.pack"/>
+    <pack descriptionsadded="true" path="C:\Renesas\e2_studio\internal\projectgen\arm\packs\Renesas.SynergyBlinkyThreadX.1.0.0.pack" shortname="Renesas.SynergyBlinkyThreadX.1.0.0.pack"/>
+    <pack descriptionsadded="true" path="C:\Renesas\e2_studio\internal\projectgen\arm\packs\Renesas.SynergyBlinkyThreadX.1.1.0.pack" shortname="Renesas.SynergyBlinkyThreadX.1.1.0.pack"/>
+    <pack descriptionsadded="true" path="C:\Renesas\e2_studio\internal\projectgen\arm\packs\Renesas.SynergyDeveloper_Examples_for_S7G2_DK.1.1.0.pack" shortname="Renesas.SynergyDeveloper_Examples_for_S7G2_DK.1.1.0.pack"/>
+    <pack descriptionsadded="true" path="C:\Renesas\e2_studio\internal\projectgen\arm\packs\Renesas.SynergyWeather_Panel_Application_for_S7G2_DK.1.0.0.pack" shortname="Renesas.SynergyWeather_Panel_Application_for_S7G2_DK.1.0.0.pack"/>
+    <pack descriptionsadded="true" path="C:\Renesas\e2_studio\internal\projectgen\arm\packs\Renesas.SynergyWeather_Panel_Application_for_S7G2_PE-HMI1.1.0.0.pack" shortname="Renesas.SynergyWeather_Panel_Application_for_S7G2_PE-HMI1.1.0.0.pack"/>
+    <pack descriptionsadded="true" path="C:\Renesas\e2_studio\internal\projectgen\arm\packs\Renesas.SynergyWeather_Panel_Application_for_S7G2_SK.1.0.0.pack" shortname="Renesas.SynergyWeather_Panel_Application_for_S7G2_SK.1.0.0.pack"/>
+  </synergyEditorPacksList>
+</synergyEditorModuleInfo>

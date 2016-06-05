@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<synergyConfiguration>
+  <synergyComponentSelection>
+    <component apiversion="" class="Common" condition="" group="all" subgroup="ssp_common" variant="" vendor="Renesas" version="1.1.0">
+      <description>SSP Common Code</description>
+      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+    </component>
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_cgc" variant="" vendor="Renesas" version="1.1.0">
+      <description>Clock Generation Circuit: Provides=[CGC]</description>
+      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+    </component>
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_elc" variant="" vendor="Renesas" version="1.1.0">
+      <description>Event Link Controller: Provides=[ELC]</description>
+      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+    </component>
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_ioport" variant="" vendor="Renesas" version="1.1.0">
+      <description>I/O Port: Provides=[IO Port]</description>
+      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+    </component>
+    <component apiversion="" class="BSP" condition="" group="BSP" subgroup="s7g2_dk" variant="" vendor="Renesas" version="1.1.0">
+      <description>Board Support Package for S7G2_DK</description>
+      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+    </component>
+  </synergyComponentSelection>
+  <generalSettings>
+    <option key="#pinconfiguration#" value="R7FS7G27H2A01CBD.pincfg"/>
+  <option key="#Board#" value="board.s7g2dk"/>
+    <option key="CPU" value="S7G2"/>
+    <option key="#TargetName#" value="R7FS7G27H2A01CBD"/>
+    <option key="#RTOS#" value="Express Logic ThreadX"/>
+  <option key="#SSPVersion#" value="1.1.0"/>
+  </generalSettings>
+  <synergyModuleConfiguration>
+    <context id="_hal.0">
+      <module id="module.driver.cgc_on_cgc.0"/>
+      <module id="module.driver.elc_on_elc.0"/>
+      <module id="module.driver.ioport_on_ioport.0"/>
+    </context>
+  </synergyModuleConfiguration> 
+</synergyConfiguration>
