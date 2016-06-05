@@ -8,4 +8,5 @@ const cgc_instance_t g_cgc =
 { .p_api = &g_cgc_on_cgc, .p_cfg = NULL };
 void g_hal_init(void)
 {
+    g_common_init ();
 }

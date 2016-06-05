@@ -29,7 +29,6 @@
 extern "C" {
 #endif
 
-
 /* -------------------------  Interrupt Number Definition  ------------------------ */
 
 typedef enum {
@@ -671,12 +670,6 @@ typedef enum {
 #if (BSP_IRQ_CFG_GPT8_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
   GPT8_COUNTER_UNDERFLOW_IRQn,
 #endif
-#if (BSP_IRQ_CFG_GPT8_AD_TRIG_A != BSP_IRQ_DISABLED)
-  GPT8_AD_TRIG_A_IRQn,
-#endif
-#if (BSP_IRQ_CFG_GPT8_AD_TRIG_B != BSP_IRQ_DISABLED)
-  GPT8_AD_TRIG_B_IRQn,
-#endif
 #if (BSP_IRQ_CFG_GPT9_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
   GPT9_CAPTURE_COMPARE_A_IRQn,
 #endif
@@ -700,12 +693,6 @@ typedef enum {
 #endif
 #if (BSP_IRQ_CFG_GPT9_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
   GPT9_COUNTER_UNDERFLOW_IRQn,
-#endif
-#if (BSP_IRQ_CFG_GPT9_AD_TRIG_A != BSP_IRQ_DISABLED)
-  GPT9_AD_TRIG_A_IRQn,
-#endif
-#if (BSP_IRQ_CFG_GPT9_AD_TRIG_B != BSP_IRQ_DISABLED)
-  GPT9_AD_TRIG_B_IRQn,
 #endif
 #if (BSP_IRQ_CFG_GPT10_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
   GPT10_CAPTURE_COMPARE_A_IRQn,
@@ -731,12 +718,6 @@ typedef enum {
 #if (BSP_IRQ_CFG_GPT10_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
   GPT10_COUNTER_UNDERFLOW_IRQn,
 #endif
-#if (BSP_IRQ_CFG_GPT10_AD_TRIG_A != BSP_IRQ_DISABLED)
-  GPT10_AD_TRIG_A_IRQn,
-#endif
-#if (BSP_IRQ_CFG_GPT10_AD_TRIG_B != BSP_IRQ_DISABLED)
-  GPT10_AD_TRIG_B_IRQn,
-#endif
 #if (BSP_IRQ_CFG_GPT11_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
   GPT11_CAPTURE_COMPARE_A_IRQn,
 #endif
@@ -760,12 +741,6 @@ typedef enum {
 #endif
 #if (BSP_IRQ_CFG_GPT11_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
   GPT11_COUNTER_UNDERFLOW_IRQn,
-#endif
-#if (BSP_IRQ_CFG_GPT11_AD_TRIG_A != BSP_IRQ_DISABLED)
-  GPT11_AD_TRIG_A_IRQn,
-#endif
-#if (BSP_IRQ_CFG_GPT11_AD_TRIG_B != BSP_IRQ_DISABLED)
-  GPT11_AD_TRIG_B_IRQn,
 #endif
 #if (BSP_IRQ_CFG_GPT12_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
   GPT12_CAPTURE_COMPARE_A_IRQn,
@@ -791,12 +766,6 @@ typedef enum {
 #if (BSP_IRQ_CFG_GPT12_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
   GPT12_COUNTER_UNDERFLOW_IRQn,
 #endif
-#if (BSP_IRQ_CFG_GPT12_AD_TRIG_A != BSP_IRQ_DISABLED)
-  GPT12_AD_TRIG_A_IRQn,
-#endif
-#if (BSP_IRQ_CFG_GPT12_AD_TRIG_B != BSP_IRQ_DISABLED)
-  GPT12_AD_TRIG_B_IRQn,
-#endif
 #if (BSP_IRQ_CFG_GPT13_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
   GPT13_CAPTURE_COMPARE_A_IRQn,
 #endif
@@ -820,12 +789,6 @@ typedef enum {
 #endif
 #if (BSP_IRQ_CFG_GPT13_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
   GPT13_COUNTER_UNDERFLOW_IRQn,
-#endif
-#if (BSP_IRQ_CFG_GPT13_AD_TRIG_A != BSP_IRQ_DISABLED)
-  GPT13_AD_TRIG_A_IRQn,
-#endif
-#if (BSP_IRQ_CFG_GPT13_AD_TRIG_B != BSP_IRQ_DISABLED)
-  GPT13_AD_TRIG_B_IRQn,
 #endif
 #if (BSP_IRQ_CFG_OPS_UVW_EDGE != BSP_IRQ_DISABLED)
   OPS_UVW_EDGE_IRQn,
@@ -1100,9 +1063,6 @@ typedef enum {
 #if (BSP_IRQ_CFG_SDHIMMC1_DMA_REQ != BSP_IRQ_DISABLED)
   SDHIMMC1_DMA_REQ_IRQn,
 #endif
-#if (BSP_IRQ_CFG_DIVIDER_INT != BSP_IRQ_DISABLED)
-  DIVIDER_INT_IRQn,
-#endif
 #if (BSP_IRQ_CFG_SCE_PROC_BUSY != BSP_IRQ_DISABLED)
   SCE_PROC_BUSY_IRQn,
 #endif
@@ -1156,7 +1116,6 @@ typedef enum {
 #endif
   BSP_MAX_NUM_IRQn    /* Used for getting number of active interrupts, do not use. */
 } IRQn_Type;
-
 
 /** @addtogroup Configuration_of_CMSIS
   * @{
@@ -11117,7 +11076,7 @@ typedef struct {                                    /*!< R_S12ADC0 Structure    
   };
   
   union {
-    __IO uint8_t   ADSSTR0n[6];                     /*!< A/D Sampling State Register %s (Corresponding Channel is AN00%s
+    __IO uint8_t   ADSSTR0n[7];                     /*!< A/D Sampling State Register %s (Corresponding Channel is AN00%s
                                                          )                                                                     */
     
     struct {

@@ -27,6 +27,12 @@ Includes   <System Includes> , "Project Includes"
 #include "bsp_api.h"
 #include "r_elc.h"
 
+/* This include file is need only for the 'temporary' fix to insure that the Ioport reference counter is zeroed before it
+ * gets referenced. Ioport init is currently called before the C Runtime initialization takes place.
+ * It will be removed when a more complete solution for this problem is added.
+ */
+#include "..\..\..\src\driver\r_ioport\hw\hw_ioport_private.h"
+
 #if defined(BSP_MCU_GROUP_S3A7)
 /***********************************************************************************************************************
 Macro definitions
@@ -135,8 +141,9 @@ void SystemInit (void)
     /* Initialize register protection. */
     bsp_register_protect_open();
 
-    /* Handle VBTICTLR register. */
-    bsp_vbatt_init(&g_bsp_pin_cfg);
+    /* Temporary fix to initialize ioport reference counter to 0, needed before C runtime init. This will be removed
+     * in the next release in favor of a more complete solution. */
+    HW_IOPORT_Init_Reference_Counter();
 
     /* Initialize pins. */
     g_ioport_on_ioport.init(&g_bsp_pin_cfg);
@@ -215,9 +222,10 @@ static void bsp_section_zero (uint8_t * pstart, uint32_t bytes)
 ***********************************************************************************************************************/
 static void bsp_section_copy (uint8_t * psource, uint8_t * pdest, uint32_t bytes)
 {
-    while (bytes-- > 0)
+    uint32_t index;
+    for (index = 0U; index < bytes; index++,pdest++,psource++)
     {
-        *pdest++ = *psource++;
+        *pdest = *psource;
     }
 }
 

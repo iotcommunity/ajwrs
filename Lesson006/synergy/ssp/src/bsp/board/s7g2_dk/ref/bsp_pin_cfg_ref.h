@@ -204,27 +204,27 @@ const ioport_pin_cfg_t g_bsp_pin_cfg_data[] =
     },
     {
         .pin     = IOPORT_PORT_05_PIN_00,
-        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI),
+        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI | IOPORT_CFG_DRIVE_HIGH),
     },
     {
         .pin     = IOPORT_PORT_05_PIN_01,
-        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI),
+        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI | IOPORT_CFG_DRIVE_HIGH),
     },
     {
         .pin     = IOPORT_PORT_05_PIN_02,
-        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI),
+        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI | IOPORT_CFG_DRIVE_HIGH),
     },
     {
         .pin     = IOPORT_PORT_05_PIN_03,
-        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI),
+        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI | IOPORT_CFG_DRIVE_HIGH),
     },
     {
         .pin     = IOPORT_PORT_05_PIN_04,
-        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI),
+        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI | IOPORT_CFG_DRIVE_HIGH),
     },
     {
         .pin     = IOPORT_PORT_05_PIN_05,
-        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI),
+        .pin_cfg = (IOPORT_CFG_PERIPHERAL_PIN | IOPORT_PERIPHERAL_QSPI | IOPORT_CFG_DRIVE_HIGH),
     },
     {
         .pin     = IOPORT_PORT_05_PIN_14,

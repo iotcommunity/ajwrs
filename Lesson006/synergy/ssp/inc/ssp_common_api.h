@@ -46,7 +46,7 @@
  **********************************************************************************************************************/
 /** This macro is used to suppress compiler messages about a parameter not being used in a function. The nice thing
  * about using this implementation is that it does not take any extra RAM or ROM. */
-#define SSP_PARAMETER_NOT_USED(p) ((void) (p))
+#define SSP_PARAMETER_NOT_USED(p) (void) ((p))
 
 /**********************************************************************************************************************
  * Typedef definitions
@@ -198,11 +198,22 @@ typedef enum e_ssp_err
     SSP_ERR_READ_FAILED          = 40003,       ///< Data read failed.
     SSP_ERR_CARD_NOT_READY       = 40004,       ///< SD card was removed.
     SSP_ERR_CARD_WRITE_PROTECTED = 40005,       ///< Media is write protected.
+    SSP_ERR_TRANSFER_BUSY        = 40006,       ///< Transfer in progress.
 
     /** Start of FX_IO specific */
     SSP_ERR_MEDIA_FORMAT_FAILED  = 50000,       ///< Media format failed.
 	SSP_ERR_MEDIA_OPEN_FAILED    = 50001,       ///< Media open failed.
-    /** Start of <XXX> specific */
+
+	/** Start of CAN specific */
+    SSP_ERR_CAN_DATA_UNAVAILABLE   = 60000,        ///< No data available.
+    SSP_ERR_CAN_MODE_SWITCH_FAILED = 60001,        ///< Switching operation modes failed.
+    SSP_ERR_CAN_INIT_FAILED        = 60002,        ///< Hardware initialization failed.
+    SSP_ERR_CAN_TRANSMIT_NOT_READY = 60003,        ///< Transmit in progress.
+    SSP_ERR_CAN_RECEIVE_MAILBOX    = 60004,        ///< Mailbox is setup as a receive mailbox.
+    SSP_ERR_CAN_TRANSMIT_MAILBOX   = 60005,        ///< Mailbox is setup as a transmit mailbox.
+    SSP_ERR_CAN_MESSAGE_LOST       = 60006,        ///< Receive message has been overwritten or overrun.
+
+	/** Start of <XXX> specific */
 } ssp_err_t;
 
 /** ioctl commands. */
@@ -224,10 +235,10 @@ typedef union st_ssp_version
     /** Code version parameters */
     struct
     {
-        uint8_t code_version_major;    ///< Code major version
         uint8_t code_version_minor;    ///< Code minor version
-        uint8_t api_version_major;     ///< API major version
+        uint8_t code_version_major;    ///< Code major version
         uint8_t api_version_minor;     ///< API minor version
+        uint8_t api_version_major;     ///< API major version
     };
 } ssp_version_t;
 

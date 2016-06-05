@@ -51,7 +51,6 @@ Includes   <System Includes> , "Project Includes"
  *
  * @{
 ***********************************************************************************************************************/
-
 #if defined(BSP_BOARD_S7G2_PE_HMI1)
 #include "../../src/bsp/board/s7g2_pe_hmi1/bsp.h"
 #endif
@@ -76,6 +75,15 @@ Includes   <System Includes> , "Project Includes"
 #include "../../src/bsp/board/s3a7_user/bsp.h"
 #endif
 
+#if defined(BSP_BOARD_S124_DK)
+#include "../../src/bsp/board/s124_dk/bsp.h"
+#endif
+
+#if defined(BSP_BOARD_S124_USER)
+#include "../../src/bsp/board/s124_user/bsp.h"
+#endif
+
+
 /** @} (end defgroup BSP_Boards) */
 
 /*******************************************************************************************************************//**
@@ -87,6 +95,7 @@ Includes   <System Includes> , "Project Includes"
  *
  * @{
 ***********************************************************************************************************************/
+ssp_err_t   R_SSP_VersionGet(ssp_pack_version_t * const p_version);         /// Common to all MCU's
 
 /** @} (end defgroup BSP_MCUs) */
 

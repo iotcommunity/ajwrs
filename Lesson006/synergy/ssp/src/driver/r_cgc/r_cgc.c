@@ -57,6 +57,13 @@ typedef struct priv_peripheral_hdl_t * peripheral_hdl_t;
 /***********************************************************************************************************************
  * Private global variables
  **********************************************************************************************************************/
+#if defined(__GNUC__)
+/* This structure is affected by warnings from the GCC compiler bug https://gcc.gnu.org/bugzilla/show_bug.cgi?id=60784
+ * This pragma suppresses the warnings in this structure only, and will be removed when the SSP compiler is updated to
+ * v5.3.*/
+/*LDRA_INSPECTED 69 S */
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#endif
 /** Version data structure used by error logger macro. */
 static const ssp_version_t g_cgc_version =
 {
@@ -65,6 +72,11 @@ static const ssp_version_t g_cgc_version =
     .code_version_major = CGC_CODE_VERSION_MAJOR,
     .code_version_minor = CGC_CODE_VERSION_MINOR
 };
+#if defined(__GNUC__)
+/* Restore warning settings for 'missing-field-initializers' to as specified on command line. */
+/*LDRA_INSPECTED 69 S */
+#pragma GCC diagnostic pop
+#endif
 
 /** Name of module used by error logger macro */
 #if BSP_CFG_ERROR_LOG != 0
@@ -118,9 +130,6 @@ const cgc_api_t g_cgc_on_cgc =
  *
  *                Configures the following for the clock generator module
  *                - SubClock drive capacity (Compile time configurable: CGC_CFG_SUBCLOCK_DRIVE)
- *                - MainClock drive capacity (Configured based on external clock frequency)
- *                - MainClock stabilization wait time (Compile time configurable: CGC_CFG_MAIN_OSC_WAIT)
- *                - HOCO stabilization wait time (Compile time configurable: CGC_CFG_HOCO_WAIT)
  *                - Initial setting for the SubClock
  *
  *                THIS FUNCTION MUST BE EXECUTED ONCE AT STARTUP BEFORE ANY OF THE OTHER CGC FUNCTIONS
@@ -144,19 +153,15 @@ ssp_err_t R_CGC_Init (void)
 
     HW_CGC_DelayCycles(CGC_CLOCK_SUBCLOCK, SUBCLOCK_DELAY); // Delay for 5 SubClock cycles.
     HW_CGC_SubClockDriveSet(CGC_CFG_SUBCLOCK_DRIVE);        // set the SubClock drive according to the configuration
-#if (BSP_CFG_CLOCK_SOURCE == CGC_CLOCK_MAIN_OSC) || ((BSP_CFG_CLOCK_SOURCE == CGC_CLOCK_PLL) && (BSP_CFG_PLL_SOURCE == \
-                                                                                                 CGC_CLOCK_MAIN_OSC))
-    HW_CGC_MainClockDriveSet(CGC_MAINCLOCK_DRIVE);                             /* set the Main Clock drive according to
-                                                                                * the configuration */
-    HW_CGC_MainOscSourceSet((cgc_osc_source_t) CGC_CFG_MAIN_OSC_CLOCK_SOURCE); /* set the main osc source to resonator
-                                                                                * or external osc. */
-    HW_CGC_ClockWaitSet(CGC_CLOCK_MAIN_OSC, CGC_CFG_MAIN_OSC_WAIT);            /* set the main osc wait time */
-#endif
     return SSP_SUCCESS;
 }
 
 /*******************************************************************************************************************//**
  * @brief  Start the specified clock if it is not currently active.
+ *
+ *                Configures the following when starting the Main Clock Oscillator:
+ *                - MainClock drive capacity (Configured based on external clock frequency)
+ *                - MainClock stabilization wait time (Compile time configurable: CGC_CFG_MAIN_OSC_WAIT)
  *
  * @retval SSP_SUCCESS                  Clock initialized successfully.
  * @retval SSP_ERR_ILL_PARAM            Invalid argument used.
@@ -173,7 +178,7 @@ ssp_err_t R_CGC_Init (void)
 
 ssp_err_t R_CGC_ClockStart (cgc_clock_t clock_source, cgc_clock_cfg_t * p_clock_cfg)
 {
-#ifdef BSP_MCU_GROUP_S3A7
+#if defined(BSP_MCU_GROUP_S3A7) || defined(BSP_MCU_GROUP_S124)
     uint32_t requested_frequency;
 #endif
 
@@ -231,14 +236,37 @@ ssp_err_t R_CGC_ClockStart (cgc_clock_t clock_source, cgc_clock_cfg_t * p_clock_
         /* make sure the oscillator has stopped before starting again */
         CGC_ERROR_RETURN(!(HW_CGC_ClockCheck(clock_source)), SSP_ERR_NOT_STABILIZED);
 
-#ifdef BSP_MCU_GROUP_S3A7
-        /** See if we need to switch to High Speed mode before starting the HOCO. */
+        if (CGC_CLOCK_MAIN_OSC == clock_source )
+        {
+            HW_CGC_MainClockDriveSet(CGC_MAINCLOCK_DRIVE);          /* set the Main Clock drive according to
+                                                                     * the configuration */
+            HW_CGC_MainOscSourceSet((cgc_osc_source_t) CGC_CFG_MAIN_OSC_CLOCK_SOURCE); /* set the main osc source
+                                                                                        * to resonator or
+                                                                                        * external osc. */
+            HW_CGC_ClockWaitSet(CGC_CLOCK_MAIN_OSC, CGC_CFG_MAIN_OSC_WAIT);            /* set the main osc wait time */
+        }
+
+#if defined(BSP_MCU_GROUP_S3A7) || defined(BSP_MCU_GROUP_S124)
+        /** Get the requested Iclk Frequency. */
         requested_frequency = HW_CGC_ClockHzCalculate(clock_source, BSP_CFG_ICK_DIV);
+#endif
+
+
+#if defined(BSP_MCU_GROUP_S3A7)
+        /** See if we need to switch to High Speed mode before starting the HOCO. */
         if (requested_frequency > CGC_MAX_ZERO_WAIT_FREQ)
         {
             HW_CGC_SetHighSpeedMode();
         }
 #endif
+#if  defined(BSP_MCU_GROUP_S124)
+        /** See if we need to switch to High Speed mode before starting the HOCO. */
+        if (requested_frequency > CGC_S124_LOW_V_MODE_FREQ)
+        {
+            HW_CGC_SetHighSpeedMode();
+        }
+#endif
+
         HW_CGC_ClockStart(clock_source);       // start the clock
     }
 
@@ -384,7 +412,9 @@ ssp_err_t R_CGC_ClockStop (cgc_clock_t clock_source)
 ssp_err_t R_CGC_SystemClockSet (cgc_clock_t clock_source, cgc_system_clock_cfg_t * p_clock_cfg)
 {
     cgc_clock_t current_clock;
-    uint32_t requested_frequency;
+    uint32_t requested_frequency = 0;
+
+    SSP_PARAMETER_NOT_USED(requested_frequency);          /// Prevent compiler 'unused' warning for S124
 
     /* return error if invalid clock source or not supported by hardware */
     CGC_ERROR_RETURN((HW_CGC_ClockSourceValidCheck(clock_source)), SSP_ERR_INVALID_ARGUMENT);
@@ -392,11 +422,20 @@ ssp_err_t R_CGC_SystemClockSet (cgc_clock_t clock_source, cgc_system_clock_cfg_t
 #if (CGC_CFG_PARAM_CHECKING_ENABLE == 1)
     SSP_ASSERT(NULL != p_clock_cfg);
 
+#if BSP_MCU_GROUP_S124
+
+    if (p_clock_cfg->pclkb_div < p_clock_cfg->iclk_div)
+    {
+        CGC_ERROR_RETURN(0, SSP_ERR_INVALID_ARGUMENT);      // error if ratios are not correct
+    }
+#else
     if (((p_clock_cfg->fclk_div < p_clock_cfg->iclk_div) || (p_clock_cfg->pclkb_div < p_clock_cfg->iclk_div))
         || ((p_clock_cfg->pclka_div < p_clock_cfg->iclk_div) || (p_clock_cfg->bclk_div < p_clock_cfg->iclk_div)))
     {
         CGC_ERROR_RETURN(0, SSP_ERR_INVALID_ARGUMENT);      // error if ratios are not correct
     }
+#endif
+
 #endif /* CGC_CFG_PARAM_CHECKING_ENABLE */
 
     /** In order to correctly set the ROM and RAM wait state registers we need to know the current (S3A7 only) and
@@ -501,6 +540,9 @@ ssp_err_t R_CGC_SystemClockSet (cgc_clock_t clock_source, cgc_system_clock_cfg_t
         HW_CGC_ClockSourceSet(clock_source);
     }
 
+    /* if clock_source is the current system clock or clock_source has stabilized, modify the clock registers*/
+    HW_CGC_SystemDividersSet(p_clock_cfg);
+
     /* Update the CMSIS core clock variable so that it reflects the new Iclk freq */
     SystemCoreClock = bsp_cpu_clock_get();
 
@@ -508,9 +550,6 @@ ssp_err_t R_CGC_SystemClockSet (cgc_clock_t clock_source, cgc_system_clock_cfg_t
     /* If an RTOS is in use, Update the Systick period based on the new frequency, using the ThreadX systick period in Microsecs */
     R_CGC_SystickUpdate((1000000 / TX_TIMER_TICKS_PER_SECOND), CGC_SYSTICK_PERIOD_UNITS_MICROSECONDS);
 #endif
-
-    /* if clock_source is the current system clock or clock_source has stabilized, modify the clock registers*/
-    HW_CGC_SystemDividersSet(p_clock_cfg);
 
 #if BSP_MCU_GROUP_S3A7
     /** The current frequency must be less than 32 MHz and the mcu must be in high speed mode, before changing

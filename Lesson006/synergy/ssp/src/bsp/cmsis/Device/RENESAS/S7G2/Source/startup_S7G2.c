@@ -83,15 +83,30 @@ void Default_Handler (void)
 
 /* Stacks. */
 /* Main stack */
-static uint8_t g_main_stack[BSP_CFG_STACK_MAIN_BYTES] BSP_PLACE_IN_SECTION(BSP_SECTION_STACK);
+/* IAR requires pragma for setting alignment. */
+#if defined(__ICCARM__)
+#pragma data_alignment = BSP_STACK_ALIGNMENT
+#endif
+static uint8_t g_main_stack[BSP_CFG_STACK_MAIN_BYTES] BSP_PLACE_IN_SECTION(BSP_SECTION_STACK) \
+                                                      BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 
 /* Process stack */
 #if (BSP_CFG_STACK_PROCESS_BYTES > 0)
-BSP_DONT_REMOVE static uint8_t g_process_stack[BSP_CFG_STACK_PROCESS_BYTES] BSP_PLACE_IN_SECTION(BSP_SECTION_STACK);
+#if defined(__ICCARM__)
+#pragma data_alignment = BSP_STACK_ALIGNMENT
+#endif
+BSP_DONT_REMOVE static uint8_t g_process_stack[BSP_CFG_STACK_PROCESS_BYTES] BSP_PLACE_IN_SECTION(BSP_SECTION_STACK) \
+                                                                            BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
 #endif
 
 /* Heap */
-BSP_DONT_REMOVE static uint8_t g_heap[BSP_CFG_HEAP_BYTES] BSP_PLACE_IN_SECTION(BSP_SECTION_HEAP);
+#if (BSP_CFG_HEAP_BYTES > 0)
+#if defined(__ICCARM__)
+#pragma data_alignment = BSP_STACK_ALIGNMENT
+#endif
+BSP_DONT_REMOVE static uint8_t g_heap[BSP_CFG_HEAP_BYTES] BSP_PLACE_IN_SECTION(BSP_SECTION_HEAP) \
+                                                          BSP_ALIGN_VARIABLE(BSP_STACK_ALIGNMENT);
+#endif
 
 /* All system exceptions in the vector table are weak references to Default_Handler. If the user wishes to handle
  * these exceptions in their code they should define their own function with the same name.
@@ -107,297 +122,275 @@ BSP_DONT_REMOVE static uint8_t g_heap[BSP_CFG_HEAP_BYTES] BSP_PLACE_IN_SECTION(B
 #pragma weak DebugMon_Handler                         = Default_Handler
 #pragma weak PendSV_Handler                           = Default_Handler
 #pragma weak SysTick_Handler                          = Default_Handler
-#pragma weak port0_irq_isr                            = Default_Handler
-#pragma weak port1_irq_isr                            = Default_Handler
-#pragma weak port2_irq_isr                            = Default_Handler
-#pragma weak port3_irq_isr                            = Default_Handler
-#pragma weak port4_irq_isr                            = Default_Handler
-#pragma weak port5_irq_isr                            = Default_Handler
-#pragma weak port6_irq_isr                            = Default_Handler
-#pragma weak port7_irq_isr                            = Default_Handler
-#pragma weak port8_irq_isr                            = Default_Handler
-#pragma weak port9_irq_isr                            = Default_Handler
-#pragma weak port10_irq_isr                           = Default_Handler
-#pragma weak port11_irq_isr                           = Default_Handler
-#pragma weak port12_irq_isr                           = Default_Handler
-#pragma weak port13_irq_isr                           = Default_Handler
-#pragma weak port14_irq_isr                           = Default_Handler
-#pragma weak port15_irq_isr                           = Default_Handler
-#pragma weak dmac0_dmac_isr                           = Default_Handler
-#pragma weak dmac1_dmac_isr                           = Default_Handler
-#pragma weak dmac2_dmac_isr                           = Default_Handler
-#pragma weak dmac3_dmac_isr                           = Default_Handler
-#pragma weak dmac4_dmac_isr                           = Default_Handler
-#pragma weak dmac5_dmac_isr                           = Default_Handler
-#pragma weak dmac6_dmac_isr                           = Default_Handler
-#pragma weak dmac7_dmac_isr                           = Default_Handler
-#pragma weak dtc_transfer_isr                         = Default_Handler
+#pragma weak icu_irq0_isr                             = Default_Handler
+#pragma weak icu_irq1_isr                             = Default_Handler
+#pragma weak icu_irq2_isr                             = Default_Handler
+#pragma weak icu_irq3_isr                             = Default_Handler
+#pragma weak icu_irq4_isr                             = Default_Handler
+#pragma weak icu_irq5_isr                             = Default_Handler
+#pragma weak icu_irq6_isr                             = Default_Handler
+#pragma weak icu_irq7_isr                             = Default_Handler
+#pragma weak icu_irq8_isr                             = Default_Handler
+#pragma weak icu_irq9_isr                             = Default_Handler
+#pragma weak icu_irq10_isr                            = Default_Handler
+#pragma weak icu_irq11_isr                            = Default_Handler
+#pragma weak icu_irq12_isr                            = Default_Handler
+#pragma weak icu_irq13_isr                            = Default_Handler
+#pragma weak icu_irq14_isr                            = Default_Handler
+#pragma weak icu_irq15_isr                            = Default_Handler
+#pragma weak dmac0_int_isr                            = Default_Handler
+#pragma weak dmac1_int_isr                            = Default_Handler
+#pragma weak dmac2_int_isr                            = Default_Handler
+#pragma weak dmac3_int_isr                            = Default_Handler
+#pragma weak dmac4_int_isr                            = Default_Handler
+#pragma weak dmac5_int_isr                            = Default_Handler
+#pragma weak dmac6_int_isr                            = Default_Handler
+#pragma weak dmac7_int_isr                            = Default_Handler
 #pragma weak dtc_complete_isr                         = Default_Handler
-#pragma weak dtc_dtc_end_isr                          = Default_Handler
-#pragma weak exdmac0_exdmac_isr                       = Default_Handler
-#pragma weak exdmac1_exdmac_isr                       = Default_Handler
-#pragma weak icu_canceling_snooze_mode_isr            = Default_Handler
+#pragma weak dtc_end_isr                              = Default_Handler
+#pragma weak icu_snooze_cancel_isr                    = Default_Handler
 #pragma weak fcu_fiferr_isr                           = Default_Handler
 #pragma weak fcu_frdyi_isr                            = Default_Handler
-#pragma weak fcu_eccerr_isr                           = Default_Handler
-#pragma weak lvd1_lvd1_isr                            = Default_Handler
-#pragma weak lvd2_lvd2_isr                            = Default_Handler
-#pragma weak vbatt_vbat_isr                           = Default_Handler
-#pragma weak mosc_osc_stop_isr                        = Default_Handler
-#pragma weak cpusys_snooze_mode_entry_flag_isr        = Default_Handler
-#pragma weak agt0_agti_isr                            = Default_Handler
-#pragma weak agt0_agtcmai_isr                         = Default_Handler
-#pragma weak agt0_agtcmbi_isr                         = Default_Handler
-#pragma weak agt1_agti_isr                            = Default_Handler
-#pragma weak agt1_agtcmai_isr                         = Default_Handler
-#pragma weak agt1_agtcmbi_isr                         = Default_Handler
-#pragma weak iwdt_nmiundf_n_isr                       = Default_Handler
-#pragma weak cwdt_nmiundf_n_isr                       = Default_Handler
-#pragma weak rtc_alm_isr                              = Default_Handler
-#pragma weak rtc_prd_isr                              = Default_Handler
-#pragma weak rtc_cup_isr                              = Default_Handler
-#pragma weak s12ad0_adi_isr                           = Default_Handler
-#pragma weak s12ad0_gbadi_isr                         = Default_Handler
-#pragma weak s12ad0_cmpai_isr                         = Default_Handler
-#pragma weak s12ad0_cmpbi_isr                         = Default_Handler
-#pragma weak s12ad0_compare_match_isr                 = Default_Handler
-#pragma weak s12ad0_compare_mismatch_isr              = Default_Handler
-#pragma weak s12ad1_adi_isr                           = Default_Handler
-#pragma weak s12ad1_gbadi_isr                         = Default_Handler
-#pragma weak s12ad1_cmpai_isr                         = Default_Handler
-#pragma weak s12ad1_cmpbi_isr                         = Default_Handler
-#pragma weak s12ad1_compare_match_isr                 = Default_Handler
-#pragma weak s12ad1_compare_mismatch_isr              = Default_Handler
-#pragma weak comp_oc0_comp_irq_isr                    = Default_Handler
-#pragma weak comp_rd1_comp_irq_isr                    = Default_Handler
-#pragma weak comp_rd2_comp_irq_isr                    = Default_Handler
-#pragma weak comp_rd3_comp_irq_isr                    = Default_Handler
-#pragma weak comp_rd4_comp_irq_isr                    = Default_Handler
-#pragma weak comp_rd5_comp_irq_isr                    = Default_Handler
-#pragma weak comp_lp_comp_c0irq_isr                   = Default_Handler
-#pragma weak comp_lp_comp_c1irq_isr                   = Default_Handler
-#pragma weak usbfs_d0fifo_isr                         = Default_Handler
-#pragma weak usbfs_d1fifo_isr                         = Default_Handler
-#pragma weak usbfs_usbi_isr                           = Default_Handler
-#pragma weak usbfs_usbr_isr                           = Default_Handler
-#pragma weak riic0_rxi_isr                            = Default_Handler
-#pragma weak riic0_txi_isr                            = Default_Handler
-#pragma weak riic0_tei_isr                            = Default_Handler
-#pragma weak riic0_eei_isr                            = Default_Handler
-#pragma weak riic0_wui_isr                            = Default_Handler
-#pragma weak riic1_rxi_isr                            = Default_Handler
-#pragma weak riic1_txi_isr                            = Default_Handler
-#pragma weak riic1_tei_isr                            = Default_Handler
-#pragma weak riic1_eei_isr                            = Default_Handler
-#pragma weak riic2_rxi_isr                            = Default_Handler
-#pragma weak riic2_txi_isr                            = Default_Handler
-#pragma weak riic2_tei_isr                            = Default_Handler
-#pragma weak riic2_eei_isr                            = Default_Handler
-#pragma weak ssi0_ssitxi_isr                          = Default_Handler
-#pragma weak ssi0_ssirxi_isr                          = Default_Handler
-#pragma weak ssi0_ssirt_isr                           = Default_Handler
-#pragma weak ssi0_ssif_isr                            = Default_Handler
-#pragma weak ssi1_ssitxi_isr                          = Default_Handler
-#pragma weak ssi1_ssirxi_isr                          = Default_Handler
-#pragma weak ssi1_ssirt_isr                           = Default_Handler
-#pragma weak ssi1_ssif_isr                            = Default_Handler
-#pragma weak src_idei_isr                             = Default_Handler
-#pragma weak src_odfi_isr                             = Default_Handler
-#pragma weak src_ovf_isr                              = Default_Handler
-#pragma weak src_udf_isr                              = Default_Handler
-#pragma weak src_cef_isr                              = Default_Handler
-#pragma weak pdc_pcdfi_isr                            = Default_Handler
-#pragma weak pdc_pcfei_isr                            = Default_Handler
-#pragma weak pdc_pceri_isr                            = Default_Handler
-#pragma weak ctsu_ctsuwr_isr                          = Default_Handler
-#pragma weak ctsu_ctsurd_isr                          = Default_Handler
-#pragma weak ctsu_ctsufn_isr                          = Default_Handler
-#pragma weak key_intkr_isr                            = Default_Handler
-#pragma weak doc_dopcf_isr                            = Default_Handler
-#pragma weak cac_ferrf_isr                            = Default_Handler
-#pragma weak cac_mendf_isr                            = Default_Handler
-#pragma weak cac_ovff_isr                             = Default_Handler
-#pragma weak rcan20_ers_isr                           = Default_Handler
-#pragma weak rcan20_rxf_isr                           = Default_Handler
-#pragma weak rcan20_txf_isr                           = Default_Handler
-#pragma weak rcan20_rxm_isr                           = Default_Handler
-#pragma weak rcan20_txm_isr                           = Default_Handler
-#pragma weak rcan21_ers_isr                           = Default_Handler
-#pragma weak rcan21_rxf_isr                           = Default_Handler
-#pragma weak rcan21_txf_isr                           = Default_Handler
-#pragma weak rcan21_rxm_isr                           = Default_Handler
-#pragma weak rcan21_txm_isr                           = Default_Handler
-#pragma weak gpio_port_group_a_isr                    = Default_Handler
-#pragma weak gpio_port_group_b_isr                    = Default_Handler
-#pragma weak gpio_port_group_c_isr                    = Default_Handler
-#pragma weak gpio_port_group_d_isr                    = Default_Handler
-#pragma weak elc0_software_event_isr                  = Default_Handler
-#pragma weak elc1_software_event_isr                  = Default_Handler
-#pragma weak poeg_group_event0_isr                    = Default_Handler
-#pragma weak poeg_group_event1_isr                    = Default_Handler
-#pragma weak poeg_group_event2_isr                    = Default_Handler
-#pragma weak poeg_group_event3_isr                    = Default_Handler
-#pragma weak gpt0_capture_compare_int_a_isr           = Default_Handler
-#pragma weak gpt0_capture_compare_int_b_isr           = Default_Handler
-#pragma weak gpt0_compare_int_c_isr                   = Default_Handler
-#pragma weak gpt0_compare_int_d_isr                   = Default_Handler
-#pragma weak gpt0_compare_int_e_isr                   = Default_Handler
-#pragma weak gpt0_compare_int_f_isr                   = Default_Handler
+#pragma weak lvd_lvd1_isr                             = Default_Handler
+#pragma weak lvd_lvd2_isr                             = Default_Handler
+#pragma weak cgc_mosc_stop_isr                        = Default_Handler
+#pragma weak lpm_snooze_request_isr                   = Default_Handler
+#pragma weak agt0_int_isr                             = Default_Handler
+#pragma weak agt0_compare_a_isr                       = Default_Handler
+#pragma weak agt0_compare_b_isr                       = Default_Handler
+#pragma weak agt1_int_isr                             = Default_Handler
+#pragma weak agt1_compare_a_isr                       = Default_Handler
+#pragma weak agt1_compare_b_isr                       = Default_Handler
+#pragma weak iwdt_underflow_isr                       = Default_Handler
+#pragma weak wdt_underflow_isr                        = Default_Handler
+#pragma weak rtc_alarm_isr                            = Default_Handler
+#pragma weak rtc_period_isr                           = Default_Handler
+#pragma weak rtc_carry_isr                            = Default_Handler
+#pragma weak adc0_scan_end_isr                        = Default_Handler
+#pragma weak adc0_scan_end_b_isr                      = Default_Handler
+#pragma weak adc0_window_a_isr                        = Default_Handler
+#pragma weak adc0_window_b_isr                        = Default_Handler
+#pragma weak adc0_compare_match_isr                   = Default_Handler
+#pragma weak adc0_compare_mismatch_isr                = Default_Handler
+#pragma weak adc1_scan_end_isr                        = Default_Handler
+#pragma weak adc1_scan_end_b_isr                      = Default_Handler
+#pragma weak adc1_window_a_isr                        = Default_Handler
+#pragma weak adc1_window_b_isr                        = Default_Handler
+#pragma weak adc1_compare_match_isr                   = Default_Handler
+#pragma weak adc1_compare_mismatch_isr                = Default_Handler
+#pragma weak comp_hs_0_isr                            = Default_Handler
+#pragma weak comp_hs_1_isr                            = Default_Handler
+#pragma weak comp_hs_2_isr                            = Default_Handler
+#pragma weak comp_hs_3_isr                            = Default_Handler
+#pragma weak comp_hs_4_isr                            = Default_Handler
+#pragma weak comp_hs_5_isr                            = Default_Handler
+#pragma weak usbfs_fifo_0_isr                         = Default_Handler
+#pragma weak usbfs_fifo_1_isr                         = Default_Handler
+#pragma weak usbfs_int_isr                            = Default_Handler
+#pragma weak usbfs_resume_isr                         = Default_Handler
+#pragma weak iic0_rxi_isr                             = Default_Handler
+#pragma weak iic0_txi_isr                             = Default_Handler
+#pragma weak iic0_tei_isr                             = Default_Handler
+#pragma weak iic0_eri_isr                             = Default_Handler
+#pragma weak iic0_wui_isr                             = Default_Handler
+#pragma weak iic1_rxi_isr                             = Default_Handler
+#pragma weak iic1_txi_isr                             = Default_Handler
+#pragma weak iic1_tei_isr                             = Default_Handler
+#pragma weak iic1_eri_isr                             = Default_Handler
+#pragma weak iic2_rxi_isr                             = Default_Handler
+#pragma weak iic2_txi_isr                             = Default_Handler
+#pragma weak iic2_tei_isr                             = Default_Handler
+#pragma weak iic2_eri_isr                             = Default_Handler
+#pragma weak ssi0_txi_isr                             = Default_Handler
+#pragma weak ssi0_rxi_isr                             = Default_Handler
+#pragma weak ssi0_int_isr                             = Default_Handler
+#pragma weak ssi1_txi_rxi_isr                         = Default_Handler
+#pragma weak ssi1_int_isr                             = Default_Handler
+#pragma weak src_input_fifo_empty_isr                 = Default_Handler
+#pragma weak src_output_fifo_full_isr                 = Default_Handler
+#pragma weak src_output_fifo_overflow_isr             = Default_Handler
+#pragma weak src_output_fifo_underflow_isr            = Default_Handler
+#pragma weak src_conversion_end_isr                   = Default_Handler
+#pragma weak pdc_receive_data_ready_isr               = Default_Handler
+#pragma weak pdc_frame_end_isr                        = Default_Handler
+#pragma weak pdc_int_isr                              = Default_Handler
+#pragma weak ctsu_write_isr                           = Default_Handler
+#pragma weak ctsu_read_isr                            = Default_Handler
+#pragma weak ctsu_end_isr                             = Default_Handler
+#pragma weak key_int_isr                              = Default_Handler
+#pragma weak doc_int_isr                              = Default_Handler
+#pragma weak cac_frequency_error_isr                  = Default_Handler
+#pragma weak cac_measurement_end_isr                  = Default_Handler
+#pragma weak cac_overflow_isr                         = Default_Handler
+#pragma weak can0_error_isr                           = Default_Handler
+#pragma weak can0_fifo_rx_isr                         = Default_Handler
+#pragma weak can0_fifo_tx_isr                         = Default_Handler
+#pragma weak can0_mailbox_rx_isr                      = Default_Handler
+#pragma weak can0_mailbox_tx_isr                      = Default_Handler
+#pragma weak can1_error_isr                           = Default_Handler
+#pragma weak can1_fifo_rx_isr                         = Default_Handler
+#pragma weak can1_fifo_tx_isr                         = Default_Handler
+#pragma weak can1_mailbox_rx_isr                      = Default_Handler
+#pragma weak can1_mailbox_tx_isr                      = Default_Handler
+#pragma weak ioport_event_1_isr                       = Default_Handler
+#pragma weak ioport_event_2_isr                       = Default_Handler
+#pragma weak ioport_event_3_isr                       = Default_Handler
+#pragma weak ioport_event_4_isr                       = Default_Handler
+#pragma weak elc_software_event_0_isr                 = Default_Handler
+#pragma weak elc_software_event_1_isr                 = Default_Handler
+#pragma weak poeg0_event_isr                          = Default_Handler
+#pragma weak poeg1_event_isr                          = Default_Handler
+#pragma weak poeg2_event_isr                          = Default_Handler
+#pragma weak poeg3_event_isr                          = Default_Handler
+#pragma weak gpt0_capture_compare_a_isr               = Default_Handler
+#pragma weak gpt0_capture_compare_b_isr               = Default_Handler
+#pragma weak gpt0_compare_c_isr                       = Default_Handler
+#pragma weak gpt0_compare_d_isr                       = Default_Handler
+#pragma weak gpt0_compare_e_isr                       = Default_Handler
+#pragma weak gpt0_compare_f_isr                       = Default_Handler
 #pragma weak gpt0_counter_overflow_isr                = Default_Handler
 #pragma weak gpt0_counter_underflow_isr               = Default_Handler
 #pragma weak gpt0_ad_trig_a_isr                       = Default_Handler
 #pragma weak gpt0_ad_trig_b_isr                       = Default_Handler
-#pragma weak gpt1_capture_compare_int_a_isr           = Default_Handler
-#pragma weak gpt1_capture_compare_int_b_isr           = Default_Handler
-#pragma weak gpt1_compare_int_c_isr                   = Default_Handler
-#pragma weak gpt1_compare_int_d_isr                   = Default_Handler
-#pragma weak gpt1_compare_int_e_isr                   = Default_Handler
-#pragma weak gpt1_compare_int_f_isr                   = Default_Handler
+#pragma weak gpt1_capture_compare_a_isr               = Default_Handler
+#pragma weak gpt1_capture_compare_b_isr               = Default_Handler
+#pragma weak gpt1_compare_c_isr                       = Default_Handler
+#pragma weak gpt1_compare_d_isr                       = Default_Handler
+#pragma weak gpt1_compare_e_isr                       = Default_Handler
+#pragma weak gpt1_compare_f_isr                       = Default_Handler
 #pragma weak gpt1_counter_overflow_isr                = Default_Handler
 #pragma weak gpt1_counter_underflow_isr               = Default_Handler
 #pragma weak gpt1_ad_trig_a_isr                       = Default_Handler
 #pragma weak gpt1_ad_trig_b_isr                       = Default_Handler
-#pragma weak gpt2_capture_compare_int_a_isr           = Default_Handler
-#pragma weak gpt2_capture_compare_int_b_isr           = Default_Handler
-#pragma weak gpt2_compare_int_c_isr                   = Default_Handler
-#pragma weak gpt2_compare_int_d_isr                   = Default_Handler
-#pragma weak gpt2_compare_int_e_isr                   = Default_Handler
-#pragma weak gpt2_compare_int_f_isr                   = Default_Handler
+#pragma weak gpt2_capture_compare_a_isr               = Default_Handler
+#pragma weak gpt2_capture_compare_b_isr               = Default_Handler
+#pragma weak gpt2_compare_c_isr                       = Default_Handler
+#pragma weak gpt2_compare_d_isr                       = Default_Handler
+#pragma weak gpt2_compare_e_isr                       = Default_Handler
+#pragma weak gpt2_compare_f_isr                       = Default_Handler
 #pragma weak gpt2_counter_overflow_isr                = Default_Handler
 #pragma weak gpt2_counter_underflow_isr               = Default_Handler
 #pragma weak gpt2_ad_trig_a_isr                       = Default_Handler
 #pragma weak gpt2_ad_trig_b_isr                       = Default_Handler
-#pragma weak gpt3_capture_compare_int_a_isr           = Default_Handler
-#pragma weak gpt3_capture_compare_int_b_isr           = Default_Handler
-#pragma weak gpt3_compare_int_c_isr                   = Default_Handler
-#pragma weak gpt3_compare_int_d_isr                   = Default_Handler
-#pragma weak gpt3_compare_int_e_isr                   = Default_Handler
-#pragma weak gpt3_compare_int_f_isr                   = Default_Handler
+#pragma weak gpt3_capture_compare_a_isr               = Default_Handler
+#pragma weak gpt3_capture_compare_b_isr               = Default_Handler
+#pragma weak gpt3_compare_c_isr                       = Default_Handler
+#pragma weak gpt3_compare_d_isr                       = Default_Handler
+#pragma weak gpt3_compare_e_isr                       = Default_Handler
+#pragma weak gpt3_compare_f_isr                       = Default_Handler
 #pragma weak gpt3_counter_overflow_isr                = Default_Handler
 #pragma weak gpt3_counter_underflow_isr               = Default_Handler
 #pragma weak gpt3_ad_trig_a_isr                       = Default_Handler
 #pragma weak gpt3_ad_trig_b_isr                       = Default_Handler
-#pragma weak gpt4_capture_compare_int_a_isr           = Default_Handler
-#pragma weak gpt4_capture_compare_int_b_isr           = Default_Handler
-#pragma weak gpt4_compare_int_c_isr                   = Default_Handler
-#pragma weak gpt4_compare_int_d_isr                   = Default_Handler
-#pragma weak gpt4_compare_int_e_isr                   = Default_Handler
-#pragma weak gpt4_compare_int_f_isr                   = Default_Handler
+#pragma weak gpt4_capture_compare_a_isr               = Default_Handler
+#pragma weak gpt4_capture_compare_b_isr               = Default_Handler
+#pragma weak gpt4_compare_c_isr                       = Default_Handler
+#pragma weak gpt4_compare_d_isr                       = Default_Handler
+#pragma weak gpt4_compare_e_isr                       = Default_Handler
+#pragma weak gpt4_compare_f_isr                       = Default_Handler
 #pragma weak gpt4_counter_overflow_isr                = Default_Handler
 #pragma weak gpt4_counter_underflow_isr               = Default_Handler
 #pragma weak gpt4_ad_trig_a_isr                       = Default_Handler
 #pragma weak gpt4_ad_trig_b_isr                       = Default_Handler
-#pragma weak gpt5_capture_compare_int_a_isr           = Default_Handler
-#pragma weak gpt5_capture_compare_int_b_isr           = Default_Handler
-#pragma weak gpt5_compare_int_c_isr                   = Default_Handler
-#pragma weak gpt5_compare_int_d_isr                   = Default_Handler
-#pragma weak gpt5_compare_int_e_isr                   = Default_Handler
-#pragma weak gpt5_compare_int_f_isr                   = Default_Handler
+#pragma weak gpt5_capture_compare_a_isr               = Default_Handler
+#pragma weak gpt5_capture_compare_b_isr               = Default_Handler
+#pragma weak gpt5_compare_c_isr                       = Default_Handler
+#pragma weak gpt5_compare_d_isr                       = Default_Handler
+#pragma weak gpt5_compare_e_isr                       = Default_Handler
+#pragma weak gpt5_compare_f_isr                       = Default_Handler
 #pragma weak gpt5_counter_overflow_isr                = Default_Handler
 #pragma weak gpt5_counter_underflow_isr               = Default_Handler
 #pragma weak gpt5_ad_trig_a_isr                       = Default_Handler
 #pragma weak gpt5_ad_trig_b_isr                       = Default_Handler
-#pragma weak gpt6_capture_compare_int_a_isr           = Default_Handler
-#pragma weak gpt6_capture_compare_int_b_isr           = Default_Handler
-#pragma weak gpt6_compare_int_c_isr                   = Default_Handler
-#pragma weak gpt6_compare_int_d_isr                   = Default_Handler
-#pragma weak gpt6_compare_int_e_isr                   = Default_Handler
-#pragma weak gpt6_compare_int_f_isr                   = Default_Handler
+#pragma weak gpt6_capture_compare_a_isr               = Default_Handler
+#pragma weak gpt6_capture_compare_b_isr               = Default_Handler
+#pragma weak gpt6_compare_c_isr                       = Default_Handler
+#pragma weak gpt6_compare_d_isr                       = Default_Handler
+#pragma weak gpt6_compare_e_isr                       = Default_Handler
+#pragma weak gpt6_compare_f_isr                       = Default_Handler
 #pragma weak gpt6_counter_overflow_isr                = Default_Handler
 #pragma weak gpt6_counter_underflow_isr               = Default_Handler
 #pragma weak gpt6_ad_trig_a_isr                       = Default_Handler
 #pragma weak gpt6_ad_trig_b_isr                       = Default_Handler
-#pragma weak gpt7_capture_compare_int_a_isr           = Default_Handler
-#pragma weak gpt7_capture_compare_int_b_isr           = Default_Handler
-#pragma weak gpt7_compare_int_c_isr                   = Default_Handler
-#pragma weak gpt7_compare_int_d_isr                   = Default_Handler
-#pragma weak gpt7_compare_int_e_isr                   = Default_Handler
-#pragma weak gpt7_compare_int_f_isr                   = Default_Handler
+#pragma weak gpt7_capture_compare_a_isr               = Default_Handler
+#pragma weak gpt7_capture_compare_b_isr               = Default_Handler
+#pragma weak gpt7_compare_c_isr                       = Default_Handler
+#pragma weak gpt7_compare_d_isr                       = Default_Handler
+#pragma weak gpt7_compare_e_isr                       = Default_Handler
+#pragma weak gpt7_compare_f_isr                       = Default_Handler
 #pragma weak gpt7_counter_overflow_isr                = Default_Handler
 #pragma weak gpt7_counter_underflow_isr               = Default_Handler
 #pragma weak gpt7_ad_trig_a_isr                       = Default_Handler
 #pragma weak gpt7_ad_trig_b_isr                       = Default_Handler
-#pragma weak gpt8_capture_compare_int_a_isr           = Default_Handler
-#pragma weak gpt8_capture_compare_int_b_isr           = Default_Handler
-#pragma weak gpt8_compare_int_c_isr                   = Default_Handler
-#pragma weak gpt8_compare_int_d_isr                   = Default_Handler
-#pragma weak gpt8_compare_int_e_isr                   = Default_Handler
-#pragma weak gpt8_compare_int_f_isr                   = Default_Handler
+#pragma weak gpt8_capture_compare_a_isr               = Default_Handler
+#pragma weak gpt8_capture_compare_b_isr               = Default_Handler
+#pragma weak gpt8_compare_c_isr                       = Default_Handler
+#pragma weak gpt8_compare_d_isr                       = Default_Handler
+#pragma weak gpt8_compare_e_isr                       = Default_Handler
+#pragma weak gpt8_compare_f_isr                       = Default_Handler
 #pragma weak gpt8_counter_overflow_isr                = Default_Handler
 #pragma weak gpt8_counter_underflow_isr               = Default_Handler
-#pragma weak gpt8_ad_trig_a_isr                       = Default_Handler
-#pragma weak gpt8_ad_trig_b_isr                       = Default_Handler
-#pragma weak gpt9_capture_compare_int_a_isr           = Default_Handler
-#pragma weak gpt9_capture_compare_int_b_isr           = Default_Handler
-#pragma weak gpt9_compare_int_c_isr                   = Default_Handler
-#pragma weak gpt9_compare_int_d_isr                   = Default_Handler
-#pragma weak gpt9_compare_int_e_isr                   = Default_Handler
-#pragma weak gpt9_compare_int_f_isr                   = Default_Handler
+#pragma weak gpt9_capture_compare_a_isr               = Default_Handler
+#pragma weak gpt9_capture_compare_b_isr               = Default_Handler
+#pragma weak gpt9_compare_c_isr                       = Default_Handler
+#pragma weak gpt9_compare_d_isr                       = Default_Handler
+#pragma weak gpt9_compare_e_isr                       = Default_Handler
+#pragma weak gpt9_compare_f_isr                       = Default_Handler
 #pragma weak gpt9_counter_overflow_isr                = Default_Handler
 #pragma weak gpt9_counter_underflow_isr               = Default_Handler
-#pragma weak gpt9_ad_trig_a_isr                       = Default_Handler
-#pragma weak gpt9_ad_trig_b_isr                       = Default_Handler
-#pragma weak gpt10_capture_compare_int_a_isr          = Default_Handler
-#pragma weak gpt10_capture_compare_int_b_isr          = Default_Handler
-#pragma weak gpt10_compare_int_c_isr                  = Default_Handler
-#pragma weak gpt10_compare_int_d_isr                  = Default_Handler
-#pragma weak gpt10_compare_int_e_isr                  = Default_Handler
-#pragma weak gpt10_compare_int_f_isr                  = Default_Handler
+#pragma weak gpt10_capture_compare_a_isr              = Default_Handler
+#pragma weak gpt10_capture_compare_b_isr              = Default_Handler
+#pragma weak gpt10_compare_c_isr                      = Default_Handler
+#pragma weak gpt10_compare_d_isr                      = Default_Handler
+#pragma weak gpt10_compare_e_isr                      = Default_Handler
+#pragma weak gpt10_compare_f_isr                      = Default_Handler
 #pragma weak gpt10_counter_overflow_isr               = Default_Handler
 #pragma weak gpt10_counter_underflow_isr              = Default_Handler
-#pragma weak gpt10_ad_trig_a_isr                      = Default_Handler
-#pragma weak gpt10_ad_trig_b_isr                      = Default_Handler
-#pragma weak gpt11_capture_compare_int_a_isr          = Default_Handler
-#pragma weak gpt11_capture_compare_int_b_isr          = Default_Handler
-#pragma weak gpt11_compare_int_c_isr                  = Default_Handler
-#pragma weak gpt11_compare_int_d_isr                  = Default_Handler
-#pragma weak gpt11_compare_int_e_isr                  = Default_Handler
-#pragma weak gpt11_compare_int_f_isr                  = Default_Handler
+#pragma weak gpt11_capture_compare_a_isr              = Default_Handler
+#pragma weak gpt11_capture_compare_b_isr              = Default_Handler
+#pragma weak gpt11_compare_c_isr                      = Default_Handler
+#pragma weak gpt11_compare_d_isr                      = Default_Handler
+#pragma weak gpt11_compare_e_isr                      = Default_Handler
+#pragma weak gpt11_compare_f_isr                      = Default_Handler
 #pragma weak gpt11_counter_overflow_isr               = Default_Handler
 #pragma weak gpt11_counter_underflow_isr              = Default_Handler
-#pragma weak gpt11_ad_trig_a_isr                      = Default_Handler
-#pragma weak gpt11_ad_trig_b_isr                      = Default_Handler
-#pragma weak gpt12_capture_compare_int_a_isr          = Default_Handler
-#pragma weak gpt12_capture_compare_int_b_isr          = Default_Handler
-#pragma weak gpt12_compare_int_c_isr                  = Default_Handler
-#pragma weak gpt12_compare_int_d_isr                  = Default_Handler
-#pragma weak gpt12_compare_int_e_isr                  = Default_Handler
-#pragma weak gpt12_compare_int_f_isr                  = Default_Handler
+#pragma weak gpt12_capture_compare_a_isr              = Default_Handler
+#pragma weak gpt12_capture_compare_b_isr              = Default_Handler
+#pragma weak gpt12_compare_c_isr                      = Default_Handler
+#pragma weak gpt12_compare_d_isr                      = Default_Handler
+#pragma weak gpt12_compare_e_isr                      = Default_Handler
+#pragma weak gpt12_compare_f_isr                      = Default_Handler
 #pragma weak gpt12_counter_overflow_isr               = Default_Handler
 #pragma weak gpt12_counter_underflow_isr              = Default_Handler
-#pragma weak gpt12_ad_trig_a_isr                      = Default_Handler
-#pragma weak gpt12_ad_trig_b_isr                      = Default_Handler
-#pragma weak gpt13_capture_compare_int_a_isr          = Default_Handler
-#pragma weak gpt13_capture_compare_int_b_isr          = Default_Handler
-#pragma weak gpt13_compare_int_c_isr                  = Default_Handler
-#pragma weak gpt13_compare_int_d_isr                  = Default_Handler
-#pragma weak gpt13_compare_int_e_isr                  = Default_Handler
-#pragma weak gpt13_compare_int_f_isr                  = Default_Handler
+#pragma weak gpt13_capture_compare_a_isr              = Default_Handler
+#pragma weak gpt13_capture_compare_b_isr              = Default_Handler
+#pragma weak gpt13_compare_c_isr                      = Default_Handler
+#pragma weak gpt13_compare_d_isr                      = Default_Handler
+#pragma weak gpt13_compare_e_isr                      = Default_Handler
+#pragma weak gpt13_compare_f_isr                      = Default_Handler
 #pragma weak gpt13_counter_overflow_isr               = Default_Handler
 #pragma weak gpt13_counter_underflow_isr              = Default_Handler
-#pragma weak gpt13_ad_trig_a_isr                      = Default_Handler
-#pragma weak gpt13_ad_trig_b_isr                      = Default_Handler
-#pragma weak gpt_uvw_edge_isr                         = Default_Handler
-#pragma weak ether_ipls_isr                           = Default_Handler
-#pragma weak ether_mint_isr                           = Default_Handler
-#pragma weak ether_pint_isr                           = Default_Handler
-#pragma weak ether_eint0_isr                          = Default_Handler
-#pragma weak ether_eint1_isr                          = Default_Handler
-#pragma weak ether_ether0_rise_isr                    = Default_Handler
-#pragma weak ether_ether1_rise_isr                    = Default_Handler
-#pragma weak ether_ether2_rise_isr                    = Default_Handler
-#pragma weak ether_ether3_rise_isr                    = Default_Handler
-#pragma weak ether_ether4_rise_isr                    = Default_Handler
-#pragma weak ether_ether5_rise_isr                    = Default_Handler
-#pragma weak ether_ether0_fall_isr                    = Default_Handler
-#pragma weak ether_ether1_fall_isr                    = Default_Handler
-#pragma weak ether_ether2_fall_isr                    = Default_Handler
-#pragma weak ether_ether3_fall_isr                    = Default_Handler
-#pragma weak ether_ether4_fall_isr                    = Default_Handler
-#pragma weak ether_ether5_fall_isr                    = Default_Handler
-#pragma weak usbhs_d0fifo_isr                         = Default_Handler
-#pragma weak usbhs_d1fifo_isr                         = Default_Handler
-#pragma weak usbhs_usbir_isr                          = Default_Handler
+#pragma weak ops_uvw_edge_isr                         = Default_Handler
+#pragma weak eptpc_ipls_isr                           = Default_Handler
+#pragma weak eptpc_mint_isr                           = Default_Handler
+#pragma weak eptpc_pint_isr                           = Default_Handler
+#pragma weak edmac0_eint_isr                          = Default_Handler
+#pragma weak edmac1_eint_isr                          = Default_Handler
+#pragma weak eptpc_timer0_rise_isr                    = Default_Handler
+#pragma weak eptpc_timer1_rise_isr                    = Default_Handler
+#pragma weak eptpc_timer2_rise_isr                    = Default_Handler
+#pragma weak eptpc_timer3_rise_isr                    = Default_Handler
+#pragma weak eptpc_timer4_rise_isr                    = Default_Handler
+#pragma weak eptpc_timer5_rise_isr                    = Default_Handler
+#pragma weak eptpc_timer0_fall_isr                    = Default_Handler
+#pragma weak eptpc_timer1_fall_isr                    = Default_Handler
+#pragma weak eptpc_timer2_fall_isr                    = Default_Handler
+#pragma weak eptpc_timer3_fall_isr                    = Default_Handler
+#pragma weak eptpc_timer4_fall_isr                    = Default_Handler
+#pragma weak eptpc_timer5_fall_isr                    = Default_Handler
+#pragma weak usbhs_fifo_0_isr                         = Default_Handler
+#pragma weak usbhs_fifo_1_isr                         = Default_Handler
+#pragma weak usbhs_usb_int_resume_isr                 = Default_Handler
 #pragma weak sci0_rxi_isr                             = Default_Handler
 #pragma weak sci0_txi_isr                             = Default_Handler
 #pragma weak sci0_tei_isr                             = Default_Handler
@@ -449,41 +442,40 @@ BSP_DONT_REMOVE static uint8_t g_heap[BSP_CFG_HEAP_BYTES] BSP_PLACE_IN_SECTION(B
 #pragma weak sci9_tei_isr                             = Default_Handler
 #pragma weak sci9_eri_isr                             = Default_Handler
 #pragma weak sci9_am_isr                              = Default_Handler
-#pragma weak rspi0_spri_isr                           = Default_Handler
-#pragma weak rspi0_spti_isr                           = Default_Handler
-#pragma weak rspi0_spii_isr                           = Default_Handler
-#pragma weak rspi0_spei_isr                           = Default_Handler
-#pragma weak rspi0_sp_elctend_isr                     = Default_Handler
-#pragma weak rspi1_spri_isr                           = Default_Handler
-#pragma weak rspi1_spti_isr                           = Default_Handler
-#pragma weak rspi1_spii_isr                           = Default_Handler
-#pragma weak rspi1_spei_isr                           = Default_Handler
-#pragma weak rspi1_sp_elctend_isr                     = Default_Handler
-#pragma weak qspi_intr_isr                            = Default_Handler
-#pragma weak sdhi_mmc0_accs_isr                       = Default_Handler
-#pragma weak sdhi_mmc0_sdio_isr                       = Default_Handler
-#pragma weak sdhi_mmc0_card_isr                       = Default_Handler
-#pragma weak sdhi_mmc0_odmsdbreq_isr                  = Default_Handler
-#pragma weak sdhi_mmc1_accs_isr                       = Default_Handler
-#pragma weak sdhi_mmc1_sdio_isr                       = Default_Handler
-#pragma weak sdhi_mmc1_card_isr                       = Default_Handler
-#pragma weak sdhi_mmc1_odmsdbreq_isr                  = Default_Handler
-#pragma weak ext_divider_intmd_isr                    = Default_Handler
-#pragma weak tsip_proc_busy_n_isr                     = Default_Handler
-#pragma weak tsip_romok_n_isr                         = Default_Handler
-#pragma weak tsip_long_plg_n_isr                      = Default_Handler
-#pragma weak tsip_test_busy_n_isr                     = Default_Handler
-#pragma weak tsip_wrrdy_0_n_isr                       = Default_Handler
-#pragma weak tsip_wrrdy_1_n_isr                       = Default_Handler
-#pragma weak tsip_wrrdy_4_n_isr                       = Default_Handler
-#pragma weak tsip_rdrdy_0_n_isr                       = Default_Handler
-#pragma weak tsip_rdrdy_1_n_isr                       = Default_Handler
-#pragma weak tsip_integrate_wrrdy_n_isr               = Default_Handler
-#pragma weak tsip_integrate_rdrdy_n_isr               = Default_Handler
-#pragma weak lcdc_lcdc_level_0_isr                    = Default_Handler
-#pragma weak lcdc_lcdc_level_1_isr                    = Default_Handler
-#pragma weak lcdc_lcdc_level_2_isr                    = Default_Handler
-#pragma weak twod_engine_irq_isr                      = Default_Handler
+#pragma weak spi0_rxi_isr                             = Default_Handler
+#pragma weak spi0_txi_isr                             = Default_Handler
+#pragma weak spi0_idle_isr                            = Default_Handler
+#pragma weak spi0_eri_isr                             = Default_Handler
+#pragma weak spi0_tei_isr                             = Default_Handler
+#pragma weak spi1_rxi_isr                             = Default_Handler
+#pragma weak spi1_txi_isr                             = Default_Handler
+#pragma weak spi1_idle_isr                            = Default_Handler
+#pragma weak spi1_eri_isr                             = Default_Handler
+#pragma weak spi1_tei_isr                             = Default_Handler
+#pragma weak qspi_int_isr                             = Default_Handler
+#pragma weak sdhimmc0_accs_isr                        = Default_Handler
+#pragma weak sdhimmc0_sdio_isr                        = Default_Handler
+#pragma weak sdhimmc0_card_isr                        = Default_Handler
+#pragma weak sdhimmc0_dma_req_isr                     = Default_Handler
+#pragma weak sdhimmc1_accs_isr                        = Default_Handler
+#pragma weak sdhimmc1_sdio_isr                        = Default_Handler
+#pragma weak sdhimmc1_card_isr                        = Default_Handler
+#pragma weak sdhimmc1_dma_req_isr                     = Default_Handler
+#pragma weak sce_proc_busy_isr                        = Default_Handler
+#pragma weak sce_romok_isr                            = Default_Handler
+#pragma weak sce_long_plg_isr                         = Default_Handler
+#pragma weak sce_test_busy_isr                        = Default_Handler
+#pragma weak sce_wrrdy_0_isr                          = Default_Handler
+#pragma weak sce_wrrdy_1_isr                          = Default_Handler
+#pragma weak sce_wrrdy_4_isr                          = Default_Handler
+#pragma weak sce_rdrdy_0_isr                          = Default_Handler
+#pragma weak sce_rdrdy_1_isr                          = Default_Handler
+#pragma weak sce_integrate_wrrdy_isr                  = Default_Handler
+#pragma weak sce_integrate_rdrdy_isr                  = Default_Handler
+#pragma weak glcdc_line_detect_isr                    = Default_Handler
+#pragma weak glcdc_underflow_1_isr                    = Default_Handler
+#pragma weak glcdc_underflow_2_isr                    = Default_Handler
+#pragma weak drw_int_isr                              = Default_Handler
 #pragma weak jpeg_jedi_isr                            = Default_Handler
 #pragma weak jpeg_jdti_isr                            = Default_Handler
 #elif defined(__GNUC__)
@@ -499,294 +491,275 @@ void SVC_Handler                             (void) WEAK_REF_ATTRIBUTE;
 void DebugMon_Handler                        (void) WEAK_REF_ATTRIBUTE;
 void PendSV_Handler                          (void) WEAK_REF_ATTRIBUTE;
 void SysTick_Handler                         (void) WEAK_REF_ATTRIBUTE;
-void port0_irq_isr                           (void) WEAK_REF_ATTRIBUTE;
-void port1_irq_isr                           (void) WEAK_REF_ATTRIBUTE;
-void port2_irq_isr                           (void) WEAK_REF_ATTRIBUTE;
-void port3_irq_isr                           (void) WEAK_REF_ATTRIBUTE;
-void port4_irq_isr                           (void) WEAK_REF_ATTRIBUTE;
-void port5_irq_isr                           (void) WEAK_REF_ATTRIBUTE;
-void port6_irq_isr                           (void) WEAK_REF_ATTRIBUTE;
-void port7_irq_isr                           (void) WEAK_REF_ATTRIBUTE;
-void port8_irq_isr                           (void) WEAK_REF_ATTRIBUTE;
-void port9_irq_isr                           (void) WEAK_REF_ATTRIBUTE;
-void port10_irq_isr                          (void) WEAK_REF_ATTRIBUTE;
-void port11_irq_isr                          (void) WEAK_REF_ATTRIBUTE;
-void port12_irq_isr                          (void) WEAK_REF_ATTRIBUTE;
-void port13_irq_isr                          (void) WEAK_REF_ATTRIBUTE;
-void port14_irq_isr                          (void) WEAK_REF_ATTRIBUTE;
-void port15_irq_isr                          (void) WEAK_REF_ATTRIBUTE;
-void dmac0_dmac_isr                          (void) WEAK_REF_ATTRIBUTE;
-void dmac1_dmac_isr                          (void) WEAK_REF_ATTRIBUTE;
-void dmac2_dmac_isr                          (void) WEAK_REF_ATTRIBUTE;
-void dmac3_dmac_isr                          (void) WEAK_REF_ATTRIBUTE;
-void dmac4_dmac_isr                          (void) WEAK_REF_ATTRIBUTE;
-void dmac5_dmac_isr                          (void) WEAK_REF_ATTRIBUTE;
-void dmac6_dmac_isr                          (void) WEAK_REF_ATTRIBUTE;
-void dmac7_dmac_isr                          (void) WEAK_REF_ATTRIBUTE;
-void dtc_transfer_isr                        (void) WEAK_REF_ATTRIBUTE;
+void icu_irq0_isr                            (void) WEAK_REF_ATTRIBUTE;
+void icu_irq1_isr                            (void) WEAK_REF_ATTRIBUTE;
+void icu_irq2_isr                            (void) WEAK_REF_ATTRIBUTE;
+void icu_irq3_isr                            (void) WEAK_REF_ATTRIBUTE;
+void icu_irq4_isr                            (void) WEAK_REF_ATTRIBUTE;
+void icu_irq5_isr                            (void) WEAK_REF_ATTRIBUTE;
+void icu_irq6_isr                            (void) WEAK_REF_ATTRIBUTE;
+void icu_irq7_isr                            (void) WEAK_REF_ATTRIBUTE;
+void icu_irq8_isr                            (void) WEAK_REF_ATTRIBUTE;
+void icu_irq9_isr                            (void) WEAK_REF_ATTRIBUTE;
+void icu_irq10_isr                           (void) WEAK_REF_ATTRIBUTE;
+void icu_irq11_isr                           (void) WEAK_REF_ATTRIBUTE;
+void icu_irq12_isr                           (void) WEAK_REF_ATTRIBUTE;
+void icu_irq13_isr                           (void) WEAK_REF_ATTRIBUTE;
+void icu_irq14_isr                           (void) WEAK_REF_ATTRIBUTE;
+void icu_irq15_isr                           (void) WEAK_REF_ATTRIBUTE;
+void dmac0_int_isr                           (void) WEAK_REF_ATTRIBUTE;
+void dmac1_int_isr                           (void) WEAK_REF_ATTRIBUTE;
+void dmac2_int_isr                           (void) WEAK_REF_ATTRIBUTE;
+void dmac3_int_isr                           (void) WEAK_REF_ATTRIBUTE;
+void dmac4_int_isr                           (void) WEAK_REF_ATTRIBUTE;
+void dmac5_int_isr                           (void) WEAK_REF_ATTRIBUTE;
+void dmac6_int_isr                           (void) WEAK_REF_ATTRIBUTE;
+void dmac7_int_isr                           (void) WEAK_REF_ATTRIBUTE;
 void dtc_complete_isr                        (void) WEAK_REF_ATTRIBUTE;
-void dtc_dtc_end_isr                         (void) WEAK_REF_ATTRIBUTE;
-void exdmac0_exdmac_isr                      (void) WEAK_REF_ATTRIBUTE;
-void exdmac1_exdmac_isr                      (void) WEAK_REF_ATTRIBUTE;
-void icu_canceling_snooze_mode_isr           (void) WEAK_REF_ATTRIBUTE;
+void dtc_end_isr                             (void) WEAK_REF_ATTRIBUTE;
+void icu_snooze_cancel_isr                   (void) WEAK_REF_ATTRIBUTE;
 void fcu_fiferr_isr                          (void) WEAK_REF_ATTRIBUTE;
 void fcu_frdyi_isr                           (void) WEAK_REF_ATTRIBUTE;
-void fcu_eccerr_isr                          (void) WEAK_REF_ATTRIBUTE;
-void lvd1_lvd1_isr                           (void) WEAK_REF_ATTRIBUTE;
-void lvd2_lvd2_isr                           (void) WEAK_REF_ATTRIBUTE;
-void mosc_osc_stop_isr                       (void) WEAK_REF_ATTRIBUTE;
-void cpusys_snooze_mode_entry_flag_isr       (void) WEAK_REF_ATTRIBUTE;
-void agt0_agti_isr                           (void) WEAK_REF_ATTRIBUTE;
-void agt0_agtcmai_isr                        (void) WEAK_REF_ATTRIBUTE;
-void agt0_agtcmbi_isr                        (void) WEAK_REF_ATTRIBUTE;
-void agt1_agti_isr                           (void) WEAK_REF_ATTRIBUTE;
-void agt1_agtcmai_isr                        (void) WEAK_REF_ATTRIBUTE;
-void agt1_agtcmbi_isr                        (void) WEAK_REF_ATTRIBUTE;
-void iwdt_nmiundf_n_isr                      (void) WEAK_REF_ATTRIBUTE;
-void cwdt_nmiundf_n_isr                      (void) WEAK_REF_ATTRIBUTE;
-void rtc_alm_isr                             (void) WEAK_REF_ATTRIBUTE;
-void rtc_prd_isr                             (void) WEAK_REF_ATTRIBUTE;
-void rtc_cup_isr                             (void) WEAK_REF_ATTRIBUTE;
-void s12ad0_adi_isr                          (void) WEAK_REF_ATTRIBUTE;
-void s12ad0_gbadi_isr                        (void) WEAK_REF_ATTRIBUTE;
-void s12ad0_cmpai_isr                        (void) WEAK_REF_ATTRIBUTE;
-void s12ad0_cmpbi_isr                        (void) WEAK_REF_ATTRIBUTE;
-void s12ad0_compare_match_isr                (void) WEAK_REF_ATTRIBUTE;
-void s12ad0_compare_mismatch_isr             (void) WEAK_REF_ATTRIBUTE;
-void s12ad1_adi_isr                          (void) WEAK_REF_ATTRIBUTE;
-void s12ad1_gbadi_isr                        (void) WEAK_REF_ATTRIBUTE;
-void s12ad1_cmpai_isr                        (void) WEAK_REF_ATTRIBUTE;
-void s12ad1_cmpbi_isr                        (void) WEAK_REF_ATTRIBUTE;
-void s12ad1_compare_match_isr                (void) WEAK_REF_ATTRIBUTE;
-void s12ad1_compare_mismatch_isr             (void) WEAK_REF_ATTRIBUTE;
-void comp_oc0_comp_irq_isr                   (void) WEAK_REF_ATTRIBUTE;
-void comp_rd1_comp_irq_isr                   (void) WEAK_REF_ATTRIBUTE;
-void comp_rd2_comp_irq_isr                   (void) WEAK_REF_ATTRIBUTE;
-void comp_rd3_comp_irq_isr                   (void) WEAK_REF_ATTRIBUTE;
-void comp_rd4_comp_irq_isr                   (void) WEAK_REF_ATTRIBUTE;
-void comp_rd5_comp_irq_isr                   (void) WEAK_REF_ATTRIBUTE;
-void usbfs_d0fifo_isr                        (void) WEAK_REF_ATTRIBUTE;
-void usbfs_d1fifo_isr                        (void) WEAK_REF_ATTRIBUTE;
-void usbfs_usbi_isr                          (void) WEAK_REF_ATTRIBUTE;
-void usbfs_usbr_isr                          (void) WEAK_REF_ATTRIBUTE;
-void riic0_rxi_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic0_txi_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic0_tei_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic0_eei_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic0_wui_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic1_rxi_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic1_txi_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic1_tei_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic1_eei_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic2_rxi_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic2_txi_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic2_tei_isr                           (void) WEAK_REF_ATTRIBUTE;
-void riic2_eei_isr                           (void) WEAK_REF_ATTRIBUTE;
-void ssi0_ssitxi_isr                         (void) WEAK_REF_ATTRIBUTE;
-void ssi0_ssirxi_isr                         (void) WEAK_REF_ATTRIBUTE;
-void ssi0_ssirt_isr                          (void) WEAK_REF_ATTRIBUTE;
-void ssi0_ssif_isr                           (void) WEAK_REF_ATTRIBUTE;
-void ssi1_ssitxi_isr                         (void) WEAK_REF_ATTRIBUTE;
-void ssi1_ssirxi_isr                         (void) WEAK_REF_ATTRIBUTE;
-void ssi1_ssirt_isr                          (void) WEAK_REF_ATTRIBUTE;
-void ssi1_ssif_isr                           (void) WEAK_REF_ATTRIBUTE;
-void src_idei_isr                            (void) WEAK_REF_ATTRIBUTE;
-void src_odfi_isr                            (void) WEAK_REF_ATTRIBUTE;
-void src_ovf_isr                             (void) WEAK_REF_ATTRIBUTE;
-void src_udf_isr                             (void) WEAK_REF_ATTRIBUTE;
-void src_cef_isr                             (void) WEAK_REF_ATTRIBUTE;
-void pdc_pcdfi_isr                           (void) WEAK_REF_ATTRIBUTE;
-void pdc_pcfei_isr                           (void) WEAK_REF_ATTRIBUTE;
-void pdc_pceri_isr                           (void) WEAK_REF_ATTRIBUTE;
-void ctsu_ctsuwr_isr                         (void) WEAK_REF_ATTRIBUTE;
-void ctsu_ctsurd_isr                         (void) WEAK_REF_ATTRIBUTE;
-void ctsu_ctsufn_isr                         (void) WEAK_REF_ATTRIBUTE;
-void key_intkr_isr                           (void) WEAK_REF_ATTRIBUTE;
-void doc_dopcf_isr                           (void) WEAK_REF_ATTRIBUTE;
-void cac_ferrf_isr                           (void) WEAK_REF_ATTRIBUTE;
-void cac_mendf_isr                           (void) WEAK_REF_ATTRIBUTE;
-void cac_ovff_isr                            (void) WEAK_REF_ATTRIBUTE;
-void rcan20_ers_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rcan20_rxf_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rcan20_txf_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rcan20_rxm_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rcan20_txm_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rcan21_ers_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rcan21_rxf_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rcan21_txf_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rcan21_rxm_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rcan21_txm_isr                          (void) WEAK_REF_ATTRIBUTE;
-void gpio_port_group_a_isr                   (void) WEAK_REF_ATTRIBUTE;
-void gpio_port_group_b_isr                   (void) WEAK_REF_ATTRIBUTE;
-void gpio_port_group_c_isr                   (void) WEAK_REF_ATTRIBUTE;
-void gpio_port_group_d_isr                   (void) WEAK_REF_ATTRIBUTE;
-void elc0_software_event_isr                 (void) WEAK_REF_ATTRIBUTE;
-void elc1_software_event_isr                 (void) WEAK_REF_ATTRIBUTE;
-void poeg_group_event0_isr                   (void) WEAK_REF_ATTRIBUTE;
-void poeg_group_event1_isr                   (void) WEAK_REF_ATTRIBUTE;
-void poeg_group_event2_isr                   (void) WEAK_REF_ATTRIBUTE;
-void poeg_group_event3_isr                   (void) WEAK_REF_ATTRIBUTE;
-void gpt0_capture_compare_int_a_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt0_capture_compare_int_b_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt0_compare_int_c_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt0_compare_int_d_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt0_compare_int_e_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt0_compare_int_f_isr                  (void) WEAK_REF_ATTRIBUTE;
+void lvd_lvd1_isr                            (void) WEAK_REF_ATTRIBUTE;
+void lvd_lvd2_isr                            (void) WEAK_REF_ATTRIBUTE;
+void cgc_mosc_stop_isr                       (void) WEAK_REF_ATTRIBUTE;
+void lpm_snooze_request_isr                  (void) WEAK_REF_ATTRIBUTE;
+void agt0_int_isr                            (void) WEAK_REF_ATTRIBUTE;
+void agt0_compare_a_isr                      (void) WEAK_REF_ATTRIBUTE;
+void agt0_compare_b_isr                      (void) WEAK_REF_ATTRIBUTE;
+void agt1_int_isr                            (void) WEAK_REF_ATTRIBUTE;
+void agt1_compare_a_isr                      (void) WEAK_REF_ATTRIBUTE;
+void agt1_compare_b_isr                      (void) WEAK_REF_ATTRIBUTE;
+void iwdt_underflow_isr                      (void) WEAK_REF_ATTRIBUTE;
+void wdt_underflow_isr                       (void) WEAK_REF_ATTRIBUTE;
+void rtc_alarm_isr                           (void) WEAK_REF_ATTRIBUTE;
+void rtc_period_isr                          (void) WEAK_REF_ATTRIBUTE;
+void rtc_carry_isr                           (void) WEAK_REF_ATTRIBUTE;
+void adc0_scan_end_isr                       (void) WEAK_REF_ATTRIBUTE;
+void adc0_scan_end_b_isr                     (void) WEAK_REF_ATTRIBUTE;
+void adc0_window_a_isr                       (void) WEAK_REF_ATTRIBUTE;
+void adc0_window_b_isr                       (void) WEAK_REF_ATTRIBUTE;
+void adc0_compare_match_isr                  (void) WEAK_REF_ATTRIBUTE;
+void adc0_compare_mismatch_isr               (void) WEAK_REF_ATTRIBUTE;
+void adc1_scan_end_isr                       (void) WEAK_REF_ATTRIBUTE;
+void adc1_scan_end_b_isr                     (void) WEAK_REF_ATTRIBUTE;
+void adc1_window_a_isr                       (void) WEAK_REF_ATTRIBUTE;
+void adc1_window_b_isr                       (void) WEAK_REF_ATTRIBUTE;
+void adc1_compare_match_isr                  (void) WEAK_REF_ATTRIBUTE;
+void adc1_compare_mismatch_isr               (void) WEAK_REF_ATTRIBUTE;
+void comp_hs_0_isr                           (void) WEAK_REF_ATTRIBUTE;
+void comp_hs_1_isr                           (void) WEAK_REF_ATTRIBUTE;
+void comp_hs_2_isr                           (void) WEAK_REF_ATTRIBUTE;
+void comp_hs_3_isr                           (void) WEAK_REF_ATTRIBUTE;
+void comp_hs_4_isr                           (void) WEAK_REF_ATTRIBUTE;
+void comp_hs_5_isr                           (void) WEAK_REF_ATTRIBUTE;
+void usbfs_fifo_0_isr                        (void) WEAK_REF_ATTRIBUTE;
+void usbfs_fifo_1_isr                        (void) WEAK_REF_ATTRIBUTE;
+void usbfs_int_isr                           (void) WEAK_REF_ATTRIBUTE;
+void usbfs_resume_isr                        (void) WEAK_REF_ATTRIBUTE;
+void iic0_rxi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic0_txi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic0_tei_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic0_eri_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic0_wui_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic1_rxi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic1_txi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic1_tei_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic1_eri_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic2_rxi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic2_txi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic2_tei_isr                            (void) WEAK_REF_ATTRIBUTE;
+void iic2_eri_isr                            (void) WEAK_REF_ATTRIBUTE;
+void ssi0_txi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void ssi0_rxi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void ssi0_int_isr                            (void) WEAK_REF_ATTRIBUTE;
+void ssi1_txi_rxi_isr                        (void) WEAK_REF_ATTRIBUTE;
+void ssi1_int_isr                            (void) WEAK_REF_ATTRIBUTE;
+void src_input_fifo_empty_isr                (void) WEAK_REF_ATTRIBUTE;
+void src_output_fifo_full_isr                (void) WEAK_REF_ATTRIBUTE;
+void src_output_fifo_overflow_isr            (void) WEAK_REF_ATTRIBUTE;
+void src_output_fifo_underflow_isr           (void) WEAK_REF_ATTRIBUTE;
+void src_conversion_end_isr                  (void) WEAK_REF_ATTRIBUTE;
+void pdc_receive_data_ready_isr              (void) WEAK_REF_ATTRIBUTE;
+void pdc_frame_end_isr                       (void) WEAK_REF_ATTRIBUTE;
+void pdc_int_isr                             (void) WEAK_REF_ATTRIBUTE;
+void ctsu_write_isr                          (void) WEAK_REF_ATTRIBUTE;
+void ctsu_read_isr                           (void) WEAK_REF_ATTRIBUTE;
+void ctsu_end_isr                            (void) WEAK_REF_ATTRIBUTE;
+void key_int_isr                             (void) WEAK_REF_ATTRIBUTE;
+void doc_int_isr                             (void) WEAK_REF_ATTRIBUTE;
+void cac_frequency_error_isr                 (void) WEAK_REF_ATTRIBUTE;
+void cac_measurement_end_isr                 (void) WEAK_REF_ATTRIBUTE;
+void cac_overflow_isr                        (void) WEAK_REF_ATTRIBUTE;
+void can0_error_isr                          (void) WEAK_REF_ATTRIBUTE;
+void can0_fifo_rx_isr                        (void) WEAK_REF_ATTRIBUTE;
+void can0_fifo_tx_isr                        (void) WEAK_REF_ATTRIBUTE;
+void can0_mailbox_rx_isr                     (void) WEAK_REF_ATTRIBUTE;
+void can0_mailbox_tx_isr                     (void) WEAK_REF_ATTRIBUTE;
+void can1_error_isr                          (void) WEAK_REF_ATTRIBUTE;
+void can1_fifo_rx_isr                        (void) WEAK_REF_ATTRIBUTE;
+void can1_fifo_tx_isr                        (void) WEAK_REF_ATTRIBUTE;
+void can1_mailbox_rx_isr                     (void) WEAK_REF_ATTRIBUTE;
+void can1_mailbox_tx_isr                     (void) WEAK_REF_ATTRIBUTE;
+void ioport_event_1_isr                      (void) WEAK_REF_ATTRIBUTE;
+void ioport_event_2_isr                      (void) WEAK_REF_ATTRIBUTE;
+void ioport_event_3_isr                      (void) WEAK_REF_ATTRIBUTE;
+void ioport_event_4_isr                      (void) WEAK_REF_ATTRIBUTE;
+void elc_software_event_0_isr                (void) WEAK_REF_ATTRIBUTE;
+void elc_software_event_1_isr                (void) WEAK_REF_ATTRIBUTE;
+void poeg0_event_isr                         (void) WEAK_REF_ATTRIBUTE;
+void poeg1_event_isr                         (void) WEAK_REF_ATTRIBUTE;
+void poeg2_event_isr                         (void) WEAK_REF_ATTRIBUTE;
+void poeg3_event_isr                         (void) WEAK_REF_ATTRIBUTE;
+void gpt0_capture_compare_a_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt0_capture_compare_b_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt0_compare_c_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt0_compare_d_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt0_compare_e_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt0_compare_f_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt0_counter_overflow_isr               (void) WEAK_REF_ATTRIBUTE;
 void gpt0_counter_underflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt0_ad_trig_a_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt0_ad_trig_b_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt1_capture_compare_int_a_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt1_capture_compare_int_b_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt1_compare_int_c_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt1_compare_int_d_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt1_compare_int_e_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt1_compare_int_f_isr                  (void) WEAK_REF_ATTRIBUTE;
+void gpt1_capture_compare_a_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt1_capture_compare_b_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt1_compare_c_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt1_compare_d_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt1_compare_e_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt1_compare_f_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt1_counter_overflow_isr               (void) WEAK_REF_ATTRIBUTE;
 void gpt1_counter_underflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt1_ad_trig_a_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt1_ad_trig_b_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt2_capture_compare_int_a_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt2_capture_compare_int_b_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt2_compare_int_c_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt2_compare_int_d_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt2_compare_int_e_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt2_compare_int_f_isr                  (void) WEAK_REF_ATTRIBUTE;
+void gpt2_capture_compare_a_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt2_capture_compare_b_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt2_compare_c_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt2_compare_d_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt2_compare_e_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt2_compare_f_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt2_counter_overflow_isr               (void) WEAK_REF_ATTRIBUTE;
 void gpt2_counter_underflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt2_ad_trig_a_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt2_ad_trig_b_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt3_capture_compare_int_a_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt3_capture_compare_int_b_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt3_compare_int_c_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt3_compare_int_d_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt3_compare_int_e_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt3_compare_int_f_isr                  (void) WEAK_REF_ATTRIBUTE;
+void gpt3_capture_compare_a_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt3_capture_compare_b_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt3_compare_c_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt3_compare_d_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt3_compare_e_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt3_compare_f_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt3_counter_overflow_isr               (void) WEAK_REF_ATTRIBUTE;
 void gpt3_counter_underflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt3_ad_trig_a_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt3_ad_trig_b_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt4_capture_compare_int_a_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt4_capture_compare_int_b_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt4_compare_int_c_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt4_compare_int_d_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt4_compare_int_e_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt4_compare_int_f_isr                  (void) WEAK_REF_ATTRIBUTE;
+void gpt4_capture_compare_a_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt4_capture_compare_b_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt4_compare_c_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt4_compare_d_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt4_compare_e_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt4_compare_f_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt4_counter_overflow_isr               (void) WEAK_REF_ATTRIBUTE;
 void gpt4_counter_underflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt4_ad_trig_a_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt4_ad_trig_b_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt5_capture_compare_int_a_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt5_capture_compare_int_b_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt5_compare_int_c_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt5_compare_int_d_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt5_compare_int_e_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt5_compare_int_f_isr                  (void) WEAK_REF_ATTRIBUTE;
+void gpt5_capture_compare_a_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt5_capture_compare_b_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt5_compare_c_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt5_compare_d_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt5_compare_e_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt5_compare_f_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt5_counter_overflow_isr               (void) WEAK_REF_ATTRIBUTE;
 void gpt5_counter_underflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt5_ad_trig_a_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt5_ad_trig_b_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt6_capture_compare_int_a_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt6_capture_compare_int_b_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt6_compare_int_c_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt6_compare_int_d_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt6_compare_int_e_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt6_compare_int_f_isr                  (void) WEAK_REF_ATTRIBUTE;
+void gpt6_capture_compare_a_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt6_capture_compare_b_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt6_compare_c_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt6_compare_d_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt6_compare_e_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt6_compare_f_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt6_counter_overflow_isr               (void) WEAK_REF_ATTRIBUTE;
 void gpt6_counter_underflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt6_ad_trig_a_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt6_ad_trig_b_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt7_capture_compare_int_a_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt7_capture_compare_int_b_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt7_compare_int_c_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt7_compare_int_d_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt7_compare_int_e_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt7_compare_int_f_isr                  (void) WEAK_REF_ATTRIBUTE;
+void gpt7_capture_compare_a_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt7_capture_compare_b_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt7_compare_c_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt7_compare_d_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt7_compare_e_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt7_compare_f_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt7_counter_overflow_isr               (void) WEAK_REF_ATTRIBUTE;
 void gpt7_counter_underflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt7_ad_trig_a_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt7_ad_trig_b_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt8_capture_compare_int_a_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt8_capture_compare_int_b_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt8_compare_int_c_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt8_compare_int_d_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt8_compare_int_e_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt8_compare_int_f_isr                  (void) WEAK_REF_ATTRIBUTE;
+void gpt8_capture_compare_a_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt8_capture_compare_b_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt8_compare_c_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt8_compare_d_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt8_compare_e_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt8_compare_f_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt8_counter_overflow_isr               (void) WEAK_REF_ATTRIBUTE;
 void gpt8_counter_underflow_isr              (void) WEAK_REF_ATTRIBUTE;
-void gpt8_ad_trig_a_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt8_ad_trig_b_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt9_capture_compare_int_a_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt9_capture_compare_int_b_isr          (void) WEAK_REF_ATTRIBUTE;
-void gpt9_compare_int_c_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt9_compare_int_d_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt9_compare_int_e_isr                  (void) WEAK_REF_ATTRIBUTE;
-void gpt9_compare_int_f_isr                  (void) WEAK_REF_ATTRIBUTE;
+void gpt9_capture_compare_a_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt9_capture_compare_b_isr              (void) WEAK_REF_ATTRIBUTE;
+void gpt9_compare_c_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt9_compare_d_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt9_compare_e_isr                      (void) WEAK_REF_ATTRIBUTE;
+void gpt9_compare_f_isr                      (void) WEAK_REF_ATTRIBUTE;
 void gpt9_counter_overflow_isr               (void) WEAK_REF_ATTRIBUTE;
 void gpt9_counter_underflow_isr              (void) WEAK_REF_ATTRIBUTE;
-void gpt9_ad_trig_a_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt9_ad_trig_b_isr                      (void) WEAK_REF_ATTRIBUTE;
-void gpt10_capture_compare_int_a_isr         (void) WEAK_REF_ATTRIBUTE;
-void gpt10_capture_compare_int_b_isr         (void) WEAK_REF_ATTRIBUTE;
-void gpt10_compare_int_c_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt10_compare_int_d_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt10_compare_int_e_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt10_compare_int_f_isr                 (void) WEAK_REF_ATTRIBUTE;
+void gpt10_capture_compare_a_isr             (void) WEAK_REF_ATTRIBUTE;
+void gpt10_capture_compare_b_isr             (void) WEAK_REF_ATTRIBUTE;
+void gpt10_compare_c_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt10_compare_d_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt10_compare_e_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt10_compare_f_isr                     (void) WEAK_REF_ATTRIBUTE;
 void gpt10_counter_overflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt10_counter_underflow_isr             (void) WEAK_REF_ATTRIBUTE;
-void gpt10_ad_trig_a_isr                     (void) WEAK_REF_ATTRIBUTE;
-void gpt10_ad_trig_b_isr                     (void) WEAK_REF_ATTRIBUTE;
-void gpt11_capture_compare_int_a_isr         (void) WEAK_REF_ATTRIBUTE;
-void gpt11_capture_compare_int_b_isr         (void) WEAK_REF_ATTRIBUTE;
-void gpt11_compare_int_c_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt11_compare_int_d_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt11_compare_int_e_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt11_compare_int_f_isr                 (void) WEAK_REF_ATTRIBUTE;
+void gpt11_capture_compare_a_isr             (void) WEAK_REF_ATTRIBUTE;
+void gpt11_capture_compare_b_isr             (void) WEAK_REF_ATTRIBUTE;
+void gpt11_compare_c_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt11_compare_d_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt11_compare_e_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt11_compare_f_isr                     (void) WEAK_REF_ATTRIBUTE;
 void gpt11_counter_overflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt11_counter_underflow_isr             (void) WEAK_REF_ATTRIBUTE;
-void gpt11_ad_trig_a_isr                     (void) WEAK_REF_ATTRIBUTE;
-void gpt11_ad_trig_b_isr                     (void) WEAK_REF_ATTRIBUTE;
-void gpt12_capture_compare_int_a_isr         (void) WEAK_REF_ATTRIBUTE;
-void gpt12_capture_compare_int_b_isr         (void) WEAK_REF_ATTRIBUTE;
-void gpt12_compare_int_c_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt12_compare_int_d_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt12_compare_int_e_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt12_compare_int_f_isr                 (void) WEAK_REF_ATTRIBUTE;
+void gpt12_capture_compare_a_isr             (void) WEAK_REF_ATTRIBUTE;
+void gpt12_capture_compare_b_isr             (void) WEAK_REF_ATTRIBUTE;
+void gpt12_compare_c_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt12_compare_d_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt12_compare_e_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt12_compare_f_isr                     (void) WEAK_REF_ATTRIBUTE;
 void gpt12_counter_overflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt12_counter_underflow_isr             (void) WEAK_REF_ATTRIBUTE;
-void gpt12_ad_trig_a_isr                     (void) WEAK_REF_ATTRIBUTE;
-void gpt12_ad_trig_b_isr                     (void) WEAK_REF_ATTRIBUTE;
-void gpt13_capture_compare_int_a_isr         (void) WEAK_REF_ATTRIBUTE;
-void gpt13_capture_compare_int_b_isr         (void) WEAK_REF_ATTRIBUTE;
-void gpt13_compare_int_c_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt13_compare_int_d_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt13_compare_int_e_isr                 (void) WEAK_REF_ATTRIBUTE;
-void gpt13_compare_int_f_isr                 (void) WEAK_REF_ATTRIBUTE;
+void gpt13_capture_compare_a_isr             (void) WEAK_REF_ATTRIBUTE;
+void gpt13_capture_compare_b_isr             (void) WEAK_REF_ATTRIBUTE;
+void gpt13_compare_c_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt13_compare_d_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt13_compare_e_isr                     (void) WEAK_REF_ATTRIBUTE;
+void gpt13_compare_f_isr                     (void) WEAK_REF_ATTRIBUTE;
 void gpt13_counter_overflow_isr              (void) WEAK_REF_ATTRIBUTE;
 void gpt13_counter_underflow_isr             (void) WEAK_REF_ATTRIBUTE;
-void gpt13_ad_trig_a_isr                     (void) WEAK_REF_ATTRIBUTE;
-void gpt13_ad_trig_b_isr                     (void) WEAK_REF_ATTRIBUTE;
-void gpt_uvw_edge_isr                        (void) WEAK_REF_ATTRIBUTE;
-void ether_ipls_isr                          (void) WEAK_REF_ATTRIBUTE;
-void ether_mint_isr                          (void) WEAK_REF_ATTRIBUTE;
-void ether_pint_isr                          (void) WEAK_REF_ATTRIBUTE;
-void ether_eint0_isr                         (void) WEAK_REF_ATTRIBUTE;
-void ether_eint1_isr                         (void) WEAK_REF_ATTRIBUTE;
-void ether_ether0_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
-void ether_ether1_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
-void ether_ether2_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
-void ether_ether3_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
-void ether_ether4_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
-void ether_ether5_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
-void ether_ether0_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
-void ether_ether1_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
-void ether_ether2_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
-void ether_ether3_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
-void ether_ether4_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
-void ether_ether5_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
-void usbhs_d0fifo_isr                        (void) WEAK_REF_ATTRIBUTE;
-void usbhs_d1fifo_isr                        (void) WEAK_REF_ATTRIBUTE;
-void usbhs_usbir_isr                         (void) WEAK_REF_ATTRIBUTE;
+void ops_uvw_edge_isr                        (void) WEAK_REF_ATTRIBUTE;
+void eptpc_ipls_isr                          (void) WEAK_REF_ATTRIBUTE;
+void eptpc_mint_isr                          (void) WEAK_REF_ATTRIBUTE;
+void eptpc_pint_isr                          (void) WEAK_REF_ATTRIBUTE;
+void edmac0_eint_isr                         (void) WEAK_REF_ATTRIBUTE;
+void edmac1_eint_isr                         (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer0_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer1_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer2_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer3_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer4_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer5_rise_isr                   (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer0_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer1_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer2_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer3_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer4_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
+void eptpc_timer5_fall_isr                   (void) WEAK_REF_ATTRIBUTE;
+void usbhs_fifo_0_isr                        (void) WEAK_REF_ATTRIBUTE;
+void usbhs_fifo_1_isr                        (void) WEAK_REF_ATTRIBUTE;
+void usbhs_usb_int_resume_isr                (void) WEAK_REF_ATTRIBUTE;
 void sci0_rxi_isr                            (void) WEAK_REF_ATTRIBUTE;
 void sci0_txi_isr                            (void) WEAK_REF_ATTRIBUTE;
 void sci0_tei_isr                            (void) WEAK_REF_ATTRIBUTE;
@@ -838,46 +811,45 @@ void sci9_txi_isr                            (void) WEAK_REF_ATTRIBUTE;
 void sci9_tei_isr                            (void) WEAK_REF_ATTRIBUTE;
 void sci9_eri_isr                            (void) WEAK_REF_ATTRIBUTE;
 void sci9_am_isr                             (void) WEAK_REF_ATTRIBUTE;
-void rspi0_spri_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rspi0_spti_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rspi0_spii_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rspi0_spei_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rspi0_sp_elctend_isr                    (void) WEAK_REF_ATTRIBUTE;
-void rspi1_spri_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rspi1_spti_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rspi1_spii_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rspi1_spei_isr                          (void) WEAK_REF_ATTRIBUTE;
-void rspi1_sp_elctend_isr                    (void) WEAK_REF_ATTRIBUTE;
-void qspi_intr_isr                           (void) WEAK_REF_ATTRIBUTE;
-void sdhi_mmc0_accs_isr                      (void) WEAK_REF_ATTRIBUTE;
-void sdhi_mmc0_sdio_isr                      (void) WEAK_REF_ATTRIBUTE;
-void sdhi_mmc0_card_isr                      (void) WEAK_REF_ATTRIBUTE;
-void sdhi_mmc0_odmsdbreq_isr                 (void) WEAK_REF_ATTRIBUTE;
-void sdhi_mmc1_accs_isr                      (void) WEAK_REF_ATTRIBUTE;
-void sdhi_mmc1_sdio_isr                      (void) WEAK_REF_ATTRIBUTE;
-void sdhi_mmc1_card_isr                      (void) WEAK_REF_ATTRIBUTE;
-void sdhi_mmc1_odmsdbreq_isr                 (void) WEAK_REF_ATTRIBUTE;
-void ext_divider_intmd_isr                   (void) WEAK_REF_ATTRIBUTE;
-void tsip_proc_busy_n_isr                    (void) WEAK_REF_ATTRIBUTE;
-void tsip_romok_n_isr                        (void) WEAK_REF_ATTRIBUTE;
-void tsip_long_plg_n_isr                     (void) WEAK_REF_ATTRIBUTE;
-void tsip_test_busy_n_isr                    (void) WEAK_REF_ATTRIBUTE;
-void tsip_wrrdy_0_n_isr                      (void) WEAK_REF_ATTRIBUTE;
-void tsip_wrrdy_1_n_isr                      (void) WEAK_REF_ATTRIBUTE;
-void tsip_wrrdy_4_n_isr                      (void) WEAK_REF_ATTRIBUTE;
-void tsip_rdrdy_0_n_isr                      (void) WEAK_REF_ATTRIBUTE;
-void tsip_rdrdy_1_n_isr                      (void) WEAK_REF_ATTRIBUTE;
-void tsip_integrate_wrrdy_n_isr              (void) WEAK_REF_ATTRIBUTE;
-void tsip_integrate_rdrdy_n_isr              (void) WEAK_REF_ATTRIBUTE;
-void lcdc_lcdc_level_0_isr                   (void) WEAK_REF_ATTRIBUTE;
-void lcdc_lcdc_level_1_isr                   (void) WEAK_REF_ATTRIBUTE;
-void lcdc_lcdc_level_2_isr                   (void) WEAK_REF_ATTRIBUTE;
-void twod_engine_irq_isr                     (void) WEAK_REF_ATTRIBUTE;
+void spi0_rxi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void spi0_txi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void spi0_idle_isr                           (void) WEAK_REF_ATTRIBUTE;
+void spi0_eri_isr                            (void) WEAK_REF_ATTRIBUTE;
+void spi0_tei_isr                            (void) WEAK_REF_ATTRIBUTE;
+void spi1_rxi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void spi1_txi_isr                            (void) WEAK_REF_ATTRIBUTE;
+void spi1_idle_isr                           (void) WEAK_REF_ATTRIBUTE;
+void spi1_eri_isr                            (void) WEAK_REF_ATTRIBUTE;
+void spi1_tei_isr                            (void) WEAK_REF_ATTRIBUTE;
+void qspi_int_isr                            (void) WEAK_REF_ATTRIBUTE;
+void sdhimmc0_accs_isr                       (void) WEAK_REF_ATTRIBUTE;
+void sdhimmc0_sdio_isr                       (void) WEAK_REF_ATTRIBUTE;
+void sdhimmc0_card_isr                       (void) WEAK_REF_ATTRIBUTE;
+void sdhimmc0_dma_req_isr                    (void) WEAK_REF_ATTRIBUTE;
+void sdhimmc1_accs_isr                       (void) WEAK_REF_ATTRIBUTE;
+void sdhimmc1_sdio_isr                       (void) WEAK_REF_ATTRIBUTE;
+void sdhimmc1_card_isr                       (void) WEAK_REF_ATTRIBUTE;
+void sdhimmc1_dma_req_isr                    (void) WEAK_REF_ATTRIBUTE;
+void sce_proc_busy_isr                       (void) WEAK_REF_ATTRIBUTE;
+void sce_romok_isr                           (void) WEAK_REF_ATTRIBUTE;
+void sce_long_plg_isr                        (void) WEAK_REF_ATTRIBUTE;
+void sce_test_busy_isr                       (void) WEAK_REF_ATTRIBUTE;
+void sce_wrrdy_0_isr                         (void) WEAK_REF_ATTRIBUTE;
+void sce_wrrdy_1_isr                         (void) WEAK_REF_ATTRIBUTE;
+void sce_wrrdy_4_isr                         (void) WEAK_REF_ATTRIBUTE;
+void sce_rdrdy_0_isr                         (void) WEAK_REF_ATTRIBUTE;
+void sce_rdrdy_1_isr                         (void) WEAK_REF_ATTRIBUTE;
+void sce_integrate_wrrdy_isr                 (void) WEAK_REF_ATTRIBUTE;
+void sce_integrate_rdrdy_isr                 (void) WEAK_REF_ATTRIBUTE;
+void glcdc_line_detect_isr                   (void) WEAK_REF_ATTRIBUTE;
+void glcdc_underflow_1_isr                   (void) WEAK_REF_ATTRIBUTE;
+void glcdc_underflow_2_isr                   (void) WEAK_REF_ATTRIBUTE;
+void drw_int_isr                             (void) WEAK_REF_ATTRIBUTE;
 void jpeg_jedi_isr                           (void) WEAK_REF_ATTRIBUTE;
 void jpeg_jdti_isr                           (void) WEAK_REF_ATTRIBUTE;
 
 /* Vector table. */
-BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_VECTOR) =
+BSP_DONT_REMOVE const exc_ptr_t __Vectors[BSP_VECTOR_TABLE_ENTRIES] BSP_PLACE_IN_SECTION(BSP_SECTION_VECTOR) =
 {
     (exc_ptr_t)(&g_main_stack[0] + BSP_CFG_STACK_MAIN_BYTES),           /*      Initial Stack Pointer     */
     Reset_Handler,                                                      /*      Reset Handler             */
@@ -896,85 +868,85 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
     PendSV_Handler,                                                     /*      PendSV Handler            */
     SysTick_Handler,                                                    /*      SysTick Handler           */
 #if (BSP_IRQ_CFG_ICU_IRQ0 != BSP_IRQ_DISABLED)
-    port0_irq_isr,
+    icu_irq0_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ1 != BSP_IRQ_DISABLED)
-    port1_irq_isr,
+    icu_irq1_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ2 != BSP_IRQ_DISABLED)
-    port2_irq_isr,
+    icu_irq2_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ3 != BSP_IRQ_DISABLED)
-    port3_irq_isr,
+    icu_irq3_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ4 != BSP_IRQ_DISABLED)
-    port4_irq_isr,
+    icu_irq4_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ5 != BSP_IRQ_DISABLED)
-    port5_irq_isr,
+    icu_irq5_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ6 != BSP_IRQ_DISABLED)
-    port6_irq_isr,
+    icu_irq6_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ7 != BSP_IRQ_DISABLED)
-    port7_irq_isr,
+    icu_irq7_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ8 != BSP_IRQ_DISABLED)
-    port8_irq_isr,
+    icu_irq8_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ9 != BSP_IRQ_DISABLED)
-    port9_irq_isr,
+    icu_irq9_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ10 != BSP_IRQ_DISABLED)
-    port10_irq_isr,
+    icu_irq10_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ11 != BSP_IRQ_DISABLED)
-    port11_irq_isr,
+    icu_irq11_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ12 != BSP_IRQ_DISABLED)
-    port12_irq_isr,
+    icu_irq12_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ13 != BSP_IRQ_DISABLED)
-    port13_irq_isr,
+    icu_irq13_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ14 != BSP_IRQ_DISABLED)
-    port14_irq_isr,
+    icu_irq14_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_IRQ15 != BSP_IRQ_DISABLED)
-    port15_irq_isr,
+    icu_irq15_isr,
 #endif
 #if (BSP_IRQ_CFG_DMAC0_INT != BSP_IRQ_DISABLED)
-    dmac0_dmac_isr,
+    dmac0_int_isr,
 #endif
 #if (BSP_IRQ_CFG_DMAC1_INT != BSP_IRQ_DISABLED)
-    dmac1_dmac_isr,
+    dmac1_int_isr,
 #endif
 #if (BSP_IRQ_CFG_DMAC2_INT != BSP_IRQ_DISABLED)
-    dmac2_dmac_isr,
+    dmac2_int_isr,
 #endif
 #if (BSP_IRQ_CFG_DMAC3_INT != BSP_IRQ_DISABLED)
-    dmac3_dmac_isr,
+    dmac3_int_isr,
 #endif
 #if (BSP_IRQ_CFG_DMAC4_INT != BSP_IRQ_DISABLED)
-    dmac4_dmac_isr,
+    dmac4_int_isr,
 #endif
 #if (BSP_IRQ_CFG_DMAC5_INT != BSP_IRQ_DISABLED)
-    dmac5_dmac_isr,
+    dmac5_int_isr,
 #endif
 #if (BSP_IRQ_CFG_DMAC6_INT != BSP_IRQ_DISABLED)
-    dmac6_dmac_isr,
+    dmac6_int_isr,
 #endif
 #if (BSP_IRQ_CFG_DMAC7_INT != BSP_IRQ_DISABLED)
-    dmac7_dmac_isr,
+    dmac7_int_isr,
 #endif
 #if (BSP_IRQ_CFG_DTC_COMPLETE != BSP_IRQ_DISABLED)
     dtc_complete_isr,
 #endif
 #if (BSP_IRQ_CFG_DTC_END != BSP_IRQ_DISABLED)
-    dtc_dtc_end_isr,
+    dtc_end_isr,
 #endif
 #if (BSP_IRQ_CFG_ICU_SNOOZE_CANCEL != BSP_IRQ_DISABLED)
-    icu_canceling_snooze_mode_isr,
+    icu_snooze_cancel_isr,
 #endif
 #if (BSP_IRQ_CFG_FCU_FIFERR != BSP_IRQ_DISABLED)
     fcu_fiferr_isr,
@@ -983,295 +955,295 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
     fcu_frdyi_isr,
 #endif
 #if (BSP_IRQ_CFG_LVD_LVD1 != BSP_IRQ_DISABLED)
-    lvd1_lvd1_isr,
+    lvd_lvd1_isr,
 #endif
 #if (BSP_IRQ_CFG_LVD_LVD2 != BSP_IRQ_DISABLED)
-    lvd2_lvd2_isr,
+    lvd_lvd2_isr,
 #endif
 #if (BSP_IRQ_CFG_CGC_MOSC_STOP != BSP_IRQ_DISABLED)
-    mosc_osc_stop_isr,
+    cgc_mosc_stop_isr,
 #endif
 #if (BSP_IRQ_CFG_LPM_SNOOZE_REQUEST != BSP_IRQ_DISABLED)
-    cpusys_snooze_mode_entry_flag_isr,
+    lpm_snooze_request_isr,
 #endif
 #if (BSP_IRQ_CFG_AGT0_INT != BSP_IRQ_DISABLED)
-    agt0_agti_isr,
+    agt0_int_isr,
 #endif
 #if (BSP_IRQ_CFG_AGT0_COMPARE_A != BSP_IRQ_DISABLED)
-    agt0_agtcmai_isr,
+    agt0_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_AGT0_COMPARE_B != BSP_IRQ_DISABLED)
-    agt0_agtcmbi_isr,
+    agt0_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_AGT1_INT != BSP_IRQ_DISABLED)
-    agt1_agti_isr,
+    agt1_int_isr,
 #endif
 #if (BSP_IRQ_CFG_AGT1_COMPARE_A != BSP_IRQ_DISABLED)
-    agt1_agtcmai_isr,
+    agt1_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_AGT1_COMPARE_B != BSP_IRQ_DISABLED)
-    agt1_agtcmbi_isr,
+    agt1_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_IWDT_UNDERFLOW != BSP_IRQ_DISABLED)
-    iwdt_nmiundf_n_isr,
+    iwdt_underflow_isr,
 #endif
 #if (BSP_IRQ_CFG_WDT_UNDERFLOW != BSP_IRQ_DISABLED)
-    cwdt_nmiundf_n_isr,
+    wdt_underflow_isr,
 #endif
 #if (BSP_IRQ_CFG_RTC_ALARM != BSP_IRQ_DISABLED)
-    rtc_alm_isr,
+    rtc_alarm_isr,
 #endif
 #if (BSP_IRQ_CFG_RTC_PERIOD != BSP_IRQ_DISABLED)
-    rtc_prd_isr,
+    rtc_period_isr,
 #endif
 #if (BSP_IRQ_CFG_RTC_CARRY != BSP_IRQ_DISABLED)
-    rtc_cup_isr,
+    rtc_carry_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC0_SCAN_END != BSP_IRQ_DISABLED)
-    s12ad0_adi_isr,
+    adc0_scan_end_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC0_SCAN_END_B != BSP_IRQ_DISABLED)
-    s12ad0_gbadi_isr,
+    adc0_scan_end_b_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC0_WINDOW_A != BSP_IRQ_DISABLED)
-    s12ad0_cmpai_isr,
+    adc0_window_a_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC0_WINDOW_B != BSP_IRQ_DISABLED)
-    s12ad0_cmpbi_isr,
+    adc0_window_b_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC0_COMPARE_MATCH != BSP_IRQ_DISABLED)
-    s12ad0_compare_match_isr,
+    adc0_compare_match_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC0_COMPARE_MISMATCH != BSP_IRQ_DISABLED)
-    s12ad0_compare_mismatch_isr,
+    adc0_compare_mismatch_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC1_SCAN_END != BSP_IRQ_DISABLED)
-    s12ad1_adi_isr,
+    adc1_scan_end_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC1_SCAN_END_B != BSP_IRQ_DISABLED)
-    s12ad1_gbadi_isr,
+    adc1_scan_end_b_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC1_WINDOW_A != BSP_IRQ_DISABLED)
-    s12ad1_cmpai_isr,
+    adc1_window_a_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC1_WINDOW_B != BSP_IRQ_DISABLED)
-    s12ad1_cmpbi_isr,
+    adc1_window_b_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC1_COMPARE_MATCH != BSP_IRQ_DISABLED)
-    s12ad1_compare_match_isr,
+    adc1_compare_match_isr,
 #endif
 #if (BSP_IRQ_CFG_ADC1_COMPARE_MISMATCH != BSP_IRQ_DISABLED)
-    s12ad1_compare_mismatch_isr,
+    adc1_compare_mismatch_isr,
 #endif
 #if (BSP_IRQ_CFG_COMP_HS_0 != BSP_IRQ_DISABLED)
-    comp_oc0_comp_irq_isr,
+    comp_hs_0_isr,
 #endif
 #if (BSP_IRQ_CFG_COMP_HS_1 != BSP_IRQ_DISABLED)
-    comp_rd1_comp_irq_isr,
+    comp_hs_1_isr,
 #endif
 #if (BSP_IRQ_CFG_COMP_HS_2 != BSP_IRQ_DISABLED)
-    comp_rd2_comp_irq_isr,
+    comp_hs_2_isr,
 #endif
 #if (BSP_IRQ_CFG_COMP_HS_3 != BSP_IRQ_DISABLED)
-    comp_rd3_comp_irq_isr,
+    comp_hs_3_isr,
 #endif
 #if (BSP_IRQ_CFG_COMP_HS_4 != BSP_IRQ_DISABLED)
-    comp_rd4_comp_irq_isr,
+    comp_hs_4_isr,
 #endif
 #if (BSP_IRQ_CFG_COMP_HS_5 != BSP_IRQ_DISABLED)
-    comp_rd5_comp_irq_isr,
+    comp_hs_5_isr,
 #endif
 #if (BSP_IRQ_CFG_USBFS_FIFO_0 != BSP_IRQ_DISABLED)
-    usbfs_d0fifo_isr,
+    usbfs_fifo_0_isr,
 #endif
 #if (BSP_IRQ_CFG_USBFS_FIFO_1 != BSP_IRQ_DISABLED)
-    usbfs_d1fifo_isr,
+    usbfs_fifo_1_isr,
 #endif
 #if (BSP_IRQ_CFG_USBFS_INT != BSP_IRQ_DISABLED)
-    usbfs_usbi_isr,
+    usbfs_int_isr,
 #endif
 #if (BSP_IRQ_CFG_USBFS_RESUME != BSP_IRQ_DISABLED)
-    usbfs_usbr_isr,
+    usbfs_resume_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC0_RXI != BSP_IRQ_DISABLED)
-    riic0_rxi_isr,
+    iic0_rxi_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC0_TXI != BSP_IRQ_DISABLED)
-    riic0_txi_isr,
+    iic0_txi_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC0_TEI != BSP_IRQ_DISABLED)
-    riic0_tei_isr,
+    iic0_tei_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC0_ERI != BSP_IRQ_DISABLED)
-    riic0_eei_isr,
+    iic0_eri_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC0_WUI != BSP_IRQ_DISABLED)
-    riic0_wui_isr,
+    iic0_wui_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC1_RXI != BSP_IRQ_DISABLED)
-    riic1_rxi_isr,
+    iic1_rxi_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC1_TXI != BSP_IRQ_DISABLED)
-    riic1_txi_isr,
+    iic1_txi_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC1_TEI != BSP_IRQ_DISABLED)
-    riic1_tei_isr,
+    iic1_tei_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC1_ERI != BSP_IRQ_DISABLED)
-    riic1_eei_isr,
+    iic1_eri_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC2_RXI != BSP_IRQ_DISABLED)
-    riic2_rxi_isr,
+    iic2_rxi_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC2_TXI != BSP_IRQ_DISABLED)
-    riic2_txi_isr,
+    iic2_txi_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC2_TEI != BSP_IRQ_DISABLED)
-    riic2_tei_isr,
+    iic2_tei_isr,
 #endif
 #if (BSP_IRQ_CFG_IIC2_ERI != BSP_IRQ_DISABLED)
-    riic2_eei_isr,
+    iic2_eri_isr,
 #endif
 #if (BSP_IRQ_CFG_SSI0_TXI != BSP_IRQ_DISABLED)
-    ssi0_ssitxi_isr,
+    ssi0_txi_isr,
 #endif
 #if (BSP_IRQ_CFG_SSI0_RXI != BSP_IRQ_DISABLED)
-    ssi0_ssirxi_isr,
+    ssi0_rxi_isr,
 #endif
 #if (BSP_IRQ_CFG_SSI0_INT != BSP_IRQ_DISABLED)
-    ssi0_ssif_isr,
+    ssi0_int_isr,
 #endif
 #if (BSP_IRQ_CFG_SSI1_TXI_RXI != BSP_IRQ_DISABLED)
-    ssi1_ssirt_isr,
+    ssi1_txi_rxi_isr,
 #endif
 #if (BSP_IRQ_CFG_SSI1_INT != BSP_IRQ_DISABLED)
-    ssi1_ssif_isr,
+    ssi1_int_isr,
 #endif
 #if (BSP_IRQ_CFG_SRC_INPUT_FIFO_EMPTY != BSP_IRQ_DISABLED)
-    src_idei_isr,
+    src_input_fifo_empty_isr,
 #endif
 #if (BSP_IRQ_CFG_SRC_OUTPUT_FIFO_FULL != BSP_IRQ_DISABLED)
-    src_odfi_isr,
+    src_output_fifo_full_isr,
 #endif
 #if (BSP_IRQ_CFG_SRC_OUTPUT_FIFO_OVERFLOW != BSP_IRQ_DISABLED)
-    src_ovf_isr,
+    src_output_fifo_overflow_isr,
 #endif
 #if (BSP_IRQ_CFG_SRC_OUTPUT_FIFO_UNDERFLOW != BSP_IRQ_DISABLED)
-    src_udf_isr,
+    src_output_fifo_underflow_isr,
 #endif
 #if (BSP_IRQ_CFG_SRC_CONVERSION_END != BSP_IRQ_DISABLED)
-    src_cef_isr,
+    src_conversion_end_isr,
 #endif
 #if (BSP_IRQ_CFG_PDC_RECEIVE_DATA_READY != BSP_IRQ_DISABLED)
-    pdc_pcdfi_isr,
+    pdc_receive_data_ready_isr,
 #endif
 #if (BSP_IRQ_CFG_PDC_FRAME_END != BSP_IRQ_DISABLED)
-    pdc_pcfei_isr,
+    pdc_frame_end_isr,
 #endif
 #if (BSP_IRQ_CFG_PDC_INT != BSP_IRQ_DISABLED)
-    pdc_pceri_isr,
+    pdc_int_isr,
 #endif
 #if (BSP_IRQ_CFG_CTSU_WRITE != BSP_IRQ_DISABLED)
-    ctsu_ctsuwr_isr,
+    ctsu_write_isr,
 #endif
 #if (BSP_IRQ_CFG_CTSU_READ != BSP_IRQ_DISABLED)
-    ctsu_ctsurd_isr,
+    ctsu_read_isr,
 #endif
 #if (BSP_IRQ_CFG_CTSU_END != BSP_IRQ_DISABLED)
-    ctsu_ctsufn_isr,
+    ctsu_end_isr,
 #endif
 #if (BSP_IRQ_CFG_KEY_INT != BSP_IRQ_DISABLED)
-    key_intkr_isr,
+    key_int_isr,
 #endif
 #if (BSP_IRQ_CFG_DOC_INT != BSP_IRQ_DISABLED)
-    doc_dopcf_isr,
+    doc_int_isr,
 #endif
 #if (BSP_IRQ_CFG_CAC_FREQUENCY_ERROR != BSP_IRQ_DISABLED)
-    cac_ferrf_isr,
+    cac_frequency_error_isr,
 #endif
 #if (BSP_IRQ_CFG_CAC_MEASUREMENT_END != BSP_IRQ_DISABLED)
-    cac_mendf_isr,
+    cac_measurement_end_isr,
 #endif
 #if (BSP_IRQ_CFG_CAC_OVERFLOW != BSP_IRQ_DISABLED)
-    cac_ovff_isr,
+    cac_overflow_isr,
 #endif
 #if (BSP_IRQ_CFG_CAN0_ERROR != BSP_IRQ_DISABLED)
-    rcan20_ers_isr,
+    can0_error_isr,
 #endif
 #if (BSP_IRQ_CFG_CAN0_FIFO_RX != BSP_IRQ_DISABLED)
-    rcan20_rxf_isr,
+    can0_fifo_rx_isr,
 #endif
 #if (BSP_IRQ_CFG_CAN0_FIFO_TX != BSP_IRQ_DISABLED)
-    rcan20_txf_isr,
+    can0_fifo_tx_isr,
 #endif
 #if (BSP_IRQ_CFG_CAN0_MAILBOX_RX != BSP_IRQ_DISABLED)
-    rcan20_rxm_isr,
+    can0_mailbox_rx_isr,
 #endif
 #if (BSP_IRQ_CFG_CAN0_MAILBOX_TX != BSP_IRQ_DISABLED)
-    rcan20_txm_isr,
+    can0_mailbox_tx_isr,
 #endif
 #if (BSP_IRQ_CFG_CAN1_ERROR != BSP_IRQ_DISABLED)
-    rcan21_ers_isr,
+    can1_error_isr,
 #endif
 #if (BSP_IRQ_CFG_CAN1_FIFO_RX != BSP_IRQ_DISABLED)
-    rcan21_rxf_isr,
+    can1_fifo_rx_isr,
 #endif
 #if (BSP_IRQ_CFG_CAN1_FIFO_TX != BSP_IRQ_DISABLED)
-    rcan21_txf_isr,
+    can1_fifo_tx_isr,
 #endif
 #if (BSP_IRQ_CFG_CAN1_MAILBOX_RX != BSP_IRQ_DISABLED)
-    rcan21_rxm_isr,
+    can1_mailbox_rx_isr,
 #endif
 #if (BSP_IRQ_CFG_CAN1_MAILBOX_TX != BSP_IRQ_DISABLED)
-    rcan21_txm_isr,
+    can1_mailbox_tx_isr,
 #endif
 #if (BSP_IRQ_CFG_IOPORT_EVENT_1 != BSP_IRQ_DISABLED)
-    gpio_port_group_a_isr,
+    ioport_event_1_isr,
 #endif
 #if (BSP_IRQ_CFG_IOPORT_EVENT_2 != BSP_IRQ_DISABLED)
-    gpio_port_group_b_isr,
+    ioport_event_2_isr,
 #endif
 #if (BSP_IRQ_CFG_IOPORT_EVENT_3 != BSP_IRQ_DISABLED)
-    gpio_port_group_c_isr,
+    ioport_event_3_isr,
 #endif
 #if (BSP_IRQ_CFG_IOPORT_EVENT_4 != BSP_IRQ_DISABLED)
-    gpio_port_group_d_isr,
+    ioport_event_4_isr,
 #endif
 #if (BSP_IRQ_CFG_ELC_SOFTWARE_EVENT_0 != BSP_IRQ_DISABLED)
-    elc0_software_event_isr,
+    elc_software_event_0_isr,
 #endif
 #if (BSP_IRQ_CFG_ELC_SOFTWARE_EVENT_1 != BSP_IRQ_DISABLED)
-    elc1_software_event_isr,
+    elc_software_event_1_isr,
 #endif
 #if (BSP_IRQ_CFG_POEG0_EVENT != BSP_IRQ_DISABLED)
-    poeg_group_event0_isr,
+    poeg0_event_isr,
 #endif
 #if (BSP_IRQ_CFG_POEG1_EVENT != BSP_IRQ_DISABLED)
-    poeg_group_event1_isr,
+    poeg1_event_isr,
 #endif
 #if (BSP_IRQ_CFG_POEG2_EVENT != BSP_IRQ_DISABLED)
-    poeg_group_event2_isr,
+    poeg2_event_isr,
 #endif
 #if (BSP_IRQ_CFG_POEG3_EVENT != BSP_IRQ_DISABLED)
-    poeg_group_event3_isr,
+    poeg3_event_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT0_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt0_capture_compare_int_a_isr,
+    gpt0_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT0_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt0_capture_compare_int_b_isr,
+    gpt0_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT0_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt0_compare_int_c_isr,
+    gpt0_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT0_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt0_compare_int_d_isr,
+    gpt0_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT0_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt0_compare_int_e_isr,
+    gpt0_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT0_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt0_compare_int_f_isr,
+    gpt0_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT0_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt0_counter_overflow_isr,
@@ -1286,22 +1258,22 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
     gpt0_ad_trig_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT1_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt1_capture_compare_int_a_isr,
+    gpt1_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT1_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt1_capture_compare_int_b_isr,
+    gpt1_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT1_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt1_compare_int_c_isr,
+    gpt1_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT1_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt1_compare_int_d_isr,
+    gpt1_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT1_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt1_compare_int_e_isr,
+    gpt1_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT1_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt1_compare_int_f_isr,
+    gpt1_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT1_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt1_counter_overflow_isr,
@@ -1316,22 +1288,22 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
     gpt1_ad_trig_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT2_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt2_capture_compare_int_a_isr,
+    gpt2_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT2_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt2_capture_compare_int_b_isr,
+    gpt2_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT2_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt2_compare_int_c_isr,
+    gpt2_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT2_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt2_compare_int_d_isr,
+    gpt2_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT2_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt2_compare_int_e_isr,
+    gpt2_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT2_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt2_compare_int_f_isr,
+    gpt2_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT2_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt2_counter_overflow_isr,
@@ -1346,22 +1318,22 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
     gpt2_ad_trig_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT3_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt3_capture_compare_int_a_isr,
+    gpt3_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT3_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt3_capture_compare_int_b_isr,
+    gpt3_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT3_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt3_compare_int_c_isr,
+    gpt3_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT3_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt3_compare_int_d_isr,
+    gpt3_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT3_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt3_compare_int_e_isr,
+    gpt3_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT3_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt3_compare_int_f_isr,
+    gpt3_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT3_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt3_counter_overflow_isr,
@@ -1376,22 +1348,22 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
     gpt3_ad_trig_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT4_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt4_capture_compare_int_a_isr,
+    gpt4_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT4_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt4_capture_compare_int_b_isr,
+    gpt4_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT4_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt4_compare_int_c_isr,
+    gpt4_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT4_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt4_compare_int_d_isr,
+    gpt4_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT4_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt4_compare_int_e_isr,
+    gpt4_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT4_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt4_compare_int_f_isr,
+    gpt4_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT4_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt4_counter_overflow_isr,
@@ -1406,22 +1378,22 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
     gpt4_ad_trig_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT5_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt5_capture_compare_int_a_isr,
+    gpt5_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT5_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt5_capture_compare_int_b_isr,
+    gpt5_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT5_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt5_compare_int_c_isr,
+    gpt5_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT5_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt5_compare_int_d_isr,
+    gpt5_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT5_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt5_compare_int_e_isr,
+    gpt5_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT5_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt5_compare_int_f_isr,
+    gpt5_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT5_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt5_counter_overflow_isr,
@@ -1436,22 +1408,22 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
     gpt5_ad_trig_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT6_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt6_capture_compare_int_a_isr,
+    gpt6_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT6_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt6_capture_compare_int_b_isr,
+    gpt6_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT6_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt6_compare_int_c_isr,
+    gpt6_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT6_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt6_compare_int_d_isr,
+    gpt6_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT6_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt6_compare_int_e_isr,
+    gpt6_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT6_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt6_compare_int_f_isr,
+    gpt6_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT6_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt6_counter_overflow_isr,
@@ -1466,22 +1438,22 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
     gpt6_ad_trig_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT7_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt7_capture_compare_int_a_isr,
+    gpt7_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT7_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt7_capture_compare_int_b_isr,
+    gpt7_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT7_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt7_compare_int_c_isr,
+    gpt7_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT7_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt7_compare_int_d_isr,
+    gpt7_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT7_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt7_compare_int_e_isr,
+    gpt7_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT7_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt7_compare_int_f_isr,
+    gpt7_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT7_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt7_counter_overflow_isr,
@@ -1496,22 +1468,22 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
     gpt7_ad_trig_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT8_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt8_capture_compare_int_a_isr,
+    gpt8_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT8_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt8_capture_compare_int_b_isr,
+    gpt8_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT8_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt8_compare_int_c_isr,
+    gpt8_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT8_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt8_compare_int_d_isr,
+    gpt8_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT8_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt8_compare_int_e_isr,
+    gpt8_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT8_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt8_compare_int_f_isr,
+    gpt8_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT8_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt8_counter_overflow_isr,
@@ -1519,29 +1491,23 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
 #if (BSP_IRQ_CFG_GPT8_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
     gpt8_counter_underflow_isr,
 #endif
-#if (BSP_IRQ_CFG_GPT8_AD_TRIG_A != BSP_IRQ_DISABLED)
-    gpt8_ad_trig_a_isr,
-#endif
-#if (BSP_IRQ_CFG_GPT8_AD_TRIG_B != BSP_IRQ_DISABLED)
-    gpt8_ad_trig_b_isr,
-#endif
 #if (BSP_IRQ_CFG_GPT9_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt9_capture_compare_int_a_isr,
+    gpt9_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT9_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt9_capture_compare_int_b_isr,
+    gpt9_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT9_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt9_compare_int_c_isr,
+    gpt9_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT9_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt9_compare_int_d_isr,
+    gpt9_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT9_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt9_compare_int_e_isr,
+    gpt9_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT9_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt9_compare_int_f_isr,
+    gpt9_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT9_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt9_counter_overflow_isr,
@@ -1549,29 +1515,23 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
 #if (BSP_IRQ_CFG_GPT9_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
     gpt9_counter_underflow_isr,
 #endif
-#if (BSP_IRQ_CFG_GPT9_AD_TRIG_A != BSP_IRQ_DISABLED)
-    gpt9_ad_trig_a_isr,
-#endif
-#if (BSP_IRQ_CFG_GPT9_AD_TRIG_B != BSP_IRQ_DISABLED)
-    gpt9_ad_trig_b_isr,
-#endif
 #if (BSP_IRQ_CFG_GPT10_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt10_capture_compare_int_a_isr,
+    gpt10_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT10_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt10_capture_compare_int_b_isr,
+    gpt10_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT10_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt10_compare_int_c_isr,
+    gpt10_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT10_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt10_compare_int_d_isr,
+    gpt10_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT10_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt10_compare_int_e_isr,
+    gpt10_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT10_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt10_compare_int_f_isr,
+    gpt10_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT10_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt10_counter_overflow_isr,
@@ -1579,29 +1539,23 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
 #if (BSP_IRQ_CFG_GPT10_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
     gpt10_counter_underflow_isr,
 #endif
-#if (BSP_IRQ_CFG_GPT10_AD_TRIG_A != BSP_IRQ_DISABLED)
-    gpt10_ad_trig_a_isr,
-#endif
-#if (BSP_IRQ_CFG_GPT10_AD_TRIG_B != BSP_IRQ_DISABLED)
-    gpt10_ad_trig_b_isr,
-#endif
 #if (BSP_IRQ_CFG_GPT11_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt11_capture_compare_int_a_isr,
+    gpt11_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT11_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt11_capture_compare_int_b_isr,
+    gpt11_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT11_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt11_compare_int_c_isr,
+    gpt11_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT11_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt11_compare_int_d_isr,
+    gpt11_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT11_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt11_compare_int_e_isr,
+    gpt11_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT11_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt11_compare_int_f_isr,
+    gpt11_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT11_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt11_counter_overflow_isr,
@@ -1609,29 +1563,23 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
 #if (BSP_IRQ_CFG_GPT11_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
     gpt11_counter_underflow_isr,
 #endif
-#if (BSP_IRQ_CFG_GPT11_AD_TRIG_A != BSP_IRQ_DISABLED)
-    gpt11_ad_trig_a_isr,
-#endif
-#if (BSP_IRQ_CFG_GPT11_AD_TRIG_B != BSP_IRQ_DISABLED)
-    gpt11_ad_trig_b_isr,
-#endif
 #if (BSP_IRQ_CFG_GPT12_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt12_capture_compare_int_a_isr,
+    gpt12_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT12_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt12_capture_compare_int_b_isr,
+    gpt12_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT12_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt12_compare_int_c_isr,
+    gpt12_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT12_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt12_compare_int_d_isr,
+    gpt12_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT12_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt12_compare_int_e_isr,
+    gpt12_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT12_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt12_compare_int_f_isr,
+    gpt12_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT12_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt12_counter_overflow_isr,
@@ -1639,29 +1587,23 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
 #if (BSP_IRQ_CFG_GPT12_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
     gpt12_counter_underflow_isr,
 #endif
-#if (BSP_IRQ_CFG_GPT12_AD_TRIG_A != BSP_IRQ_DISABLED)
-    gpt12_ad_trig_a_isr,
-#endif
-#if (BSP_IRQ_CFG_GPT12_AD_TRIG_B != BSP_IRQ_DISABLED)
-    gpt12_ad_trig_b_isr,
-#endif
 #if (BSP_IRQ_CFG_GPT13_CAPTURE_COMPARE_A != BSP_IRQ_DISABLED)
-    gpt13_capture_compare_int_a_isr,
+    gpt13_capture_compare_a_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT13_CAPTURE_COMPARE_B != BSP_IRQ_DISABLED)
-    gpt13_capture_compare_int_b_isr,
+    gpt13_capture_compare_b_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT13_COMPARE_C != BSP_IRQ_DISABLED)
-    gpt13_compare_int_c_isr,
+    gpt13_compare_c_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT13_COMPARE_D != BSP_IRQ_DISABLED)
-    gpt13_compare_int_d_isr,
+    gpt13_compare_d_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT13_COMPARE_E != BSP_IRQ_DISABLED)
-    gpt13_compare_int_e_isr,
+    gpt13_compare_e_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT13_COMPARE_F != BSP_IRQ_DISABLED)
-    gpt13_compare_int_f_isr,
+    gpt13_compare_f_isr,
 #endif
 #if (BSP_IRQ_CFG_GPT13_COUNTER_OVERFLOW != BSP_IRQ_DISABLED)
     gpt13_counter_overflow_isr,
@@ -1669,74 +1611,68 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
 #if (BSP_IRQ_CFG_GPT13_COUNTER_UNDERFLOW != BSP_IRQ_DISABLED)
     gpt13_counter_underflow_isr,
 #endif
-#if (BSP_IRQ_CFG_GPT13_AD_TRIG_A != BSP_IRQ_DISABLED)
-    gpt13_ad_trig_a_isr,
-#endif
-#if (BSP_IRQ_CFG_GPT13_AD_TRIG_B != BSP_IRQ_DISABLED)
-    gpt13_ad_trig_b_isr,
-#endif
 #if (BSP_IRQ_CFG_OPS_UVW_EDGE != BSP_IRQ_DISABLED)
-    gpt_uvw_edge_isr,
+    ops_uvw_edge_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_IPLS != BSP_IRQ_DISABLED)
-    ether_ipls_isr,
+    eptpc_ipls_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_MINT != BSP_IRQ_DISABLED)
-    ether_mint_isr,
+    eptpc_mint_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_PINT != BSP_IRQ_DISABLED)
-    ether_pint_isr,
+    eptpc_pint_isr,
 #endif
 #if (BSP_IRQ_CFG_EDMAC0_EINT != BSP_IRQ_DISABLED)
-    ether_eint0_isr,
+    edmac0_eint_isr,
 #endif
 #if (BSP_IRQ_CFG_EDMAC1_EINT != BSP_IRQ_DISABLED)
-    ether_eint1_isr,
+    edmac1_eint_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER0_RISE != BSP_IRQ_DISABLED)
-    ether_ether0_rise_isr,
+    eptpc_timer0_rise_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER1_RISE != BSP_IRQ_DISABLED)
-    ether_ether1_rise_isr,
+    eptpc_timer1_rise_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER2_RISE != BSP_IRQ_DISABLED)
-    ether_ether2_rise_isr,
+    eptpc_timer2_rise_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER3_RISE != BSP_IRQ_DISABLED)
-    ether_ether3_rise_isr,
+    eptpc_timer3_rise_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER4_RISE != BSP_IRQ_DISABLED)
-    ether_ether4_rise_isr,
+    eptpc_timer4_rise_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER5_RISE != BSP_IRQ_DISABLED)
-    ether_ether5_rise_isr,
+    eptpc_timer5_rise_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER0_FALL != BSP_IRQ_DISABLED)
-    ether_ether0_fall_isr,
+    eptpc_timer0_fall_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER1_FALL != BSP_IRQ_DISABLED)
-    ether_ether1_fall_isr,
+    eptpc_timer1_fall_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER2_FALL != BSP_IRQ_DISABLED)
-    ether_ether2_fall_isr,
+    eptpc_timer2_fall_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER3_FALL != BSP_IRQ_DISABLED)
-    ether_ether3_fall_isr,
+    eptpc_timer3_fall_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER4_FALL != BSP_IRQ_DISABLED)
-    ether_ether4_fall_isr,
+    eptpc_timer4_fall_isr,
 #endif
 #if (BSP_IRQ_CFG_EPTPC_TIMER5_FALL != BSP_IRQ_DISABLED)
-    ether_ether5_fall_isr,
+    eptpc_timer5_fall_isr,
 #endif
 #if (BSP_IRQ_CFG_USBHS_FIFO_0 != BSP_IRQ_DISABLED)
-    usbhs_d0fifo_isr,
+    usbhs_fifo_0_isr,
 #endif
 #if (BSP_IRQ_CFG_USBHS_FIFO_1 != BSP_IRQ_DISABLED)
-    usbhs_d1fifo_isr,
+    usbhs_fifo_1_isr,
 #endif
 #if (BSP_IRQ_CFG_USBHS_USB_INT_RESUME != BSP_IRQ_DISABLED)
-    usbhs_usbir_isr,
+    usbhs_usb_int_resume_isr,
 #endif
 #if (BSP_IRQ_CFG_SCI0_RXI != BSP_IRQ_DISABLED)
     sci0_rxi_isr,
@@ -1892,109 +1828,106 @@ BSP_DONT_REMOVE const exc_ptr_t __Vectors[112] BSP_PLACE_IN_SECTION(BSP_SECTION_
     sci9_am_isr,
 #endif
 #if (BSP_IRQ_CFG_SPI0_RXI != BSP_IRQ_DISABLED)
-    rspi0_spri_isr,
+    spi0_rxi_isr,
 #endif
 #if (BSP_IRQ_CFG_SPI0_TXI != BSP_IRQ_DISABLED)
-    rspi0_spti_isr,
+    spi0_txi_isr,
 #endif
 #if (BSP_IRQ_CFG_SPI0_IDLE != BSP_IRQ_DISABLED)
-    rspi0_spii_isr,
+    spi0_idle_isr,
 #endif
 #if (BSP_IRQ_CFG_SPI0_ERI != BSP_IRQ_DISABLED)
-    rspi0_spei_isr,
+    spi0_eri_isr,
 #endif
 #if (BSP_IRQ_CFG_SPI0_TEI != BSP_IRQ_DISABLED)
-    rspi0_sp_elctend_isr,
+    spi0_tei_isr,
 #endif
 #if (BSP_IRQ_CFG_SPI1_RXI != BSP_IRQ_DISABLED)
-    rspi1_spri_isr,
+    spi1_rxi_isr,
 #endif
 #if (BSP_IRQ_CFG_SPI1_TXI != BSP_IRQ_DISABLED)
-    rspi1_spti_isr,
+    spi1_txi_isr,
 #endif
 #if (BSP_IRQ_CFG_SPI1_IDLE != BSP_IRQ_DISABLED)
-    rspi1_spii_isr,
+    spi1_idle_isr,
 #endif
 #if (BSP_IRQ_CFG_SPI1_ERI != BSP_IRQ_DISABLED)
-    rspi1_spei_isr,
+    spi1_eri_isr,
 #endif
 #if (BSP_IRQ_CFG_SPI1_TEI != BSP_IRQ_DISABLED)
-    rspi1_sp_elctend_isr,
+    spi1_tei_isr,
 #endif
 #if (BSP_IRQ_CFG_QSPI_INT != BSP_IRQ_DISABLED)
-    qspi_intr_isr,
+    qspi_int_isr,
 #endif
 #if (BSP_IRQ_CFG_SDHIMMC0_ACCS != BSP_IRQ_DISABLED)
-    sdhi_mmc0_accs_isr,
+    sdhimmc0_accs_isr,
 #endif
 #if (BSP_IRQ_CFG_SDHIMMC0_SDIO != BSP_IRQ_DISABLED)
-    sdhi_mmc0_sdio_isr,
+    sdhimmc0_sdio_isr,
 #endif
 #if (BSP_IRQ_CFG_SDHIMMC0_CARD != BSP_IRQ_DISABLED)
-    sdhi_mmc0_card_isr,
+    sdhimmc0_card_isr,
 #endif
 #if (BSP_IRQ_CFG_SDHIMMC0_DMA_REQ != BSP_IRQ_DISABLED)
-    sdhi_mmc0_odmsdbreq_isr,
+    sdhimmc0_dma_req_isr,
 #endif
 #if (BSP_IRQ_CFG_SDHIMMC1_ACCS != BSP_IRQ_DISABLED)
-    sdhi_mmc1_accs_isr,
+    sdhimmc1_accs_isr,
 #endif
 #if (BSP_IRQ_CFG_SDHIMMC1_SDIO != BSP_IRQ_DISABLED)
-    sdhi_mmc1_sdio_isr,
+    sdhimmc1_sdio_isr,
 #endif
 #if (BSP_IRQ_CFG_SDHIMMC1_CARD != BSP_IRQ_DISABLED)
-    sdhi_mmc1_card_isr,
+    sdhimmc1_card_isr,
 #endif
 #if (BSP_IRQ_CFG_SDHIMMC1_DMA_REQ != BSP_IRQ_DISABLED)
-    sdhi_mmc1_odmsdbreq_isr,
-#endif
-#if (BSP_IRQ_CFG_DIVIDER_INT != BSP_IRQ_DISABLED)
-    ext_divider_intmd_isr,
+    sdhimmc1_dma_req_isr,
 #endif
 #if (BSP_IRQ_CFG_SCE_PROC_BUSY != BSP_IRQ_DISABLED)
-    tsip_proc_busy_n_isr,
+    sce_proc_busy_isr,
 #endif
 #if (BSP_IRQ_CFG_SCE_ROMOK != BSP_IRQ_DISABLED)
-    tsip_romok_n_isr,
+    sce_romok_isr,
 #endif
 #if (BSP_IRQ_CFG_SCE_LONG_PLG != BSP_IRQ_DISABLED)
-    tsip_long_plg_n_isr,
+    sce_long_plg_isr,
 #endif
 #if (BSP_IRQ_CFG_SCE_TEST_BUSY != BSP_IRQ_DISABLED)
-    tsip_test_busy_n_isr,
+    sce_test_busy_isr,
 #endif
 #if (BSP_IRQ_CFG_SCE_WRRDY_0 != BSP_IRQ_DISABLED)
-    tsip_wrrdy_0_n_isr,
+    sce_wrrdy_0_isr,
 #endif
 #if (BSP_IRQ_CFG_SCE_WRRDY_1 != BSP_IRQ_DISABLED)
-    tsip_wrrdy_1_n_isr,
+    sce_wrrdy_1_isr,
 #endif
 #if (BSP_IRQ_CFG_SCE_WRRDY_4 != BSP_IRQ_DISABLED)
-    tsip_wrrdy_4_n_isr,
+    sce_wrrdy_4_isr,
 #endif
 #if (BSP_IRQ_CFG_SCE_RDRDY_0 != BSP_IRQ_DISABLED)
-    tsip_rdrdy_0_n_isr,
+    sce_rdrdy_0_isr,
 #endif
 #if (BSP_IRQ_CFG_SCE_RDRDY_1 != BSP_IRQ_DISABLED)
-    tsip_rdrdy_1_n_isr,
+    sce_rdrdy_1_isr,
 #endif
 #if (BSP_IRQ_CFG_SCE_INTEGRATE_WRRDY != BSP_IRQ_DISABLED)
-    tsip_integrate_wrrdy_n_isr,
+    sce_integrate_wrrdy_isr,
 #endif
 #if (BSP_IRQ_CFG_SCE_INTEGRATE_RDRDY != BSP_IRQ_DISABLED)
-    tsip_integrate_rdrdy_n_isr,
+    sce_integrate_rdrdy_isr,
 #endif
 #if (BSP_IRQ_CFG_GLCDC_LINE_DETECT != BSP_IRQ_DISABLED)
-    lcdc_lcdc_level_0_isr,
+    glcdc_line_detect_isr,
 #endif
 #if (BSP_IRQ_CFG_GLCDC_UNDERFLOW_1 != BSP_IRQ_DISABLED)
-    lcdc_lcdc_level_1_isr,
+    glcdc_underflow_1_isr,
 #endif
 #if (BSP_IRQ_CFG_GLCDC_UNDERFLOW_2 != BSP_IRQ_DISABLED)
-    lcdc_lcdc_level_2_isr,
+    glcdc_underflow_2_isr,
 #endif
 #if (BSP_IRQ_CFG_DRW_INT != BSP_IRQ_DISABLED)
-    twod_engine_irq_isr,
+    drw_int_isr,
 #endif
 #if (BSP_IRQ_CFG_JPEG_JEDI != BSP_IRQ_DISABLED)
     jpeg_jedi_isr,

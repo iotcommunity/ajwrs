@@ -43,7 +43,7 @@
 #define SSP_VERSION_MAJOR                   (1)
 
 /** SSP pack minor version. */
-#define SSP_VERSION_MINOR                   (0)
+#define SSP_VERSION_MINOR                   (1)
 
 /** SSP pack patch version. */
 #define SSP_VERSION_PATCH                   (0)
@@ -52,10 +52,10 @@
 #define SSP_VERSION_BUILD                   (0)
 
 /** Public SSP version name. */
-#define SSP_VERSION_STRING                  ("1.0.0")
+#define SSP_VERSION_STRING                  ("1.1.0")
 
 /** Unique SSP version ID. */
-#define SSP_VERSION_BUILD_STRING            ("Built with Renesas Synergy (TM) Software Package version 1.0.0+build.d31b0f849587")
+#define SSP_VERSION_BUILD_STRING            ("Built with Renesas Synergy (TM) Software Package version 1.1.0+build.02c3f8ba4224")
 
 /**********************************************************************************************************************
  * Typedef definitions

@@ -172,7 +172,7 @@ Functions
 void bsp_sdram_init (void)
 {
     /** Delay at least 100uS after SDCLK active */
-    R_BSP_SoftwareDelay(100, BSP_DELAY_UNITS_MICROSECONDS);
+    R_BSP_SoftwareDelay((uint32_t)100, BSP_DELAY_UNITS_MICROSECONDS);
 
     /** Setting for SDRAM initialization sequence */
 #if (BSP_PRV_SDRAM_TRP < 3)
@@ -210,7 +210,7 @@ void bsp_sdram_init (void)
      * Issue an AUTO REFRESH command and wait at least tRFC time.
      * Issue an AUTO REFRESH command and wait at least tRFC time.
      */
-    R_BUS->SDICR_b.INIRQ = 1;
+    R_BUS->SDICR_b.INIRQ = 1UL;
     while(R_BUS->SDSR_b.INIST)
     {
         /* Wait the end of initialization sequence. */
@@ -249,14 +249,14 @@ void bsp_sdram_init (void)
     /** Set row address offset for target SDRAM */
     R_BUS->SDADR_b.MXC   = BSP_PRV_SDRAM_SDADR_ROW_ADDR_OFFSET - 8;
 
-    R_BUS->SDRFCR_b.REFW = BSP_PRV_SDRAM_TRFC - 1;                /* set Auto-Refresh issuing cycle */
+    R_BUS->SDRFCR_b.REFW = (uint16_t)(BSP_PRV_SDRAM_TRFC - 1);    /* set Auto-Refresh issuing cycle */
     R_BUS->SDRFCR_b.RFC  = BSP_PRV_SDRAM_REF_CMD_INTERVAL - 1;    /* set Auto-Refresh period */
 
     /** Start Auto-refresh */
-    R_BUS->SDRFEN_b.RFEN = 1;
+    R_BUS->SDRFEN_b.RFEN = 1UL;
 
     /** Enable SDRAM access */
-    R_BUS->SDCCR_b.EXENB = 1;
+    R_BUS->SDCCR_b.EXENB = 1UL;
 }
 
 #endif

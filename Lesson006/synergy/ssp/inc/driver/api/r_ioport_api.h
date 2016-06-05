@@ -31,9 +31,9 @@
  * Port and pin direction can be changed.
  *
  * Related SSP architecture topics:
- *  - What is an SSP Interface? @ref ssp-interfaces
- *  - What is a SSP Layer? @ref ssp-predefined-layers
- *  - How to use SSP Interfaces and Modules? @ref using-ssp-modules
+ *  - @ref ssp-interfaces
+ *  - @ref ssp-predefined-layers
+ *  - @ref using-ssp-modules
  *
  * IOPORT Interface description: @ref HALIOPORTInterface
  *
@@ -53,7 +53,7 @@
  * Macro definitions
  **********************************************************************************************************************/
 #define IOPORT_API_VERSION_MAJOR (1)
-#define IOPORT_API_VERSION_MINOR (0)
+#define IOPORT_API_VERSION_MINOR (1)
 
 /**********************************************************************************************************************
  * Typedef definitions

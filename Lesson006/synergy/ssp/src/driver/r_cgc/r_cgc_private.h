@@ -44,9 +44,9 @@
 /** Divisor to use to obtain time for 1 tick in us from iclk */
 #define RELOAD_COUNT_FOR_1US   1000000
 
-
+#ifdef BSP_MCU_GROUP_S7G2
 /** The main oscillator drive value is based upon the oscillator frequency selected in the configuration */
-#if (BSP_CFG_XTAL_HZ > (19999999)) && (BSP_CFG_XTAL_HZ < (25000000))
+#if (BSP_CFG_XTAL_HZ > (19999999))
 #define CGC_MAINCLOCK_DRIVE (0x00)
 #elif (BSP_CFG_XTAL_HZ > (15999999)) && (BSP_CFG_XTAL_HZ < (20000000))
 #define CGC_MAINCLOCK_DRIVE (0x01)
@@ -55,6 +55,18 @@
 #else
 #define CGC_MAINCLOCK_DRIVE (0x03)
 #endif
+#endif
+
+#if (defined BSP_MCU_GROUP_S3A7 || defined BSP_MCU_GROUP_S124)
+/** The main oscillator drive value is based upon the oscillator frequency selected in the configuration */
+#if (BSP_CFG_XTAL_HZ > (9999999))
+#define CGC_MAINCLOCK_DRIVE (0x00)
+#else
+#define CGC_MAINCLOCK_DRIVE (0x01)
+#endif
+#endif
+
+
 
 /**********************************************************************************************************************
  * Typedef definitions

@@ -40,9 +40,7 @@
 /***********************************************************************************************************************
 Includes   <System Includes> , "Project Includes"
 ***********************************************************************************************************************/
-/* BSP Common Includes. */
-#include "../../src/bsp/mcu/all/bsp_common.h"
-#include "../../inc/ssp_common_api.h"
+
 /*******************************************************************************************************************//**
  * @ingroup BSP_BOARD_DK2M
  * @defgroup BSP_CONFIG_DK2M Build Time Configurations
@@ -57,48 +55,18 @@ Includes   <System Includes> , "Project Includes"
  *
  * @{
  **********************************************************************************************************************/
-#include "bsp_clock_cfg.h"
-#include "bsp_irq_cfg.h"
+
 /** @} (end defgroup BSP_CONFIG_DK2M) */
-#if defined(__GNUC__)
-/* CMSIS-CORE currently generates 2 warnings when compiling with GCC. One in core_cmInstr.h and one in core_cm4_simd.h.
- * We are not modifying these files so we will ignore these warnings temporarily. */
-#pragma GCC diagnostic ignored "-Wconversion"
-#pragma GCC diagnostic ignored "-Wsign-conversion"
-#endif
-/* CMSIS-CORE Renesas Device Files. */
-#include "../../src/bsp/cmsis/Device/RENESAS/S7G2/Include/R7FS7G2x.h"
-#include "../../src/bsp/cmsis/Device/RENESAS/S7G2/Include/system_S7G2.h"
-/* CMSIS-CORE Standard Files. */
-#include "core_cm4.h"
-#include "core_cmInstr.h"
-#include "core_cmFunc.h"
-#include "core_cm4_simd.h"
-#if defined(__GNUC__)
-/* Restore warning settings for 'conversion' and 'sign-conversion' to as specified on command line. */
-#pragma GCC diagnostic pop
-#endif
 /* BSP MCU Specific Includes. */
 #include "../../src/bsp/mcu/s7g2/bsp_mcu_info.h"
-#include "../../src/bsp/mcu/s7g2/bsp_register_protection.h"
-#include "../../src/bsp/mcu/s7g2/bsp_locking.h"
-#include "../../src/bsp/mcu/s7g2/bsp_hw_locks.h"
-#include "../../src/bsp/mcu/s7g2/bsp_irq.h"
-#include "../../src/bsp/mcu/s7g2/bsp_group_irq.h"
-#include "../../src/bsp/mcu/s7g2/bsp_clocks.h"
-/* BSP Dependencies. */
-#include "../../src/driver/r_ioport/hw/target/s7g2/hw_ioport_s7g2.h"
-#include "r_ioport_api.h"
-/* BSP MCU Specific Includes that depend on pin configuration. */
-#include "../../src/bsp/mcu/s7g2/bsp_vbatt.h"
-/* BSP Common Includes (Other than bsp_common.h) */
-#include "../../src/bsp/mcu/all/bsp_common_leds.h"
-#include "../../src/bsp/mcu/all/bsp_delay.h"
+
 /* BSP Board Specific Includes. */
 #include "../../src/bsp/board/s7g2_dk/bsp_init.h"
 #include "../../src/bsp/board/s7g2_dk/bsp_sdram.h"
 #include "../../src/bsp/board/s7g2_dk/bsp_qspi.h"
 #include "../../src/bsp/board/s7g2_dk/bsp_leds.h"
+
+
 
 /***********************************************************************************************************************
 Macro definitions
@@ -115,19 +83,6 @@ Exported global variables
 /***********************************************************************************************************************
 Exported global functions (to be accessed by other files)
 ***********************************************************************************************************************/
-
-void        R_BSP_RegisterProtectEnable(bsp_reg_protect_t regs_to_protect);
-void        R_BSP_RegisterProtectDisable(bsp_reg_protect_t regs_to_protect);
-void        R_BSP_SoftwareLockInit(bsp_lock_t * p_lock);
-ssp_err_t   R_BSP_SoftwareLock(bsp_lock_t * p_lock);
-void        R_BSP_SoftwareUnlock(bsp_lock_t * p_lock);
-ssp_err_t   R_BSP_HardwareLock(bsp_hw_lock_t hw_resource);
-void        R_BSP_HardwareUnlock(bsp_hw_lock_t hw_resource);
-ssp_err_t   R_BSP_GroupIrqWrite(bsp_grp_irq_t irq,  void (* p_callback)(bsp_grp_irq_t irq));
-void        R_BSP_IrqStatusClear(IRQn_Type irq);
-ssp_err_t   R_BSP_LedsGet(bsp_leds_t * p_leds);
-void        R_BSP_SoftwareDelay(uint32_t delay, bsp_delay_units_t units);
-ssp_err_t   R_BSP_VersionGet(ssp_version_t * p_version);
 
 /** @} (end defgroup BSP_BOARD_DK2M) */
 

@@ -47,15 +47,6 @@ Macro definitions
 /** OR in the HOCO frequency setting from bsp_clock_cfg.h with the OFS1 setting from bsp_cfg.h. */
 #define BSP_ROM_REG_OFS1_SETTING        ((BSP_CFG_ROM_REG_OFS1 & 0xFFFFF9FF) | (BSP_CFG_HOCO_FREQUENCY << 9))
 
-/** Build up SECMPUAC register based on MPU settings. */
-#define BSP_ROM_REG_MPU_CONTROL_SETTING     ((0xFFFFFCF0) | \
-                                             (BSP_CFG_ROM_REG_MPU_PC0_ENABLE << 8) | \
-                                             (BSP_CFG_ROM_REG_MPU_PC1_ENABLE << 9) | \
-                                             (BSP_CFG_ROM_REG_MPU_REGION0_ENABLE) | \
-                                             (BSP_CFG_ROM_REG_MPU_REGION1_ENABLE << 1) | \
-                                             (BSP_CFG_ROM_REG_MPU_REGION2_ENABLE << 2) | \
-                                             (BSP_CFG_ROM_REG_MPU_REGION3_ENABLE << 3)   \
-                                            )
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -68,14 +59,16 @@ Exported global variables (to be accessed by other files)
 /***********************************************************************************************************************
 Private global variables and functions
 ***********************************************************************************************************************/
-/** ROM registers defined here. Some have masks to make sure reserved bits are set appropriately. */
+/** ROM registers defined here. Secure MPU functionality has been removed from the S7 UM so those registers are now
+ * set to 0xFFFFFFFF. */
 BSP_DONT_REMOVE static const uint32_t g_bsp_rom_registers[] BSP_PLACE_IN_SECTION(BSP_SECTION_ROM_REGISTERS) =
 {
     BSP_CFG_ROM_REG_OFS0,
     BSP_ROM_REG_OFS1_SETTING,
-    (BSP_CFG_ROM_REG_MPU_PC0_START      & 0xFFFFFFFC),
-    (BSP_CFG_ROM_REG_MPU_PC0_END        | 0x00000003),    (BSP_CFG_ROM_REG_MPU_PC1_START      & 0xFFFFFFFC),    (BSP_CFG_ROM_REG_MPU_PC1_END        | 0x00000003),    (BSP_CFG_ROM_REG_MPU_REGION0_START  & 0x00FFFFFC),    ((BSP_CFG_ROM_REG_MPU_REGION0_END   & 0x00FFFFFF) | 0x00000003),    (BSP_CFG_ROM_REG_MPU_REGION1_START  & 0xFFFFFFFC),    (BSP_CFG_ROM_REG_MPU_REGION1_END    | 0x00000003),    ((BSP_CFG_ROM_REG_MPU_REGION2_START & 0x407FFFFC) | 0x40000000),    ((BSP_CFG_ROM_REG_MPU_REGION2_END   & 0x407FFFFC) | 0x40000003),    ((BSP_CFG_ROM_REG_MPU_REGION3_START & 0x407FFFFC) | 0x40000000),    ((BSP_CFG_ROM_REG_MPU_REGION3_END   & 0x407FFFFC) | 0x40000003),
-    BSP_ROM_REG_MPU_CONTROL_SETTING
+    0xFFFFFFFF,
+    0xFFFFFFFF,    0xFFFFFFFF,    0xFFFFFFFF,    0xFFFFFFFF,
+    0xFFFFFFFF,    0xFFFFFFFF,    0xFFFFFFFF,    0xFFFFFFFF,    0xFFFFFFFF,    0xFFFFFFFF,    0xFFFFFFFF,
+	0xFFFFFFFF
 };
 
 #endif

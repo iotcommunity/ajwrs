@@ -41,9 +41,9 @@
  * when the main oscillator has stopped, with the option of calling a user provided callback function.
  *
  * Related SSP architecture topics:
- *  - What is an SSP Interface? @ref ssp-interfaces
- *  - What is a SSP Layer? @ref ssp-predefined-layers
- *  - How to use SSP Interfaces and Modules? @ref using-ssp-modules
+ *  - @ref ssp-interfaces
+ *  - @ref ssp-predefined-layers
+ *  - @ref using-ssp-modules
  *
  * CGC Interface description: @ref ModuleCGConCGC
  *
@@ -62,7 +62,7 @@
  **********************************************************************************************************************/
 /* Version Number of API. */
 #define CGC_API_VERSION_MAJOR (1)
-#define CGC_API_VERSION_MINOR (0)
+#define CGC_API_VERSION_MINOR (1)
 
 /**********************************************************************************************************************
  * Typedef definitions
