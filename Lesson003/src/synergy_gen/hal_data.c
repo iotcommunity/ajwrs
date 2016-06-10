@@ -2,6 +2,8 @@
 #include "hal_data.h"
 const ioport_instance_t g_ioport =
 { .p_api = &g_ioport_on_ioport, .p_cfg = NULL };
+const cgc_instance_t g_cgc =
+{ .p_api = &g_cgc_on_cgc, .p_cfg = NULL };
 #if UART_ON_SCI_UART_CALLBACK_USED_g_uart
 #if defined(__ICCARM__)
 #define user_uart_callback_WEAK_ATTRIBUTE
@@ -24,17 +26,19 @@ const uart_cfg_t g_uart_cfg =
 { .channel = 8, .baud_rate = 9600, .data_bits = UART_DATA_BITS_8, .parity = UART_PARITY_OFF, .stop_bits =
           UART_STOP_BITS_1,
   .ctsrts_en = false, .p_callback = user_uart_callback, .p_context = &g_uart, .p_extend = &g_uart_cfg_extend,
-#ifdef NULL
+#define SYNERGY_NOT_DEFINED (1)                        
+#if (SYNERGY_NOT_DEFINED == SYNERGY_NOT_DEFINED)
   .p_transfer_tx = NULL,
 #else
-  .p_transfer_tx = &NULL,
-#endif
-#ifdef NULL
+  .p_transfer_tx = &SYNERGY_NOT_DEFINED,
+#endif            
+#if (SYNERGY_NOT_DEFINED == SYNERGY_NOT_DEFINED)
   .p_transfer_rx = NULL,
 #else
-  .p_transfer_rx = &NULL,
-#endif
-        };
+        .p_transfer_rx = &SYNERGY_NOT_DEFINED,
+#endif   
+#undef SYNERGY_NOT_DEFINED            
+    };
 
 /* Instance structure to use this module. */
 const uart_instance_t g_uart =
@@ -57,8 +61,6 @@ void user_uart_callback_internal(uart_callback_args_t * p_args)
 #endif
 const elc_instance_t g_elc =
 { .p_api = &g_elc_on_elc, .p_cfg = NULL };
-const cgc_instance_t g_cgc =
-{ .p_api = &g_cgc_on_cgc, .p_cfg = NULL };
 void g_hal_init(void)
 {
     g_common_init ();

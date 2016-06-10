@@ -45,6 +45,8 @@ Includes   <System Includes> , "Project Includes"
 /* Different compiler support. */
 #include "../../inc/ssp_common_api.h"
 #include "bsp_compiler_support.h"
+/* Build time error checking. */
+#include "bsp_error_checking.h"
 
 /***********************************************************************************************************************
 Macro definitions
@@ -54,7 +56,7 @@ Macro definitions
 
 /* Version of this module's code and API. */
 #define BSP_CODE_VERSION_MAJOR      (1)
-#define BSP_CODE_VERSION_MINOR      (0)
+#define BSP_CODE_VERSION_MINOR      (1)
 #define BSP_API_VERSION_MAJOR       (1)
 #define BSP_API_VERSION_MINOR       (0)
 
@@ -79,8 +81,8 @@ void  tx_isr_end(unsigned long isr_id);
  * user code and do required debugging (breakpoints, stack dump, etc) in this function.*/
 #if (1 == BSP_CFG_ERROR_LOG)
 #ifndef SSP_ERROR_LOG
-#define SSP_ERROR_LOG(err, module, version)     SSP_PARAMETER_NOT_USED(version);          \
-	                                            ssp_error_log(err, module, __LINE__);
+#define SSP_ERROR_LOG(err, module, version)     SSP_PARAMETER_NOT_USED((version));          \
+	                                            ssp_error_log((err), (module), __LINE__);
 #endif
 #else
 #define SSP_ERROR_LOG(err, module, version)
@@ -95,7 +97,7 @@ void  tx_isr_end(unsigned long isr_id);
     {                                 \
         if ((a))                      \
         {                             \
-            ;        /* Do nothing */ \
+            (void) 0; /* Do nothing */\
         }                             \
         else                          \
         {                             \
@@ -111,12 +113,12 @@ void  tx_isr_end(unsigned long isr_id);
     {                                             \
         if ((a))                                  \
         {                                         \
-            ;        /* Do nothing */             \
+            (void) 0; /* Do nothing */            \
         }                                         \
         else                                      \
         {                                         \
-            SSP_ERROR_LOG(err, module, version);  \
-            return err;                           \
+            SSP_ERROR_LOG((err), (module), (version));  \
+            return (err);                         \
         }                                         \
     }
 
@@ -143,7 +145,7 @@ Exported global functions (to be accessed by other files)
 ***********************************************************************************************************************/
 #if ((1 == BSP_CFG_ERROR_LOG) || (1 == BSP_CFG_ASSERT))
 /** Prototype of function called before errors are returned in SSP code if BSP_CFG_LOG_ERRORS is set to 1. */
-void ssp_error_log(ssp_err_t err, const char * module, uint32_t line);
+void ssp_error_log(ssp_err_t err, const char * module, int32_t line);
 #endif
 
 

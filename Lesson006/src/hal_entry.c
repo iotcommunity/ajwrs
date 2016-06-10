@@ -107,7 +107,7 @@ void hal_entry(void)
     _printf("\033[3J"); // Clear Back Buffer
 
     // Print Header
-    _printf("Day Seven - UART Input\r\n");
+    _printf("Lesson 006 - UART Input\r\n");
 
     while (true)
     {

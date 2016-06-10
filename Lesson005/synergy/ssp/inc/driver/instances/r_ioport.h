@@ -44,13 +44,6 @@
  **********************************************************************************************************************/
 #include "bsp_api.h"
 
-#ifdef BSP_MCU_GROUP_S7G2
-#include "..\..\..\src\driver\r_ioport\hw\target\s7g2\hw_ioport_s7g2.h"
-#endif
-
-#ifdef BSP_MCU_GROUP_S3A7
-#include "..\..\..\src\driver\r_ioport\hw\target\s3a7\hw_ioport_s3a7.h"
-#endif
 
 #ifdef MOCK_BUILD
 #include "..\..\..\src\driver\r_ioport\hw\target\!mock\hw_ioport_mock.h"
@@ -63,7 +56,7 @@
  * Macro definitions
  **********************************************************************************************************************/
 #define IOPORT_CODE_VERSION_MAJOR (1)
-#define IOPORT_CODE_VERSION_MINOR (0)
+#define IOPORT_CODE_VERSION_MINOR (1)
 
 /***********************************************************************************************************************
  * Typedef definitions

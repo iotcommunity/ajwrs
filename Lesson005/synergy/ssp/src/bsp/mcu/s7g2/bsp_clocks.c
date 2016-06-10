@@ -84,7 +84,7 @@ void bsp_clock_init (void)
         pll_cfg.divider = BSP_CFG_PLL_DIV;
 
         /** Set PLL Multiplier. */
-        pll_cfg.multiplier = BSP_CFG_PLL_MUL;
+        pll_cfg.multiplier = (float)BSP_CFG_PLL_MUL;
 
         /** Set PLL Source clock. */
         pll_cfg.source_clock = clock;
@@ -153,7 +153,7 @@ void bsp_clock_init (void)
  **********************************************************************************************************************/
 uint32_t bsp_cpu_clock_get (void)
 {
-    uint32_t freq;
+    uint32_t freq = (uint32_t)0;
 
     g_cgc_on_cgc.systemClockFreqGet(CGC_SYSTEM_CLOCKS_ICLK, &freq);
 

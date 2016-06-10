@@ -32,7 +32,7 @@
 /**********************************************************************************************************************
  * Macro definitions
  **********************************************************************************************************************/
-#ifdef BSP_MCU_GROUP_S3A7
+#if defined (BSP_MCU_GROUP_S3A7) || defined (BSP_MCU_GROUP_S124)
 #define CGC_PLL_DIV_1_SETTING 0
 #define CGC_PLL_DIV_2_SETTING 1
 #define CGC_PLL_DIV_4_SETTING 2
@@ -57,7 +57,7 @@ __no_init static uint32_t g_clock_freq[CGC_CLOCK_PLL + 1];
 static uint32_t           g_clock_freq[CGC_CLOCK_PLL + 1] __attribute__((section(".noinit")));
 #endif
 
-#ifdef  BSP_MCU_GROUP_S7G2
+#if defined (BSP_MCU_GROUP_S7G2)
 /** These are the values to write to the PLLCCR register selected by clock source  (S7G2 only) */
 static const uint16_t g_pllccr_src_setting[] =
 {
@@ -82,7 +82,8 @@ static const uint16_t g_pllccr_div_setting[] =
     [CGC_PLL_DIV_2] = 0x01,
     [CGC_PLL_DIV_3] = 0x02
 };
-#elif BSP_MCU_GROUP_S3A7
+#endif
+#if defined (BSP_MCU_GROUP_S3A7)
 /** These are the divisor values to use when calculating the system clock frequency, using the CGC_PLL_DIV enum type */
 #define CGC_PLL_DIV_1_SETTING 0
 #define CGC_PLL_DIV_2_SETTING 1
@@ -102,7 +103,7 @@ static const uint16_t g_pllccr_div_setting[] =
     [CGC_PLL_DIV_2] = 0x01,
     [CGC_PLL_DIV_4] = 0x02
 };
-#endif /* ifdef  BSP_MCU_GROUP_S7G2 */
+#endif /* ifdef  BSP_MCU_GROUP_S3A7 */
 
 /***********************************************************************************************************************
  * Functions
@@ -130,24 +131,27 @@ void HW_CGC_Init (void)
  **********************************************************************************************************************/
 void HW_CGC_InitPLLFreq (void)
 {
-    uint32_t divider;
-    divider = 0;
 #ifndef  BSP_MCU_SC32_4
+#if defined  (BSP_MCU_GROUP_S7G2) || defined (BSP_MCU_GROUP_S3A7)
+
+    uint32_t divider = 0;
     divider = (g_pllccr_div_value[HW_CGC_PLLDividerGet()]);
     if (divider != 0) /* prevent divide by 0 */
     {
-#ifdef  BSP_MCU_GROUP_S7G2
+#if defined  (BSP_MCU_GROUP_S7G2)
         /* This casts the float result back to an integer.  The multiplier is always a multiple of 0.5, and the clock
          * frequency is always a multiple of 2, so casting to an integer is safe. */
         g_clock_freq[CGC_CLOCK_PLL] = (uint32_t)
             (((float)g_clock_freq[HW_CGC_PLLClockSourceGet()] / (float)divider) * HW_CGC_PLLMultiplierGet());
-#elif   BSP_MCU_GROUP_S3A7
+#endif
+#if defined (BSP_MCU_GROUP_S3A7)
         /* This casts the float result back to an integer.  The multiplier is always a multiple of 0.5, and the clock
          * frequency is always a multiple of 2, so casting to an integer is safe. */
         g_clock_freq[CGC_CLOCK_PLL] = (uint32_t)
             (((float)(g_clock_freq[CGC_CLOCK_MAIN_OSC]) / (float)divider) * HW_CGC_PLLMultiplierGet());
 #endif
     }
+#endif
 #endif /* ifndef  BSP_MCU_SC32_4 */
 }
 
@@ -581,17 +585,19 @@ void HW_CGC_PLLClockSourceSet (cgc_clock_t clock)
 void HW_CGC_PLLMultiplierSet (float multiplier)
 {
     /* Set the PLL multiplier */
-    uint32_t write_val;
+    SSP_PARAMETER_NOT_USED(multiplier);          /// Prevent compiler 'unused' warning
+
 #ifdef  BSP_MCU_GROUP_S7G2
-    write_val                  = (uint32_t) (multiplier * 2) - 1;
+    uint32_t write_val                  = (uint32_t) (multiplier * 2) - 1;
     HW_CGC_HardwareUnLock();
     R_SYSTEM->PLLCCR_b.PLLMUL  = (uint16_t)(write_val & 0x3F);
+    HW_CGC_HardwareLock();
 #elif   BSP_MCU_GROUP_S3A7
-    write_val                  = (uint32_t) multiplier - 1;
+    uint32_t write_val                  = (uint32_t) multiplier - 1;
     HW_CGC_HardwareUnLock();
     R_SYSTEM->PLLCCR2_b.PLLMUL = (uint8_t)(write_val & 0x1F);
-#endif
     HW_CGC_HardwareLock();
+#endif
 }
 
 /*******************************************************************************************************************//**
@@ -608,6 +614,8 @@ float HW_CGC_PLLMultiplierGet (void)
 #elif   BSP_MCU_GROUP_S3A7
     /* This cast is used for compatibility with the S7G2 implementation. */
     return (float) R_SYSTEM->PLLCCR2_b.PLLMUL  + 1;
+#elif   BSP_MCU_GROUP_S124
+    return (float)0;            ///< S124 does not have a PLL
 #endif
 }
 
@@ -618,16 +626,20 @@ float HW_CGC_PLLMultiplierGet (void)
 
 void HW_CGC_PLLDividerSet (cgc_pll_div_t divider)
 {
-    uint16_t register_value;
+    SSP_PARAMETER_NOT_USED(divider);          /// Prevent compiler 'unused' warning
+
     /* Set the PLL divider */
-    register_value = g_pllccr_div_setting[divider];
-    HW_CGC_HardwareUnLock();
 #ifdef  BSP_MCU_GROUP_S7G2
+    uint16_t register_value = g_pllccr_div_setting[divider];
+    HW_CGC_HardwareUnLock();
     R_SYSTEM->PLLCCR_b.PLIDIV  = (uint16_t)(register_value & 0x3);
-#elif   BSP_MCU_GROUP_S3A7
-    R_SYSTEM->PLLCCR2_b.PLODIV = (uint8_t)(register_value & 0x3);
-#endif
     HW_CGC_HardwareLock();
+#elif   BSP_MCU_GROUP_S3A7
+    uint16_t register_value = g_pllccr_div_setting[divider];
+    HW_CGC_HardwareUnLock();
+    R_SYSTEM->PLLCCR2_b.PLODIV = (uint8_t)(register_value & 0x3);
+    HW_CGC_HardwareLock();
+#endif
 }
 
 /*******************************************************************************************************************//**
@@ -645,7 +657,7 @@ cgc_pll_div_t HW_CGC_PLLDividerGet (void)
     /* This cast maps the register value to an enumerated list. */
     return (cgc_pll_div_t) R_SYSTEM->PLLCCR2_b.PLODIV;
 #else
-    return 1;
+    return (cgc_pll_div_t)1;
 #endif
 }
 
@@ -662,12 +674,15 @@ void HW_CGC_SystemDividersSet (cgc_system_clock_cfg_t * cfg)
     HW_CGC_HardwareUnLock();
     /* The cgc_sys_clock_div_t fits in the 3 bits, and each of the elements of sckdivcr_b are 3 bits of a 32-bit value,
      * so these casts are safe. */
+    sckdivcr.sckdivcr_w = (uint32_t) 0x00;
+#ifndef  BSP_MCU_GROUP_S124
     sckdivcr.sckdivcr_b.pcka = (uint32_t)(cfg->pclka_div & 0x7);
-    sckdivcr.sckdivcr_b.pckb = (uint32_t)(cfg->pclkb_div & 0x7);
     sckdivcr.sckdivcr_b.pckc = (uint32_t)(cfg->pclkc_div & 0x7);
-    sckdivcr.sckdivcr_b.pckd = (uint32_t)(cfg->pclkd_div & 0x7);
     sckdivcr.sckdivcr_b.bck  = (uint32_t)(cfg->bclk_div  & 0x7);
     sckdivcr.sckdivcr_b.fck  = (uint32_t)(cfg->fclk_div  & 0x7);
+#endif
+    sckdivcr.sckdivcr_b.pckb = (uint32_t)(cfg->pclkb_div & 0x7);
+    sckdivcr.sckdivcr_b.pckd = (uint32_t)(cfg->pclkd_div & 0x7);
     sckdivcr.sckdivcr_b.ick  = (uint32_t)(cfg->iclk_div  & 0x7);
     R_SYSTEM->SCKDIVCR       = sckdivcr.sckdivcr_w;
     HW_CGC_HardwareLock();
@@ -829,12 +844,12 @@ uint32_t HW_CGC_MemWaitGet (void)
 
 
 /*******************************************************************************************************************//**
- * @brief      This function places the S3A7 MCU in High Speed Mode
+ * @brief      This function places the S3A7/S124 MCU in High Speed Mode
  * @param[in]  none
  * @retval     None
  **********************************************************************************************************************/
 
-#if BSP_MCU_GROUP_S3A7
+#if defined(BSP_MCU_GROUP_S3A7) || defined(BSP_MCU_GROUP_S124)
 void HW_CGC_SetHighSpeedMode (void)
 {
     /** Enable writing to OPCCR register. */
@@ -1125,10 +1140,7 @@ bool HW_CGC_SystickUpdate(uint32_t reload_value)
     }
     return(result);
 }
-/*
- * TODO: LCD clock control for NPP4 and Npp7
- *
- */
+
 
 /*******************************************************************************************************************//**
  * @brief      This function configures the Segment LCD clock

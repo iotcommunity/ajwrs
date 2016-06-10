@@ -73,7 +73,7 @@ void hal_entry(void)
     _printf("\033[3J"); // Clear Back Buffer
 
     // Print Header
-    _printf("Day Six - printf Redirection, Part 2\r\n");
+    _printf("Lesson 005 - printf Redirection, Part 2\r\n");
 
     // Verify printf functions with format specifiers
     _printf("          String: %s\r\n", "This is a string");

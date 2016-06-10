@@ -58,7 +58,7 @@ void bsp_group_interrupt_open (void)
 {
     uint32_t i;
 
-    for (i = 0; i < BSP_GRP_IRQ_TOTAL_ITEMS; i++)
+    for (i = (uint32_t)0; i < BSP_GRP_IRQ_TOTAL_ITEMS; i++)
     {
         g_bsp_group_irq_sources[i] = NULL;
     }

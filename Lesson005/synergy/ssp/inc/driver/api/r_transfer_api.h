@@ -34,15 +34,14 @@
  * @section TRANSFER_API_SUMMARY Summary
  * The transfer interface supports background data transfer (no CPU intervention).
  *
- * @section TRANSFER_API_INSTANCES Known Implementations
- * The transfer interface can be implemented as:
+ * The transfer interface can be implemented by:
  * - @ref DTC
  * - @ref DMAC
  *
  * Related SSP architecture topics:
- *  - What is an SSP Interface? @ref ssp-interfaces
- *  - What is a SSP Layer? @ref ssp-predefined-layers
- *  - How to use SSP Interfaces and Modules? @ref using-ssp-modules
+ *  - @ref ssp-interfaces
+ *  - @ref ssp-predefined-layers
+ *  - @ref using-ssp-modules
  *
  * Transfer Interface description: @ref ModuleHALTransferAPI
  *
@@ -60,7 +59,7 @@
  * Macro definitions
  **********************************************************************************************************************/
 #define TRANSFER_API_VERSION_MAJOR (1)
-#define TRANSFER_API_VERSION_MINOR (0)
+#define TRANSFER_API_VERSION_MINOR (1)
 
 /**********************************************************************************************************************
  * Typedef definitions
@@ -69,7 +68,7 @@
 typedef struct st_transfer_ctrl
 {
     uint32_t     id;         ///< Driver ID
-    elc_event_t  trigger;    ///< Transfer activation event.  Matches event returned by transfer_api_t::statusGet.
+    elc_event_t  trigger;    ///< Transfer activation event.  Matches event returned by transfer_api_t::infoGet.
     IRQn_Type    irq;        ///< Transfer activation IRQ, does not apply to all HAL drivers.
     uint8_t      channel;    ///< Channel number, does not apply to all HAL drivers.
 } transfer_ctrl_t;
@@ -84,7 +83,10 @@ typedef enum e_transfer_mode
     TRANSFER_MODE_NORMAL = 0,
 
     /** Repeat mode is like normal mode, except that when the transfer length reaches 0, the pointer to the
-     *  repeat area and the transfer length will be reset to their initial values.  */
+     *  repeat area and the transfer length will be reset to their initial values.  If DMAC is used, the
+     *  transfer repeats only transfer_info_t::num_blocks times.  After the transfer repeats 
+     *  transfer_info_t::num_blocks times, transfer requests will not cause any further transfers.  If DTC is 
+     *  used, the transfer repeats continuously (no limit to the number of repeat transfers). */
     TRANSFER_MODE_REPEAT = 1,
 
     /** In block mode, each transfer request causes transfer_info_t::length transfers of ::transfer_size_t.
@@ -164,6 +166,7 @@ typedef enum e_transfer_irq
 typedef struct st_transfer_properties
 {
     uint32_t transfer_length_max;  ///< Maximum number of transfers
+    uint16_t transfer_length_remaining;  ///< Number of transfers remaining
     bool     in_progress;          ///< Whether or not this transfer is in progress
 } transfer_properties_t;
 
@@ -208,7 +211,8 @@ typedef struct st_transfer_info
     void const * volatile  p_src;   ///< Source pointer
     void * volatile        p_dest;  ///< Destination pointer
 
-    /** Number of blocks to transfer when using ::TRANSFER_MODE_BLOCK, unused in other modes. */
+    /** Number of blocks to transfer when using ::TRANSFER_MODE_BLOCK (both DTC an DMAC) and
+     * ::TRANSFER_MODE_REPEAT (DMAC only), unused in other modes. */
     volatile uint16_t  num_blocks;
 
     /** Length of each transfer.  Range limited for ::TRANSFER_MODE_BLOCK and ::TRANSFER_MODE_REPEAT,
@@ -281,7 +285,9 @@ typedef struct st_transfer_api
      * @param[in]     p_ctrl         Control block set in transfer_api_t::open call for this transfer.
      * @param[in]     p_src          Pointer to source. Set to NULL if source pointer should not change.
      * @param[in]     p_dest         Pointer to destination. Set to NULL if destination pointer should not change.
-     * @param[in]     num_transfers  Transfer length in normal mode or number of blocks in block mode.
+     * @param[in]     num_transfers  Transfer length in normal mode or number of blocks in block mode.  In DMAC only,
+     *                               resets number of repeats (initially stored in transfer_info_t::num_blocks) in
+     *                               repeat mode.  Not used in repeat mode for DTC.
      */
     ssp_err_t (* reset)(transfer_ctrl_t       * const p_ctrl,
                         void const                  * p_src,

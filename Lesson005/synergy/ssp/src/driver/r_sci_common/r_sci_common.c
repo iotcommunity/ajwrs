@@ -104,11 +104,21 @@ Private Functions
 ***********************************************************************************************************************/
 ssp_err_t r_sci_hardware_lock (uint32_t channel)
 {
-    /* All SCI channels are listed in order in the bsp_hw_lock_t enum, so adding the channel number offset from
-     * the base channel 0 lock yields the channel's lock type. */
-    if (SSP_ERR_IN_USE == R_BSP_HardwareLock ((bsp_hw_lock_t) ((uint8_t) BSP_HW_LOCK_SCI0 + channel)))
+    /* Channel 9 is separated because, for S124 there is no channels between 1 and 9 so it should not calculate incorrect enum value for channel9.
+     * Similarly for S3A7 channels are 0,1,2,3,4 and 9 */
+    if(channel == 9)
     {
-        return SSP_ERR_HW_LOCKED;
+        if (SSP_ERR_IN_USE == R_BSP_HardwareLock ((bsp_hw_lock_t) ((uint8_t) BSP_HW_LOCK_SCI9)))
+        {
+            return SSP_ERR_HW_LOCKED;
+        }
+    }
+    else
+    {
+        if (SSP_ERR_IN_USE == R_BSP_HardwareLock ((bsp_hw_lock_t) ((uint8_t) BSP_HW_LOCK_SCI0 + channel)))
+        {
+            return SSP_ERR_HW_LOCKED;
+        }
     }
     return SSP_SUCCESS;
 }  /* End of function r_sci_hardware_lock() */
@@ -122,7 +132,16 @@ void r_sci_hardware_unlock (uint32_t channel)
 {
     /* All SCI channels are listed in order in the bsp_hw_lock_t enum, so adding the channel number offset from
      * the base channel 0 lock yields the channel's lock type. */
-    R_BSP_HardwareUnlock ((bsp_hw_lock_t) ((uint8_t) BSP_HW_LOCK_SCI0 + channel));
+    if(channel == 9)
+    {
+        /*For S124 there is no channels between 1 and 9 so it should not calculate incorrect enum value for channel-9.
+         * Similarly for S3A7 channels are 0,1,2,3,4 and 9 */
+        R_BSP_HardwareUnlock ((bsp_hw_lock_t) ((uint8_t) BSP_HW_LOCK_SCI9));
+    }
+    else
+    {
+        R_BSP_HardwareUnlock ((bsp_hw_lock_t) ((uint8_t) BSP_HW_LOCK_SCI0 + channel));
+    }
 }  /* End of function r_sci_hardware_unlock() */
 
 /*******************************************************************************************************************//**
@@ -199,6 +218,12 @@ static void tei_handler (uint32_t const channel)
     {
 #if (SCI_CFG_SIIC_INCLUDED)
     	r_sci_siic_tei_master(channel);
+#endif
+    }
+    else if (g_sci_ctrl_blk[channel].mode == SCI_MODE_SSPI)
+    {
+#if (SCI_CFG_SSPI_INCLUDED)
+    	r_sci_sspi_tx_rx_common(channel, SCI_TE_INT);
 #endif
     }
     else
@@ -993,7 +1018,7 @@ void sci_irq_status_clear (uint32_t const channel)
         break;
 #endif
 
-#ifdef BSP_IRQ_CFG_SCI0_TXI
+#ifdef BSP_IRQ_CFG_SCI3_TXI
         case 3:
 #if (BSP_IRQ_CFG_SCI3_TXI != BSP_IRQ_DISABLED)
             R_BSP_IrqStatusClear (SCI3_TXI_IRQn);

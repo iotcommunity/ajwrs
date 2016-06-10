@@ -43,6 +43,8 @@ Macro definitions
 #define FRDR_TDAT_MASK_8BITS    (0x00FF)
 #define FRDR_TDAT_MASK_9BITS    (0x01FF)
 #define FCR_RTRG_MASK_4BITS     (0x000FU)
+#define SPTR_SPB2D_BIT          (1U)
+#define SPTR_OUTPUT_ENABLE_MASK (0x04)
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -552,6 +554,18 @@ __STATIC_INLINE void HW_SCI_BreakEnd (uint32_t const channel)
     SCI_REG(channel)->SPTR_b.SPB2DT = 1;    /* Set SPB2IO to default value(1) */
     SCI_REG(channel)->SPTR_b.SPB2IO = 0;    /* The value of SPB2DT is output to TXD terminal when TE=0 */
 }  /* End of function HW_SCI_BreakEnd() */
+
+/*******************************************************************************************************************//**
+* Sets transmitter level.
+* @param[in] channel  SCI channel
+* @param[in] level    Default level of transmit pin, 0 is low, 1 is high
+* @retval    void
+* @note      Channel number is not checked in this function, caller function must check it.
+***********************************************************************************************************************/
+__STATIC_INLINE void HW_SCI_TransmitterLevelSet (uint32_t const channel, uint8_t level)
+{
+    SCI_REG(channel)->SPTR = (uint8_t) (level << SPTR_SPB2D_BIT) | SPTR_OUTPUT_ENABLE_MASK;
+}  /* End of function HW_SCI_TransmitterLevelSet() */
 
 #endif
 

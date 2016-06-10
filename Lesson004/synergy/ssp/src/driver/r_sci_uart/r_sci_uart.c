@@ -40,6 +40,11 @@
 #define SCI_UART_ERROR_RETURN(a, err) SSP_ERROR_RETURN((a), (err), "sci_uart", &module_version)
 #endif
 
+/* Define channel that supports FIFO on S124 device, this is to use FIFO transfer on FIFO supported channel and
+ * use non-FIFO transfer for those channels that do not support FIFO.
+ * This is a special case for S124 devices, all other devices support FIFO on all channels*/
+#define SCI_UART_S124_FIFO_CHANNEL  0
+
 /***********************************************************************************************************************
  * Typedef definitions
  **********************************************************************************************************************/
@@ -94,6 +99,13 @@ static const baud_setting_t async_baud[NUM_DIVISORS_ASYNC] =
     { 2048, 0,  0,  0,  3 }
 };
 
+#if defined(__GNUC__)
+/* This structure is affected by warnings from the GCC compiler bug https://gcc.gnu.org/bugzilla/show_bug.cgi?id=60784
+ * This pragma suppresses the warnings in this structure only, and will be removed when the SSP compiler is updated to
+ * v5.3.*/
+/*LDRA_INSPECTED 69 S */
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#endif
 /** SCI UART HAL module version data structure */
 static const ssp_version_t module_version =
 {
@@ -102,6 +114,11 @@ static const ssp_version_t module_version =
     .code_version_major = SCI_UART_CODE_VERSION_MAJOR,
     .code_version_minor = SCI_UART_CODE_VERSION_MINOR
 };
+#if defined(__GNUC__)
+/* Restore warning settings for 'missing-field-initializers' to as specified on command line. */
+/*LDRA_INSPECTED 69 S */
+#pragma GCC diagnostic pop
+#endif
 
 /** UART on SCI HAL API mapping for UART interface */
 const uart_api_t  g_uart_on_sci =
@@ -164,11 +181,23 @@ ssp_err_t R_SCI_UartOpen (uart_ctrl_t * const p_ctrl, uart_cfg_t const * const p
     SCI_UART_ERROR_RETURN(SSP_SUCCESS == err, err);
 
     HW_SCI_PowerOn(p_cfg->channel);                             /** applies power to channel */
+    HW_SCI_TransmitterLevelSet(p_cfg->channel, 1);              /** set default level of TX pin to 1 */
     HW_SCI_InterruptEnable(p_cfg->channel, SCI_ALL_INT, false); /** disables interrupt */
     HW_SCI_ReceiverDisable(p_cfg->channel);                     /** disables receiver */
-    HW_SCI_TransmitterDisable(p_cfg->channel);                  /** enables transmitter */
+    HW_SCI_TransmitterDisable(p_cfg->channel);                  /** disables transmitter */
 
+#if (BSP_CFG_MCU_PART_SERIES != 1)
     r_sci_uart_fifo_reset(p_cfg);                          /** configure FIFO related registers */
+#else
+    if(SCI_UART_S124_FIFO_CHANNEL ==p_cfg->channel)
+    {
+        r_sci_uart_fifo_reset(p_cfg);                      /** configure FIFO related registers, S1 supports FIFO only on channel 0 */
+    }
+    else
+    {
+        HW_SCI_FifoDisable (p_cfg->channel);               /**< disables FIFO mode */
+    }
+#endif
 
     if ((pextend) && (pextend->rx_edge_start))
     {
@@ -190,6 +219,7 @@ ssp_err_t R_SCI_UartOpen (uart_ctrl_t * const p_ctrl, uart_cfg_t const * const p
     }
 
     err = r_sci_uart_config_set(p_cfg);                    /** configure UART related registers */
+
     if (err != SSP_SUCCESS)
     {
 #if (SCI_UART_CFG_RX_ENABLE)
@@ -210,18 +240,25 @@ ssp_err_t R_SCI_UartOpen (uart_ctrl_t * const p_ctrl, uart_cfg_t const * const p
         return err;
     }
 
+#if (BSP_CFG_MCU_PART_SERIES != 1)
     r_sci_uart_fifo_enable(p_cfg);                         /** configure FIFO related registers */
+#else
+    if(SCI_UART_S124_FIFO_CHANNEL ==p_cfg->channel)
+        r_sci_uart_fifo_enable(p_cfg);                     /** configure FIFO related registers, S1 supports FIFO only on channel 0 */
+#endif
+
 
 #if (SCI_UART_CFG_RX_ENABLE)
     HW_SCI_RXIeventSelect(p_cfg->channel);             /** selects RXI when detecting a reception data ready */
 #endif
 
     p_ctrl->channel                          = p_cfg->channel;
-    p_ctrl->p_context                        = p_cfg->p_context;  /** saves AMS UART device context inside SCI HAL
+    p_ctrl->p_context                        = p_cfg->p_context;  /** saves UART device context inside SCI HAL
                                                                    * driver */
     p_ctrl->p_callback                       = p_cfg->p_callback; /** registers callback function from higher layer */
     p_ctrl->p_tx_src                         = NULL;
     p_ctrl->tx_src_bytes                     = 0;
+    p_ctrl->rx_transfer_in_progress          = false;
 
     g_sci_ctrl_blk[p_cfg->channel].mode      = SCI_MODE_ASYNC;
     g_sci_ctrl_blk[p_cfg->channel].tx_busy   = false;
@@ -338,6 +375,7 @@ ssp_err_t R_SCI_UartRead (uart_ctrl_t * const p_ctrl, uint8_t const * const p_de
             }
             /* Cast to a value acceptable by the transfer interface. */
             uint8_t const * p_src = (uint8_t const *) HW_SCI_ReadAddrGet(p_ctrl->channel, data_bytes);
+            p_ctrl->rx_transfer_in_progress = true;
             err = p_ctrl->p_transfer_rx->p_api->reset(p_ctrl->p_transfer_rx->p_ctrl, p_src, (void *) p_dest, (uint16_t)size);
             SCI_UART_ERROR_RETURN(SSP_SUCCESS == err, err);
         }
@@ -366,7 +404,6 @@ ssp_err_t R_SCI_UartWrite (uart_ctrl_t * const p_ctrl, uint8_t const * const p_s
 {
     ssp_err_t err        = SSP_SUCCESS;
     uint32_t  data_bytes = 1;
-    uint32_t  fifo_rest;
 
 #if (SCI_UART_CFG_PARAM_CHECKING_ENABLE)
     /** checks arguments */
@@ -380,19 +417,11 @@ ssp_err_t R_SCI_UartWrite (uart_ctrl_t * const p_ctrl, uint8_t const * const p_s
 
     if (SCI_MODE_ASYNC == g_sci_ctrl_blk[p_ctrl->channel].mode)
     {
-        /** disables TIE prior to disabling TE because disabling TE during TIE=1 generates
-         *   TXI interrupt which is not expected here. */
-        HW_SCI_InterruptEnable(p_ctrl->channel, SCI_TX_INT, false);
-
-        HW_SCI_TransmitterDisable(p_ctrl->channel);                 /** disables first prepare for any case */
         if (!g_sci_ctrl_blk[p_ctrl->channel].tx_busy)
         {
             g_sci_ctrl_blk[p_ctrl->channel].tx_busy = true;     /** sets transmit status as ON TRANSACTION */
         }
 
-        /** checks the rest size in FIFO */
-        fifo_rest = SCI_FIFO_STAGE_NUM - HW_SCI_FIFO_WriteCount(p_ctrl->channel);
-        SSP_PARAMETER_NOT_USED(fifo_rest);
         if (HW_SCI_IsDataLength9bits(p_ctrl->channel))
         {
             data_bytes = 2;
@@ -427,6 +456,26 @@ ssp_err_t R_SCI_UartWrite (uart_ctrl_t * const p_ctrl, uint8_t const * const p_s
 
         HW_SCI_TransmitterEnable(p_ctrl->channel);          /** enables transmitter */
         HW_SCI_InterruptEnable(p_ctrl->channel, SCI_TX_INT, true);
+
+#if (BSP_CFG_MCU_PART_SERIES == 1)
+        if(SCI_UART_S124_FIFO_CHANNEL != p_ctrl->channel)
+        {
+            uint16_t first_data = 0;
+            p_ctrl->p_tx_src = p_src + data_bytes;
+            first_data = (uint16_t)(*(p_src + 0));
+            /* Non FIFO case */
+               /** writes first byte(s) to data register directly below step (non-FIFO mode procedure)
+                * This is to generate TXI interrupt first and remaining bytes will be transfered in the TX handler */
+               if (HW_SCI_IsDataLength9bits (p_ctrl->channel))
+               {
+                   HW_SCI_Write9bits (p_ctrl->channel, first_data);
+               }
+               else
+               {
+                   HW_SCI_Write (p_ctrl->channel, (uint8_t)first_data);
+               }
+        }
+#endif
         err = SSP_SUCCESS;
     }
 
@@ -866,15 +915,16 @@ static void r_sci_uart_fifo_reset (uart_cfg_t const * const p_cfg)
 
 #if (SCI_UART_CFG_RX_ENABLE)
     HW_SCI_ReceiveFifoReset(p_cfg->channel);                              /** resets receive FIFO mode */
-    if (NULL != p_cfg->p_transfer_rx)
+
+    if (NULL != p_cfg->p_transfer_tx)
     {
-        /** Set receive trigger number to 0 to facilitate transfer. */
-        HW_SCI_RxTriggerNumberSet(p_cfg->channel, 0);
+        /** Set receive trigger number to 0 if DTC is used. */
+    	HW_SCI_RxTriggerNumberSet(p_cfg->channel, 0);
     }
     else
     {
-        /** Set receive trigger number as half of FIFO stage */
-        HW_SCI_RxTriggerNumberSet(p_cfg->channel, (SCI_FIFO_STAGE_NUM >> 1));
+        /** Otherwise, set receive trigger number to maximum for efficiency. */
+        HW_SCI_RxTriggerNumberSet(p_cfg->channel, (SCI_FIFO_STAGE_NUM - 1));
     }
     HW_SCI_RTSTriggerNumberSet(p_cfg->channel, (SCI_FIFO_STAGE_NUM - 1)); /* sets RTS trigger number */
 #endif
@@ -955,8 +1005,13 @@ static ssp_err_t  r_sci_uart_baud_set (uint32_t const channel, sci_clk_src_t clk
         for (i = 0; i < NUM_DIVISORS_ASYNC; i++)
         {
             uint32_t freq_hz;
+#if (BSP_CFG_MCU_PART_SERIES == 1)
+            SCI_UART_ERROR_RETURN((SSP_SUCCESS == (g_cgc_on_cgc.systemClockFreqGet(CGC_SYSTEM_CLOCKS_PCLKB, &freq_hz))), /* S124 uses PCLKB */
+                                  SSP_ERR_INVALID_ARGUMENT);
+#else
             SCI_UART_ERROR_RETURN((SSP_SUCCESS == (g_cgc_on_cgc.systemClockFreqGet(CGC_SYSTEM_CLOCKS_PCLKA, &freq_hz))),
                                   SSP_ERR_INVALID_ARGUMENT);
+#endif
 
             temp_brr = freq_hz / (pbaudinfo[i].div_coefficient * baudrate);
             if (0 < temp_brr)
@@ -1022,8 +1077,18 @@ static ssp_err_t  r_sci_uart_baud_set (uint32_t const channel, sci_clk_src_t clk
 void r_sci_uart_txi_common (uint32_t const channel)
 {
     uart_ctrl_t * p_ctrl    = (uart_ctrl_t *) g_sci_ctrl_blk[channel].p_context;
-    uint32_t fifo_remaining = HW_SCI_FIFO_WriteCount(channel);
-    int32_t fifo_open = SCI_FIFO_STAGE_NUM - (int32_t)fifo_remaining;
+    uint32_t fifo_remaining=0;
+    int32_t fifo_open=0;
+#if (BSP_CFG_MCU_PART_SERIES != 1)
+    fifo_remaining = HW_SCI_FIFO_WriteCount(channel);
+    fifo_open = SCI_FIFO_STAGE_NUM - (int32_t)fifo_remaining;
+#else
+    if(SCI_UART_S124_FIFO_CHANNEL ==p_ctrl->channel)
+    {
+        fifo_remaining = HW_SCI_FIFO_WriteCount(channel);
+        fifo_open = SCI_FIFO_STAGE_NUM - (int32_t)fifo_remaining;
+    }
+#endif
     uint16_t data;
 
     /** checks data byte length */
@@ -1038,11 +1103,23 @@ void r_sci_uart_txi_common (uint32_t const channel)
 
         for (uint32_t cnt = 0; cnt < p_ctrl->tx_src_bytes; cnt += data_bytes)
         {
+#if (BSP_CFG_MCU_PART_SERIES != 1)
             if (fifo_open <= 0)
             {
                 /* FIFO full. */
                 break;
             }
+#else
+            if(SCI_UART_S124_FIFO_CHANNEL ==p_ctrl->channel)
+            {
+                if (fifo_open <= 0)
+                {
+                    /* FIFO full. */
+                    break;
+                }
+            }
+#endif
+
             if (1 == data_bytes)
             {
                 data = (uint16_t) *(p_ctrl->p_tx_src);
@@ -1052,13 +1129,44 @@ void r_sci_uart_txi_common (uint32_t const channel)
                 data = (uint16_t) *((uint16_t *) p_ctrl->p_tx_src);    /* 9-bit data length needs 2 bytes */
             }
 
+#if (BSP_CFG_MCU_PART_SERIES != 1)
             /** Write to the hardware FIFO. */
             HW_SCI_WriteFIFO(p_ctrl->channel, data);
             fifo_open--;
+#else
+            if(SCI_UART_S124_FIFO_CHANNEL ==p_ctrl->channel)
+            {
+                /** Write to the hardware FIFO. */
+                HW_SCI_WriteFIFO(p_ctrl->channel, data);
+                fifo_open--;
+            }
+            else
+            {
+                /** Write to the hardware data register. */
+                if (HW_SCI_IsDataLength9bits (p_ctrl->channel))
+                {
+                    HW_SCI_Write9bits (p_ctrl->channel, data);
+                }
+                else
+                {
+                    HW_SCI_Write (p_ctrl->channel, (uint8_t)data);
+                }
+            }
+#endif
+
             p_ctrl->tx_src_bytes -= data_bytes;
             p_ctrl->p_tx_src += data_bytes;
         }
+
+#if (BSP_CFG_MCU_PART_SERIES != 1)
         HW_SCI_TDFEClear(p_ctrl->channel);
+#else
+        if(SCI_UART_S124_FIFO_CHANNEL ==p_ctrl->channel)
+        {
+            HW_SCI_TDFEClear(p_ctrl->channel);
+        }
+#endif
+
     }
     else
     {
@@ -1104,7 +1212,19 @@ void r_sci_uart_rxi_common (uint32_t const channel)
         g_sci_ctrl_blk[channel].p_extpin_ctrl(channel, 1);         /** user definition function call to control GPIO */
     }
 #endif
+
+#if (BSP_CFG_MCU_PART_SERIES != 1)
     read_cnt = HW_SCI_FIFO_ReadCount(channel);
+#else
+    if(SCI_UART_S124_FIFO_CHANNEL ==pctrl->channel)
+    {
+        read_cnt = HW_SCI_FIFO_ReadCount(channel);
+    }
+    else
+    {
+        read_cnt = 1;
+    }
+#endif
 
     /** checks data byte length */
     uint32_t data_bytes = 1;
@@ -1113,8 +1233,10 @@ void r_sci_uart_rxi_common (uint32_t const channel)
         data_bytes = 2;
     }
 
-    if (NULL != pctrl->p_transfer_rx)
+    if ((NULL != pctrl->p_transfer_rx) && pctrl->rx_transfer_in_progress)
     {
+    	pctrl->rx_transfer_in_progress = false;
+
         /* Do callback if available */
         if (NULL != pctrl->p_callback)
         {
@@ -1125,29 +1247,46 @@ void r_sci_uart_rxi_common (uint32_t const channel)
             pctrl->p_callback(&args);
         }
     }
-    else
-    {
-        while (read_cnt--)
-        {
-            /* Read data */
-            data = HW_SCI_ReadFIFO(channel);
 
-            /* Do callback if available */
-            if (NULL != pctrl->p_callback)
-            {
-                args.channel        = channel;
-                args.data           = (uint8_t) data;
-                args.p_context      = pctrl->p_context;
-                args.event = UART_EVENT_RX_CHAR;
-                pctrl->p_callback(&args);
-                if (2 == data_bytes)
-                {
-                    args.data       = (uint8_t) (data >> 8);
-                    pctrl->p_callback(&args);
-                }
-            }
-        }
-    }
+    /** Flush read FIFO. */
+	while (read_cnt--)
+	{
+		/* Read data */
+#if (BSP_CFG_MCU_PART_SERIES != 1)
+		data = HW_SCI_ReadFIFO(channel);
+#else
+		if(SCI_UART_S124_FIFO_CHANNEL ==pctrl->channel)
+		{
+			data = HW_SCI_ReadFIFO(channel);
+		}
+		else
+		{
+			if (HW_SCI_IsDataLength9bits (channel))
+			{
+				data = HW_SCI_Read9bits (channel);
+			}
+			else
+			{
+				data = HW_SCI_Read (channel);
+			}
+		}
+#endif
+
+		/* Do callback if available */
+		if (NULL != pctrl->p_callback)
+		{
+			args.channel        = channel;
+			args.data           = (uint8_t) data;
+			args.p_context      = pctrl->p_context;
+			args.event = UART_EVENT_RX_CHAR;
+			pctrl->p_callback(&args);
+			if (2 == data_bytes)
+			{
+				args.data       = (uint8_t) (data >> 8);
+				pctrl->p_callback(&args);
+			}
+		}
+	}
 
 #if (SCI_UART_CFG_EXTERNAL_RTS_OPERATION)
     if (g_sci_ctrl_blk[channel].p_extpin_ctrl)

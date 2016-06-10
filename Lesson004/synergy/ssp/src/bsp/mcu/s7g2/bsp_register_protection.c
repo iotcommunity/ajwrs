@@ -155,9 +155,9 @@ void bsp_register_protect_open (void)
     uint32_t i;
 
     /** Initialize reference counters to 0. */
-    for (i = 0; i < BSP_REG_PROTECT_TOTAL_ITEMS; i++)
+    for (i = (uint32_t)0; i < BSP_REG_PROTECT_TOTAL_ITEMS; i++)
     {
-        g_protect_counters[i] = 0;
+        g_protect_counters[i] = (uint16_t)0;
     }
 }
 

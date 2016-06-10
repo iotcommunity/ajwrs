@@ -65,6 +65,8 @@
                                                     // configuration file.
 #define CGC_PLL_FREQ              (0)               ///< The PLL frequency must be calculated.
 #define CGC_IWDT_FREQ             (15000)           ///< The IWDT frequency is fixed at 15 kHz
+#define CGC_S124_LOW_V_MODE_FREQ  (4000000)         ///< Max ICLK frequency while in Low Voltage Mode for S124
+
 #define CGC_MAX_ZERO_WAIT_FREQ    (32000000)
 #define CGC_MAX_MIDDLE_SPEED_FREQ (12000000)        ///< Maximum frequency for Middle Speed mode
 #define CGC_ZERO_WAIT_CYCLES      (0)
@@ -87,7 +89,6 @@
 #else /* other than BSP_MCU_GROUP_S7G2 */
 /** HOCO frequency Option Function Select Register 1 (OFS1) value */
 #define CGC_HOCO_24_MHZ (0)                  ///< HOCO 24 MHZ value in Option Function Select Register 1
-#define CGC_HOCO_29_MHZ (1)                  ///< HOCO 29 MHZ value in Option Function Select Register 1
 #define CGC_HOCO_32_MHZ (2)                  ///< HOCO 32 MHZ value in Option Function Select Register 1
 #define CGC_HOCO_48_MHZ (3)                  ///< HOCO 48 MHZ value in Option Function Select Register 1
 #define CGC_HOCO_64_MHZ (4)                  ///< HOCO 64 MHZ value in Option Function Select Register 1

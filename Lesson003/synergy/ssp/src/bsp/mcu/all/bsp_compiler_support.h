@@ -54,6 +54,7 @@ Macro definitions
 #define BSP_SECTION_ROM_REGISTERS ".rom_registers"
 #define BSP_PLACE_IN_SECTION(x) __attribute__ ((section(x))) __attribute__ ((__used__))
 #define BSP_DONT_REMOVE
+#define BSP_ALIGN_VARIABLE(x)  __attribute__ ((aligned (x)))
 #elif defined(__ICCARM__)               /* IAR Compiler */
 #define BSP_SECTION_STACK  ".stack"
 #define BSP_SECTION_HEAP   "HEAP"
@@ -61,6 +62,7 @@ Macro definitions
 #define BSP_SECTION_ROM_REGISTERS ".rom_registers"
 #define BSP_PLACE_IN_SECTION(x) @ x
 #define BSP_DONT_REMOVE __root
+#define BSP_ALIGN_VARIABLE(x)
 #endif
 
 /***********************************************************************************************************************

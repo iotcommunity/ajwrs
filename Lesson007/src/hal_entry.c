@@ -18,11 +18,9 @@ volatile bool transmitComplete;
 volatile bool receiveComplete;
 
 int _write(int file, char *buffer, int count);
-
-
 int _write(int file, char *buffer, int count)
 {
-    // As far as I know, there isn't a way to retreive how many
+    // As far as I know, there isn't a way to retrieve how many
     // bytes were send on using the uart->write function if it does not return
     // SSP_SUCCESS (unless we want to use the tx interrupt function and a global counter
     // so, we will send each character one by one instead.

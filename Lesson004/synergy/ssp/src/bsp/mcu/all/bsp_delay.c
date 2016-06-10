@@ -93,7 +93,7 @@ void R_BSP_SoftwareDelay(uint32_t delay, bsp_delay_units_t units)
         BSP_SUB_CLOCK_HZ, so just delay one loop and return. */
     if ((iclk_hz <= BSP_SUB_CLOCK_HZ) && (units == BSP_DELAY_UNITS_MICROSECONDS))
     {
-        software_delay_loop(1);
+        software_delay_loop((uint32_t)1);
     }
     else
     {
@@ -120,7 +120,7 @@ void R_BSP_SoftwareDelay(uint32_t delay, bsp_delay_units_t units)
 
         /** Only delay if the supplied parameters require a delay. If you can't meet the delay provided,
             just return. */
-        if (loops_required > 0)
+        if (loops_required > (uint32_t)0)
         {
             software_delay_loop(loops_required);
         }
@@ -138,11 +138,22 @@ void R_BSP_SoftwareDelay(uint32_t delay, bsp_delay_units_t units)
 ***********************************************************************************************************************/
 BSP_ATTRIBUTE_STACKLESS static void software_delay_loop (unsigned loop_cnt)
 {
-    __asm volatile ("sw_delay_loop:         \n"
-                    "   sub r0, r0, #1      \n"		///< 1 cycle
-                    "   cmp r0, #0          \n"		///< 1 cycle
-                    "   bne.n sw_delay_loop \n"		///< 2 cycles
-                    "   bx lr               \n");	///< 2 cycles
+        __asm volatile ("sw_delay_loop:         \n"
+
+#if defined(__ICCARM__)
+                        "   subs r0, #1         \n"     ///< 1 cycle
+#elif defined(__GNUC__)
+                        "   sub r0, r0, #1      \n"     ///< 1 cycle
+#endif
+
+                        "   cmp r0, #0          \n"		///< 1 cycle
+/* CM0 has a different instruction set */						
+#ifdef __CORE_CM0PLUS_H_GENERIC			
+                        "   bne sw_delay_loop   \n"		///< 2 cycles
+#else
+                        "   bne.n sw_delay_loop \n"		///< 2 cycles
+#endif
+                        "   bx lr               \n");	///< 2 cycles
 
     /** loop_cnt is used but since it is used in assembly an unused parameter warning can be generated. */
     SSP_PARAMETER_NOT_USED(loop_cnt);

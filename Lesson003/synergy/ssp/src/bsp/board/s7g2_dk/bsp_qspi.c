@@ -116,7 +116,7 @@ static void bsp_qspi_device_xip_mode (bool enable_mode)
     bool              write_in_progress;
     volatile uint32_t timeout;
 
-    R_QSPI->SFMCMD_b.DCOM = 1;                                      /* Enter Direct Communication mode */
+    R_QSPI->SFMCMD_b.DCOM = 1UL;                                      /* Enter Direct Communication mode */
 
     /* Enable or disable XIP mode in the flash device */
     volatile_cfg.xip = enable_mode ? 0 : 1;
@@ -127,7 +127,7 @@ static void bsp_qspi_device_xip_mode (bool enable_mode)
     R_QSPI->SFMCMD_b.DCOM = 1;                                      /* Close the SPI bus cycle */
     R_QSPI->SFMCOM        = QSPI_COMMAND_WRITE_VOLATILE_CFGREG;     /* Write the command */
     R_QSPI->SFMCOM        = regval;                                 /* Write the volatile configuration register */
-    R_QSPI->SFMCMD_b.DCOM = 1;                                      /* Close the SPI bus cycle */
+    R_QSPI->SFMCMD_b.DCOM = 1UL;                                      /* Close the SPI bus cycle */
 
     /* Wait for the write to complete */
     write_in_progress = 1;
@@ -143,9 +143,9 @@ static void bsp_qspi_device_xip_mode (bool enable_mode)
     }
 
     R_QSPI->SFMCOM        = QSPI_COMMAND_WRITE_DISABLE; /* disable writing */
-    R_QSPI->SFMCMD_b.DCOM = 1;                          /* close the SPI bus cycle */
+    R_QSPI->SFMCMD_b.DCOM = (uint32_t)1;                /* close the SPI bus cycle */
 
-    R_QSPI->SFMCMD_b.DCOM = 0;                          /* enter ROM access mode */
+    R_QSPI->SFMCMD_b.DCOM = (uint32_t)0;                /* enter ROM access mode */
 }
 
 /*******************************************************************************************************************//**
@@ -182,11 +182,11 @@ static void bsp_qspi_xip_mode (bool enter_mode)
 
     SSP_PARAMETER_NOT_USED(i);
 
-    R_QSPI->SFMCMD_b.DCOM = 0;
+    R_QSPI->SFMCMD_b.DCOM = (uint32_t)0;
 
     if (enter_mode)
     {
-        R_QSPI->SFMSDC_b.SFMXD  = BSP_PRV_QSPI_N25Q256A_XIP_ENTRY_CODE;                        /* Set the XIP entry
+        R_QSPI->SFMSDC_b.SFMXD  = (uint32_t)BSP_PRV_QSPI_N25Q256A_XIP_ENTRY_CODE;              /* Set the XIP entry
                                                                                                 * confirmation
                                                                                                 * code */
         R_QSPI->SFMSDC_b.SFMXEN = true;                                                        /* Enter XIP mode in QSPI
@@ -253,20 +253,20 @@ void bsp_qspi_init (void)
     bool     write_in_progress;
 
     /* Initialized unused bits */
-    R_QSPI->SFMSPC = 0x10;
-    R_QSPI->SFMCST = 0;
-    R_QSPI->SFMSIC = 0;
-    R_QSPI->SFMPMD = 0;
-    R_QSPI->SFMCNT1 = 0;
+    R_QSPI->SFMSPC = 0x10UL;
+    R_QSPI->SFMCST = (uint32_t)0;
+    R_QSPI->SFMSIC = (uint32_t)0;
+    R_QSPI->SFMPMD = (uint32_t)0;
+    R_QSPI->SFMCNT1 = (uint32_t)0;
 
     /* enable clocks to the QSPI block */
-    R_MSTP->MSTPCRB_b.MSTPB6 = 0;
+    R_MSTP->MSTPCRB_b.MSTPB6 = (uint32_t)0;
 
     /* Set the SPI clock rate */
     R_QSPI->SFMSKC_b.SFMDV = BSP_PRV_QSPI_CLOCK_RATE;
 
     /* enter direct communication mode */
-    R_QSPI->SFMCMD_b.DCOM = 1;
+    R_QSPI->SFMCMD_b.DCOM = 1UL;
 
     /* Reset the flash device */
     bsp_qspi_device_reset();
@@ -276,15 +276,15 @@ void bsp_qspi_init (void)
     device_characteristics.manufacturer_id = R_QSPI->SFMCOM_b.SFMD; /* Read the manufacturer ID */
     device_characteristics.memory_type     = R_QSPI->SFMCOM_b.SFMD; /* Read the memory type */
     device_characteristics.memory_capacity = R_QSPI->SFMCOM_b.SFMD; /* Read the memory capacity */
-    R_QSPI->SFMCMD_b.DCOM                  = 1;                     /* Close the SPI bus cycle */
+    R_QSPI->SFMCMD_b.DCOM                  = 1UL;                     /* Close the SPI bus cycle */
 
     if ((BSP_PRV_QSPI_MANUFACTURER_ID != device_characteristics.manufacturer_id) ||
         (BSP_PRV_QSPI_MEMORY_TYPE != device_characteristics.memory_type) ||
         (BSP_PRV_QSPI_MEMORY_CAPACITY != device_characteristics.memory_capacity))
     {
-        device_characteristics.manufacturer_id = 0;
-        device_characteristics.memory_type     = 0;
-        device_characteristics.memory_capacity = 0;
+        device_characteristics.manufacturer_id = 0UL;
+        device_characteristics.memory_type     = 0UL;
+        device_characteristics.memory_capacity = 0UL;
         return;
     }
 
@@ -292,7 +292,7 @@ void bsp_qspi_init (void)
     R_QSPI->SFMCOM        = QSPI_COMMAND_READ_NONVOLATILE_CFGREG; /* Write the command */
     regval                = (uint16_t)(R_QSPI->SFMCOM_b.SFMD << 8);           /* Read the nv configuration register */
     regval               |= R_QSPI->SFMCOM_b.SFMD;                /* Read the nv configuration register */
-    R_QSPI->SFMCMD_b.DCOM = 1;                                    /* Close the SPI bus cycle */
+    R_QSPI->SFMCMD_b.DCOM = 1UL;                                    /* Close the SPI bus cycle */
     nv_cfg.entire_cfg          =  regval;
 
     /* Change the configuration of the device if it differs from the configuration specified above */
@@ -306,11 +306,11 @@ void bsp_qspi_init (void)
 
         /* Program the non-volatile configuration register in the device */
         R_QSPI->SFMCOM        = QSPI_COMMAND_WRITE_ENABLE;             /* Enable writing */
-        R_QSPI->SFMCMD_b.DCOM = 1;                                     /* Close the SPI bus cycle */
+        R_QSPI->SFMCMD_b.DCOM = 1UL;                                     /* Close the SPI bus cycle */
         R_QSPI->SFMCOM        = QSPI_COMMAND_WRITE_NONVOLATILE_CFGREG; /* Write the command */
         R_QSPI->SFMCOM        = regval >> 8;                           /* Write the nv configuration register */
         R_QSPI->SFMCOM        = regval;                                /* Write the nv configuration register */
-        R_QSPI->SFMCMD_b.DCOM = 1;                                     /* Close the SPI bus cycle */
+        R_QSPI->SFMCMD_b.DCOM = 1UL;                                     /* Close the SPI bus cycle */
 
         /* Wait for the write to complete */
         do
@@ -319,13 +319,13 @@ void bsp_qspi_init (void)
         } while (write_in_progress);
 
         /* close the SPI bus cycle */
-        R_QSPI->SFMCMD_b.DCOM = 1;
+        R_QSPI->SFMCMD_b.DCOM = 1UL;
     }
 
     /* Read the volatile configuration of the device */
     R_QSPI->SFMCOM        = QSPI_COMMAND_READ_VOLATILE_CFGREG;     /* Write the command */
     regval                = R_QSPI->SFMCOM_b.SFMD;                 /* Read the volatile configuration register */
-    R_QSPI->SFMCMD_b.DCOM = 1;                                     /* Close the SPI bus cycle */
+    R_QSPI->SFMCMD_b.DCOM = 1UL;                                     /* Close the SPI bus cycle */
     volatile_cfg.entire_cfg          =  regval;
 
     /* Set the number of dummy cycles in the flash device */
@@ -334,10 +334,10 @@ void bsp_qspi_init (void)
 
     /* Program the volatile configuration register in the device */
     R_QSPI->SFMCOM        = QSPI_COMMAND_WRITE_ENABLE;              /* Enable writing */
-    R_QSPI->SFMCMD_b.DCOM = 1;                                      /* Close the SPI bus cycle */
+    R_QSPI->SFMCMD_b.DCOM = 1UL;                                      /* Close the SPI bus cycle */
     R_QSPI->SFMCOM        = QSPI_COMMAND_WRITE_VOLATILE_CFGREG;     /* Write the command */
     R_QSPI->SFMCOM        = regval;                                 /* Write the volatile configuration register */
-    R_QSPI->SFMCMD_b.DCOM = 1;                                      /* Close the SPI bus cycle */
+    R_QSPI->SFMCMD_b.DCOM = 1UL;                                      /* Close the SPI bus cycle */
 
     /* Wait for the write to complete */
     do
@@ -349,7 +349,7 @@ void bsp_qspi_init (void)
     R_QSPI->SFMCOM = QSPI_COMMAND_WRITE_DISABLE;
 
     /* close the SPI bus cycle */
-    R_QSPI->SFMCMD_b.DCOM = 1;
+    R_QSPI->SFMCMD_b.DCOM = 1UL;
 
     /* Read the flag status of the device to determine the addressing mode of the device. */
     bsp_qspi_read_status_flag_register(&flag_status);
@@ -357,12 +357,12 @@ void bsp_qspi_init (void)
     /* If the device is in 4-byte addressing mode then configure the QSPI block that way as well */
     if (flag_status.addressing_4_byte_mode)
     {
-        R_QSPI->SFMSAC_b.SFMAS  = 3; /* 4 byte address */
-        R_QSPI->SFMSAC_b.SFM4BC = 1; /* Select default instruction code */
+        R_QSPI->SFMSAC_b.SFMAS  = 3UL; /* 4 byte address */
+        R_QSPI->SFMSAC_b.SFM4BC = 1UL; /* Select default instruction code */
     }
 
     /* Set the number of dummy cycles in QSPI peripheral */
-    R_QSPI->SFMSDC_b.SFMDN = BSP_PRV_QSPI_N25Q256A_NUM_DUMMY_CLOCKS - 2;
+    R_QSPI->SFMSDC_b.SFMDN = (uint32_t)(BSP_PRV_QSPI_N25Q256A_NUM_DUMMY_CLOCKS - 2);
 
     /* Micron QSPI needs 50ns de-select  (QSSL high between cycles) for nonREAD commands */
     /* (20ns for a read command) Need 3 and a bit clock (i.e. 4) cycles at 60MHz */
@@ -372,7 +372,7 @@ void bsp_qspi_init (void)
     R_QSPI->SFMSMD_b.SFMRM = BSP_PRV_QSPI_READ_MODE;
 
 #if   BSP_PRV_QSPI_ROM_PREFTECH_MODE
-    R_QSPI->SFMSMD_b.SFMPFE = 1;
+    R_QSPI->SFMSMD_b.SFMPFE = 1UL;
 #endif
 
 #if BSP_PRV_QSPI_XIP_MODE_AFTER_INIT
@@ -381,7 +381,7 @@ void bsp_qspi_init (void)
 #endif
 
     /* Enter ROM access mode */
-    R_QSPI->SFMCMD_b.DCOM = 0;
+    R_QSPI->SFMCMD_b.DCOM = (uint32_t)0;
 }
 
 /*******************************************************************************************************************//**
@@ -393,7 +393,7 @@ void bsp_qspi_init (void)
 void bsp_qspi_xip_enter (void)
 {
     /* Check there is no serial transfer in progress */
-    while (R_QSPI->SFMCST_b.COMBSY == 1)
+    while (R_QSPI->SFMCST_b.COMBSY == (uint32_t)1)
     {
     }
 
@@ -415,7 +415,7 @@ void bsp_qspi_xip_enter (void)
 void bsp_qspi_xip_exit (void)
 {
     /* Check there is no serial transfer in progress */
-    while (R_QSPI->SFMCST_b.COMBSY == 1)
+    while (R_QSPI->SFMCST_b.COMBSY == (uint32_t)1)
     {
     }
 
@@ -443,7 +443,7 @@ void bsp_qspi_status_get (bool * p_write_in_progress)
     regval = R_QSPI->SFMCOM_b.SFMD;
 
     /* Close the SPI bus cycle */
-    R_QSPI->SFMCMD_b.DCOM = 1;
+    R_QSPI->SFMCMD_b.DCOM = 1UL;
 
     status.entire_cfg = regval;
 

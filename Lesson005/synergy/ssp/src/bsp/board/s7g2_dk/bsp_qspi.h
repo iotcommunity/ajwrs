@@ -36,6 +36,8 @@
 
 #ifndef BSP_QSPI_H_
 #define BSP_QSPI_H_
+/* This QSPI header file requires this be included here. */
+#include "../../src/bsp/mcu/all/bsp_common.h"
 
 /***********************************************************************************************************************
  * Macro definitions

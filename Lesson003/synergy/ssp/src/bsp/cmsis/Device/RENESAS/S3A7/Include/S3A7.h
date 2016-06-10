@@ -29,7 +29,6 @@
 extern "C" {
 #endif
 
-
 /* -------------------------  Interrupt Number Definition  ------------------------ */
 
 typedef enum {
@@ -713,21 +712,6 @@ typedef enum {
 #if (BSP_IRQ_CFG_SDHIMMC0_DMA_REQ != BSP_IRQ_DISABLED)
   SDHIMMC0_DMA_REQ_IRQn,
 #endif
-#if (BSP_IRQ_CFG_SDHIMMC1_ACCS != BSP_IRQ_DISABLED)
-  SDHIMMC1_ACCS_IRQn,
-#endif
-#if (BSP_IRQ_CFG_SDHIMMC1_SDIO != BSP_IRQ_DISABLED)
-  SDHIMMC1_SDIO_IRQn,
-#endif
-#if (BSP_IRQ_CFG_SDHIMMC1_CARD != BSP_IRQ_DISABLED)
-  SDHIMMC1_CARD_IRQn,
-#endif
-#if (BSP_IRQ_CFG_SDHIMMC1_DMA_REQ != BSP_IRQ_DISABLED)
-  SDHIMMC1_DMA_REQ_IRQn,
-#endif
-#if (BSP_IRQ_CFG_DIVIDER_INT != BSP_IRQ_DISABLED)
-  DIVIDER_INT_IRQn,
-#endif
 #if (BSP_IRQ_CFG_SCE_PROC_BUSY != BSP_IRQ_DISABLED)
   SCE_PROC_BUSY_IRQn,
 #endif
@@ -761,27 +745,8 @@ typedef enum {
 #if (BSP_IRQ_CFG_SCE_INTEGRATE_RDRDY != BSP_IRQ_DISABLED)
   SCE_INTEGRATE_RDRDY_IRQn,
 #endif
-#if (BSP_IRQ_CFG_GLCDC_LINE_DETECT != BSP_IRQ_DISABLED)
-  GLCDC_LINE_DETECT_IRQn,
-#endif
-#if (BSP_IRQ_CFG_GLCDC_UNDERFLOW_1 != BSP_IRQ_DISABLED)
-  GLCDC_UNDERFLOW_1_IRQn,
-#endif
-#if (BSP_IRQ_CFG_GLCDC_UNDERFLOW_2 != BSP_IRQ_DISABLED)
-  GLCDC_UNDERFLOW_2_IRQn,
-#endif
-#if (BSP_IRQ_CFG_DRW_INT != BSP_IRQ_DISABLED)
-  DRW_INT_IRQn,
-#endif
-#if (BSP_IRQ_CFG_JPEG_JEDI != BSP_IRQ_DISABLED)
-  JPEG_JEDI_IRQn,
-#endif
-#if (BSP_IRQ_CFG_JPEG_JDTI != BSP_IRQ_DISABLED)
-  JPEG_JDTI_IRQn,
-#endif
   BSP_MAX_NUM_IRQn    /* Used for getting number of active interrupts, do not use. */
 } IRQn_Type;
-
 
 /** @addtogroup Configuration_of_CMSIS
   * @{
@@ -3269,7 +3234,7 @@ typedef struct {                                    /*!< R_SYSTEM Structure     
   
   union {
     __IO uint16_t  PRCR;                            /*!< Protect Register                                                      */
-    
+
     struct {
       __IO uint16_t  PRC0       :  1;               /*!< Enables writing to the registers related to the clock generation
                                                          circuit.                                                              */
@@ -3281,164 +3246,9 @@ typedef struct {                                    /*!< R_SYSTEM Structure     
       __O  uint16_t  PRKEY      :  8;               /*!< PRKEY Key Code                                                        */
     } PRCR_b;                                       /*!< BitSize                                                               */
   };
+
   
-  union {
-    __IO uint8_t   DPSBYCR;                         /*!< Deep Standby Control Register                                         */
-    
-    struct {
-      __IO uint8_t   DEEPCUT    :  2;               /*!< Power-Supply Control                                                  */
-           uint8_t              :  4;
-      __IO uint8_t   IOKEEP     :  1;               /*!< I/O Port Retention                                                    */
-      __IO uint8_t   DPSBY      :  1;               /*!< Deep Software Standby                                                 */
-    } DPSBYCR_b;                                    /*!< BitSize                                                               */
-  };
-  __I  uint8_t   RESERVED23;
-  
-  union {
-    __IO uint8_t   DPSIER0;                         /*!< Deep Standby Interrupt Enable Register 0                              */
-    
-    struct {
-      __IO uint8_t   DIRQ0E     :  1;               /*!< IRQ0-DS Pin Enable                                                    */
-      __IO uint8_t   DIRQ1E     :  1;               /*!< IRQ1-DS Pin Enable                                                    */
-      __IO uint8_t   DIRQ2E     :  1;               /*!< IRQ2-DS Pin Enable                                                    */
-      __IO uint8_t   DIRQ3E     :  1;               /*!< IRQ3-DS Pin Enable                                                    */
-      __IO uint8_t   DIRQ4E     :  1;               /*!< IRQ4-DS Pin Enable                                                    */
-      __IO uint8_t   DIRQ5E     :  1;               /*!< IRQ5-DS Pin Enable                                                    */
-      __IO uint8_t   DIRQ6E     :  1;               /*!< IRQ6-DS Pin Enable                                                    */
-      __IO uint8_t   DIRQ7E     :  1;               /*!< IRQ7-DS Pin Enable                                                    */
-    } DPSIER0_b;                                    /*!< BitSize                                                               */
-  };
-  
-  union {
-    __IO uint8_t   DPSIER1;                         /*!< Deep Standby Interrupt Enable Register 1                              */
-    
-    struct {
-      __IO uint8_t   DIRQ8E     :  1;               /*!< IRQ8-DS Pin Enable                                                    */
-      __IO uint8_t   DIRQ9E     :  1;               /*!< IRQ9-DS Pin Enable                                                    */
-      __IO uint8_t   DIRQ10E    :  1;               /*!< IRQ10-DS Pin Enable                                                   */
-      __IO uint8_t   DIRQ11E    :  1;               /*!< IRQ11-DS Pin Enable                                                   */
-      __IO uint8_t   DIRQ12E    :  1;               /*!< IRQ12-DS Pin Enable                                                   */
-      __IO uint8_t   DIRQ13E    :  1;               /*!< IRQ13-DS Pin Enable                                                   */
-      __IO uint8_t   DIRQ14E    :  1;               /*!< IRQ14-DS Pin Enable                                                   */
-      __IO uint8_t   DIRQ15E    :  1;               /*!< IRQ15-DS Pin Enable                                                   */
-    } DPSIER1_b;                                    /*!< BitSize                                                               */
-  };
-  
-  union {
-    __IO uint8_t   DPSIER2;                         /*!< Deep Standby Interrupt Enable Register 2                              */
-    
-    struct {
-      __IO uint8_t   DLVD1IE    :  1;               /*!< LVD1 Deep Standby Cancel Signal Enable                                */
-      __IO uint8_t   DLVD2IE    :  1;               /*!< LVD2 Deep Standby Cancel Signal Enable                                */
-      __IO uint8_t   DTRTCIIE   :  1;               /*!< RTC Interval interrupt Deep Standby Cancel Signal Enable              */
-      __IO uint8_t   DRTCAIE    :  1;               /*!< RTC Alarm interrupt Deep Standby Cancel Signal Enable                 */
-      __IO uint8_t   DNMIE      :  1;               /*!< NMI Pin Enable                                                        */
-    } DPSIER2_b;                                    /*!< BitSize                                                               */
-  };
-  
-  union {
-    __IO uint8_t   DPSIER3;                         /*!< Deep Standby Interrupt Enable Register 3                              */
-    
-    struct {
-      __IO uint8_t   DUSBFSIE   :  1;               /*!< USBFS Suspend/Resume Deep Standby Cancel Signal Enable                */
-      __IO uint8_t   DUSBHSIE   :  1;               /*!< USBHS Suspend/Resume Deep Standby Cancel Signal Enable                */
-      __IO uint8_t   DAGT1IE    :  1;               /*!< AGT1 Underflow Deep Standby Cancel Signal Enable                      */
-    } DPSIER3_b;                                    /*!< BitSize                                                               */
-  };
-  
-  union {
-    __IO uint8_t   DPSIFR0;                         /*!< Deep Standby Interrupt Flag Register 0                                */
-    
-    struct {
-      __IO uint8_t   DIRQ0F     :  1;               /*!< IRQ0-DS Pin Deep Standby Cancel Flag                                  */
-      __IO uint8_t   DIRQ1F     :  1;               /*!< IRQ1-DS Pin Deep Standby Cancel Flag                                  */
-      __IO uint8_t   DIRQ2F     :  1;               /*!< IRQ2-DS Pin Deep Standby Cancel Flag                                  */
-      __IO uint8_t   DIRQ3F     :  1;               /*!< IRQ3-DS Pin Deep Standby Cancel Flag                                  */
-      __IO uint8_t   DIRQ4F     :  1;               /*!< IRQ4-DS Pin Deep Standby Cancel Flag                                  */
-      __IO uint8_t   DIRQ5F     :  1;               /*!< IRQ5-DS Pin Deep Standby Cancel Flag                                  */
-      __IO uint8_t   DIRQ6F     :  1;               /*!< IRQ6-DS Pin Deep Standby Cancel Flag                                  */
-      __IO uint8_t   DIRQ7F     :  1;               /*!< IRQ7-DS Pin Deep Standby Cancel Flag                                  */
-    } DPSIFR0_b;                                    /*!< BitSize                                                               */
-  };
-  
-  union {
-    __IO uint8_t   DPSIFR1;                         /*!< Deep Standby Interrupt Flag Register 1                                */
-    
-    struct {
-      __IO uint8_t   DIRQ8F     :  1;               /*!< IRQ8-DS Pin Deep Standby Cancel Flag                                  */
-      __IO uint8_t   DIRQ9F     :  1;               /*!< IRQ9-DS Pin Deep Standby Cancel Flag                                  */
-      __IO uint8_t   DIRQ10F    :  1;               /*!< IRQ10-DS Pin Deep Standby Cancel Flag                                 */
-      __IO uint8_t   DIRQ11F    :  1;               /*!< IRQ11-DS Pin Deep Standby Cancel Flag                                 */
-      __IO uint8_t   DIRQ12F    :  1;               /*!< IRQ12-DS Pin Deep Standby Cancel Flag                                 */
-      __IO uint8_t   DIRQ13F    :  1;               /*!< IRQ13-DS Pin Deep Standby Cancel Flag                                 */
-      __IO uint8_t   DIRQ14F    :  1;               /*!< IRQ14-DS Pin Deep Standby Cancel Flag                                 */
-      __IO uint8_t   DIRQ15F    :  1;               /*!< IRQ15-DS Pin Deep Standby Cancel Flag                                 */
-    } DPSIFR1_b;                                    /*!< BitSize                                                               */
-  };
-  
-  union {
-    __IO uint8_t   DPSIFR2;                         /*!< Deep Standby Interrupt Flag Register 2                                */
-    
-    struct {
-      __IO uint8_t   DLVD1IF    :  1;               /*!< LVD1 Deep Standby Cancel Flag                                         */
-      __IO uint8_t   DLVD2IF    :  1;               /*!< LVD2 Deep Standby Cancel Flag                                         */
-      __IO uint8_t   DTRTCIIF   :  1;               /*!< RTC Interval interrupt Deep Standby Cancel Flag                       */
-      __IO uint8_t   DRTCAIF    :  1;               /*!< RTC Alarm interrupt Deep Standby Cancel Flag                          */
-      __IO uint8_t   DNMIF      :  1;               /*!< NMI Pin Deep Standby Cancel Flag                                      */
-    } DPSIFR2_b;                                    /*!< BitSize                                                               */
-  };
-  
-  union {
-    __IO uint8_t   DPSIFR3;                         /*!< Deep Standby Interrupt Flag Register 3                                */
-    
-    struct {
-      __IO uint8_t   DUSBFSIF   :  1;               /*!< USBFS Suspend/Resume Deep Standby Cancel Flag                         */
-      __IO uint8_t   DUSBHSIF   :  1;               /*!< USBHS Suspend/Resume Deep Standby Cancel Flag                         */
-      __IO uint8_t   DAGT1IF    :  1;               /*!< AGT1 Underflow Deep Standby Cancel Flag                               */
-    } DPSIFR3_b;                                    /*!< BitSize                                                               */
-  };
-  
-  union {
-    __IO uint8_t   DPSIEGR0;                        /*!< Deep Standby Interrupt Edge Register 0                                */
-    
-    struct {
-      __IO uint8_t   DIRQ0EG    :  1;               /*!< IRQ0-DS Pin Edge Select                                               */
-      __IO uint8_t   DIRQ1EG    :  1;               /*!< IRQ1-DS Pin Edge Select                                               */
-      __IO uint8_t   DIRQ2EG    :  1;               /*!< IRQ2-DS Pin Edge Select                                               */
-      __IO uint8_t   DIRQ3EG    :  1;               /*!< IRQ3-DS Pin Edge Select                                               */
-      __IO uint8_t   DIRQ4EG    :  1;               /*!< IRQ4-DS Pin Edge Select                                               */
-      __IO uint8_t   DIRQ5EG    :  1;               /*!< IRQ5-DS Pin Edge Select                                               */
-      __IO uint8_t   DIRQ6EG    :  1;               /*!< IRQ6-DS Pin Edge Select                                               */
-      __IO uint8_t   DIRQ7EG    :  1;               /*!< IRQ7-DS Pin Edge Select                                               */
-    } DPSIEGR0_b;                                   /*!< BitSize                                                               */
-  };
-  
-  union {
-    __IO uint8_t   DPSIEGR1;                        /*!< Deep Standby Interrupt Edge Register 1                                */
-    
-    struct {
-      __IO uint8_t   DIRQ8EG    :  1;               /*!< IRQ8-DS Pin Edge Select                                               */
-      __IO uint8_t   DIRQ9EG    :  1;               /*!< IRQ9-DS Pin Edge Select                                               */
-      __IO uint8_t   DIRQ10EG   :  1;               /*!< IRQ10-DS Pin Edge Select                                              */
-      __IO uint8_t   DIRQ11EG   :  1;               /*!< IRQ11-DS Pin Edge Select                                              */
-      __IO uint8_t   DIRQ12EG   :  1;               /*!< IRQ12-DS Pin Edge Select                                              */
-      __IO uint8_t   DIRQ13EG   :  1;               /*!< IRQ13-DS Pin Edge Select                                              */
-      __IO uint8_t   DIRQ14EG   :  1;               /*!< IRQ14-DS Pin Edge Select                                              */
-      __IO uint8_t   DIRQ15EG   :  1;               /*!< IRQ15-DS Pin Edge Select                                              */
-    } DPSIEGR1_b;                                   /*!< BitSize                                                               */
-  };
-  
-  union {
-    __IO uint8_t   DPSIEGR2;                        /*!< Deep Standby Interrupt Edge Register 2                                */
-    
-    struct {
-      __IO uint8_t   DLVD1IEG   :  1;               /*!< LVD1 Edge Select                                                      */
-      __IO uint8_t   DLVD2IEG   :  1;               /*!< LVD2 Edge Select                                                      */
-           uint8_t              :  2;
-      __IO uint8_t   DNMIEG     :  1;               /*!< NMI Pin Edge Select                                                   */
-    } DPSIEGR2_b;                                   /*!< BitSize                                                               */
-  };
-  __I  uint8_t   RESERVED24;
+  __I  uint8_t   RESERVED24[14];
   
   union {
     __IO uint8_t   SYOCDCR;                         /*!< System Control OCD Control Register                                */
@@ -10196,14 +10006,14 @@ typedef struct {                                    /*!< R_S14ADC Structure     
 typedef struct {                                    /*!< R_TSN Structure                                                       */
   
   union {
-    __IO uint8_t   TSCR;                            /*!< Temperature Sensor Control Register                                   */
+    __I  uint16_t  TSCDR;                          /*!< Temperature Sensor Calibration Data Register High                                  */
     
     struct {
-           uint8_t              :  4;
-      __IO uint8_t   TSOE       :  1;               /*!< Temperature Sensor Enable                                             */
-           uint8_t              :  2;
-      __IO uint8_t   TSEN       :  1;               /*!< Temperature Sensor Output Enable                                      */
-    } TSCR_b;                                       /*!< BitSize                                                               */
+      __I  uint8_t  TSCDRH     : 8;               /*!< This is a 8-bit read-only register for storing the Temperature
+                                                         sensor calibration data (High).                                  */
+      __I  uint8_t  TSCDRL     : 8;               /*!< This is a 8-bit read-only register for storing the Temperature
+                                                          sensor calibration data (Low).                                  */
+    } TSCDR_b;                                     /*!< BitSize                                                               */
   };
 } R_TSN_Type;
 
@@ -14677,7 +14487,7 @@ typedef struct {                                    /*!< R_QSPI Structure       
 #define R_IIC2_BASE                     0x40053200UL
 #define R_DOC_BASE                      0x40054100UL
 #define R_S14ADC_BASE                   0x4005C000UL
-#define R_TSN_BASE                      0x4005D000UL
+#define R_TSN_BASE                      0x407EC228UL
 #define R_DAC_BASE                      0x4005E000UL
 #define R_AMI_BASE                      0x4005F000UL
 #define R_SDHI0_BASE                    0x40062000UL

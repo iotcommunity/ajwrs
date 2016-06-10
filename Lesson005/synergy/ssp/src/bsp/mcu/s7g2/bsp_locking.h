@@ -21,17 +21,6 @@
 * Description  : This module implements atomic locking
 ***********************************************************************************************************************/
 
-/*******************************************************************************************************************//**
- * @ingroup BSP_MCU_S7G2
- * @defgroup BSP_MCU_LOCKING Atomic Locking
- *
- * This module implements atomic locking mechanisms.
- *
- * @{
- **********************************************************************************************************************/
-
-/** @} (end defgroup BSP_MCU_LOCKING) */
-
 #ifndef BSP_LOCKING_H_
 #define BSP_LOCKING_H_
 
@@ -42,6 +31,15 @@ Macro definitions
 #define BSP_LOCK_LOCKED             (0x01)  ///< Lock value when lock is taken
 #define BSP_LOCK_UNLOCKED           (0x00)  ///< Lock value when lock is available
 
+/*******************************************************************************************************************//**
+ * @ingroup BSP_MCU_S7G2
+ * @defgroup BSP_MCU_LOCKING Atomic Locking
+ *
+ * This module implements atomic locking mechanisms.
+ *
+ * @{
+ **********************************************************************************************************************/
+
 /***********************************************************************************************************************
 Typedef definitions
 ***********************************************************************************************************************/
@@ -50,6 +48,8 @@ typedef struct st_bsp_lock
 {
     uint8_t lock; ///< A uint8_t is used instead of a enum because the size must be 8-bits.
 } bsp_lock_t;
+
+/** @} (end defgroup BSP_MCU_LOCKING) */
 
 /***********************************************************************************************************************
 Exported global variables

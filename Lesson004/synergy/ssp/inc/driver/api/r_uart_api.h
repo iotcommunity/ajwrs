@@ -39,13 +39,13 @@
  * - Circular buffer support
  * - Runtime Transmit/Receive circular buffer flushing
  *
- * Implemented as:
+ * Implemented by:
  * - @ref UARTonSCI
  *
- * * Related SSP architecture topics:
- *  - What is an SSP Interface? @ref ssp-interfaces
- *  - What is a SSP Layer? @ref ssp-predefined-layers
- *  - How to use SSP Interfaces and Modules? @ref using-ssp-modules
+ * Related SSP architecture topics:
+ * - @ref ssp-interfaces
+ * - @ref ssp-predefined-layers
+ * - @ref using-ssp-modules
  *
  * UART Interface description: @ref HALUARTInterface
  * @{
@@ -65,7 +65,7 @@
  * Macro definitions
  **********************************************************************************************************************/
 #define UART_API_VERSION_MAJOR (1)
-#define UART_API_VERSION_MINOR (0)
+#define UART_API_VERSION_MINOR (1)
 
 /**********************************************************************************************************************
  * Typedef definitions
@@ -169,6 +169,9 @@ typedef struct st_uart_ctrl
 
     /** Size of source buffer pointer used to fill hardware FIFO from transmit ISR. */
     uint32_t tx_src_bytes;
+
+    /** Whether or not a receive transfer is in progress. */
+    bool rx_transfer_in_progress;
 
     /* Parameters to process UART Event */
     void (* p_callback)(uart_callback_args_t * p_args); ///< Pointer to callback function

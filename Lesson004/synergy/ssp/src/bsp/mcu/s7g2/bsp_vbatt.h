@@ -21,18 +21,10 @@
 * Description  : This module provides APIs for initializing the VBATT Input Control Register.
 ***********************************************************************************************************************/
 
-/*******************************************************************************************************************//**
- * @ingroup BSP_MCU_S7G2
- * @defgroup BSP_MCU_VBATT_INIT VBATT Pin Initialization
- *
- * The VBTICTLR register needs to be initialized out of reset.
- *
- * @{
- **********************************************************************************************************************/
-
 #ifndef BSP_VBATT_INIT_H
 #define BSP_VBATT_INIT_H
 
+#include "r_ioport_api.h"
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/
@@ -53,7 +45,7 @@ void bsp_vbatt_init(ioport_cfg_t const * const p_pin_cfg);   // Used internally 
 
 #endif /* BSP_VBATT_INIT_H */
 
-/** @} (end defgroup BSP_MCU_VBATT_INIT) */
+
 
 
 

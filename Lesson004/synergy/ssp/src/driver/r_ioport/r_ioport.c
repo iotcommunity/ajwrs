@@ -40,13 +40,8 @@
  **********************************************************************************************************************/
 /** Macro for error logger. */
 #ifndef IOPORT_ERROR_RETURN
-#define IOPORT_ERROR_RETURN(a, err) SSP_ERROR_RETURN((a), (err), g_module_name, &g_ioport_version)
+#define IOPORT_ERROR_RETURN(a, err) SSP_ERROR_RETURN((a), (err), "ioport", &g_ioport_version)
 #endif
-
-/* This macro is used to suppress compiler messages about a parameter not being used in a function. The nice thing
- * about using this implementation is that it does not take any extra RAM or ROM.
- */
-#define INTERNAL_NOT_USED(p) ((void) (p))
 
 /***********************************************************************************************************************
  * Typedef definitions
@@ -59,6 +54,13 @@
 /***********************************************************************************************************************
  * Private global variables
  **********************************************************************************************************************/
+#if defined(__GNUC__)
+/* This structure is affected by warnings from the GCC compiler bug https://gcc.gnu.org/bugzilla/show_bug.cgi?id=60784
+ * This pragma suppresses the warnings in this structure only, and will be removed when the SSP compiler is updated to
+ * v5.3.*/
+/*LDRA_INSPECTED 69 S */
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#endif
 /** Version data structure used by error logger macro. */
 static const ssp_version_t g_ioport_version =
 {
@@ -67,9 +69,11 @@ static const ssp_version_t g_ioport_version =
     .code_version_major = IOPORT_CODE_VERSION_MAJOR,
     .code_version_minor = IOPORT_CODE_VERSION_MINOR
 };
-
-/** Name of module used by error logger macro */
-static const char g_module_name[] = "ioport";
+#if defined(__GNUC__)
+/* Restore warning settings for 'missing-field-initializers' to as specified on command line. */
+/*LDRA_INSPECTED 69 S */
+#pragma GCC diagnostic pop
+#endif
 
 /***********************************************************************************************************************
  * Global Variables
@@ -120,20 +124,25 @@ ssp_err_t R_IOPORT_Init (const ioport_cfg_t * p_cfg)
     uint16_t     pin_count;
     ioport_cfg_t * p_pin_data;
 
-    /** g_module_name[] and g_ioport_version are accessed by the ASSERT macro only and so compiler toolchain can issue a
-     * warning
-     * that they are not accessed. The code below eliminates this warning and also ensures these data structures are not
-     *optimised away. */
-    INTERNAL_NOT_USED(g_module_name);
-    INTERNAL_NOT_USED(g_ioport_version);
+    /** g_ioport_version is accessed by the ASSERT macro only and so compiler toolchain can issue a
+     * warning that it is not accessed. The code below eliminates this warning and also ensures these data structures
+     * are not optimised away. */
+
+    SSP_PARAMETER_NOT_USED(g_ioport_version);
 
 #if ((1 == IOPORT_CFG_PARAM_CHECKING_ENABLE))
     SSP_ASSERT(NULL != p_cfg);
 #endif
 
+#if defined(BSP_MCU_VBATT_SUPPORT)
+    /** Handle any VBATT domain pin configuration. */
+    bsp_vbatt_init(p_cfg);
+#endif
+
     p_pin_data = (ioport_cfg_t *) p_cfg;
 
-    for (pin_count = 0; pin_count < p_pin_data->number_of_pins; pin_count++)
+    /* Cast to ensure correct conversion of parameter. */
+    for (pin_count = 0u; pin_count < (uint16_t)(p_pin_data->number_of_pins); pin_count++)
     {
         HW_IOPORT_PFSWrite(p_pin_data->p_pin_cfg_data[pin_count].pin, p_pin_data->p_pin_cfg_data[pin_count].pin_cfg);
     }
@@ -157,6 +166,21 @@ ssp_err_t R_IOPORT_PinCfg (ioport_port_pin_t pin, uint32_t cfg)
 {
 #if ((1 == IOPORT_CFG_PARAM_CHECKING_ENABLE))
     IOPORT_ERROR_RETURN(pin < IOPORT_PIN_END, SSP_ERR_INVALID_ARGUMENT);
+#endif
+
+#if defined(BSP_MCU_VBATT_SUPPORT)
+    /** Create temporary structure for handling VBATT pins. */
+    ioport_cfg_t     temp_cfg;
+    ioport_pin_cfg_t temp_pin_cfg;
+
+    temp_pin_cfg.pin = pin;
+    temp_pin_cfg.pin_cfg = cfg;
+
+    temp_cfg.number_of_pins = 1;
+    temp_cfg.p_pin_cfg_data = &temp_pin_cfg;
+
+    /** Handle any VBATT domain pin configuration. */
+    bsp_vbatt_init(&temp_cfg);
 #endif
 
     HW_IOPORT_PFSWrite(pin, cfg);
@@ -232,7 +256,8 @@ ssp_err_t R_IOPORT_PortWrite (ioport_port_t port, ioport_size_t value, ioport_si
     ioport_size_t clrbits;
 
 #if ((1 == IOPORT_CFG_PARAM_CHECKING_ENABLE))
-    IOPORT_ERROR_RETURN(mask > 0, SSP_ERR_INVALID_ARGUMENT);
+    /* Cast to ensure correct conversion of parameter. */
+    IOPORT_ERROR_RETURN(mask > (ioport_size_t)0, SSP_ERR_INVALID_ARGUMENT);
     IOPORT_ERROR_RETURN(port < IOPORT_PORT_END, SSP_ERR_INVALID_ARGUMENT);
 #endif
 
@@ -290,7 +315,8 @@ ssp_err_t R_IOPORT_PortDirectionSet (ioport_port_t port, ioport_size_t direction
     ioport_size_t clr_bits;
     ioport_size_t write_value;
 #if ((1 == IOPORT_CFG_PARAM_CHECKING_ENABLE))
-    IOPORT_ERROR_RETURN(mask > 0, SSP_ERR_INVALID_ARGUMENT);
+    /* Cast to ensure correct conversion of parameter. */
+    IOPORT_ERROR_RETURN(mask > (ioport_size_t)0, SSP_ERR_INVALID_ARGUMENT);
     IOPORT_ERROR_RETURN(port < IOPORT_PORT_END, SSP_ERR_INVALID_ARGUMENT);
 #endif
 
@@ -380,14 +406,20 @@ ssp_err_t R_IOPORT_PinEventInputRead (ioport_port_pin_t pin, ioport_level_t * p_
 {
     ioport_size_t portvalue;
     ioport_size_t mask;
+    ioport_port_t port;
+    uint16_t	  pin_to_port;
 
 #if ((1 == IOPORT_CFG_PARAM_CHECKING_ENABLE))
     IOPORT_ERROR_RETURN(pin < IOPORT_PIN_END, SSP_ERR_INVALID_ARGUMENT);
     SSP_ASSERT(NULL != p_pin_event);
 #endif
 
-    portvalue = HW_IOPORT_PortEventInputDataRead((ioport_port_t) (0xFF00 & pin));
-    mask      = (ioport_size_t) (1 << (0x00FF & pin));
+    /* Cast to ensure correct conversion of parameter. */
+    pin_to_port = (uint16_t)pin;
+    pin_to_port = pin_to_port & (uint16_t)0xFF00;
+    port = (ioport_port_t)pin_to_port;
+    portvalue = HW_IOPORT_PortEventInputDataRead(port);
+    mask      = (ioport_size_t) (1 << (0x00FF & (ioport_port_t)pin));
 
     if ((portvalue & mask) == mask)
     {
@@ -424,7 +456,7 @@ ssp_err_t R_IOPORT_PortEventOutputWrite (ioport_port_t port, ioport_size_t event
 
 #if ((1 == IOPORT_CFG_PARAM_CHECKING_ENABLE))
     IOPORT_ERROR_RETURN(port < IOPORT_PORT_END, SSP_ERR_INVALID_ARGUMENT);
-    IOPORT_ERROR_RETURN(mask_value > 0, SSP_ERR_INVALID_ARGUMENT);
+    IOPORT_ERROR_RETURN(mask_value > (ioport_size_t)0, SSP_ERR_INVALID_ARGUMENT);
 #endif
 
     set_bits   = event_data & mask_value;
@@ -453,25 +485,29 @@ ssp_err_t R_IOPORT_PinEventOutputWrite (ioport_port_pin_t pin, ioport_level_t pi
     ioport_size_t set_bits;
     ioport_size_t reset_bits;
     ioport_port_t port;
+    uint16_t	  pin_to_port;
 
 #if ((1 == IOPORT_CFG_PARAM_CHECKING_ENABLE))
     IOPORT_ERROR_RETURN(pin < IOPORT_PIN_END, SSP_ERR_INVALID_ARGUMENT);
     IOPORT_ERROR_RETURN((pin_value == IOPORT_LEVEL_HIGH) || (pin_value == IOPORT_LEVEL_LOW), SSP_ERR_INVALID_ARGUMENT);
 #endif
 
-    port       = (ioport_port_t) (pin & 0xFF00);
-    set_bits   = 0;
-    reset_bits = 0;
+    /* Cast to ensure correct conversion of parameter. */
+    pin_to_port = (uint16_t)pin;
+	pin_to_port = pin_to_port & (uint16_t)0xFF00;
+	port = (ioport_port_t)pin_to_port;
+    set_bits   = (ioport_size_t)0;
+    reset_bits = (ioport_size_t)0;
 
     if (IOPORT_LEVEL_HIGH == pin_value)
     {
         /* Cast to ensure size */
-    	set_bits = (ioport_size_t)(1 << (pin & 0x00FF));
+    	set_bits = (ioport_size_t)(1 << ((ioport_size_t)pin & 0x00FF));
     }
     else
     {
     	/* Cast to ensure size */
-    	reset_bits = (ioport_size_t)(1 << (pin & 0x00FF));
+    	reset_bits = (ioport_size_t)(1 << ((ioport_size_t)pin & 0x00FF));
     }
 
     HW_IOPORT_PortEventOutputDataWrite(port, set_bits, reset_bits);
@@ -507,8 +543,8 @@ ssp_err_t R_IOPORT_VersionGet (ssp_version_t * p_data)
  **********************************************************************************************************************/
 ssp_err_t R_IOPORT_EthernetModeCfg (ioport_ethernet_channel_t channel, ioport_ethernet_mode_t mode)
 {
-	INTERNAL_NOT_USED(channel);
-	INTERNAL_NOT_USED(mode);
+	SSP_PARAMETER_NOT_USED(channel);
+	SSP_PARAMETER_NOT_USED(mode);
 
 #if defined(BSP_MCU_GROUP_S7G2)
 #if ((1 == IOPORT_CFG_PARAM_CHECKING_ENABLE))

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<synergyConfiguration>
+<synergyConfiguration version="2">
   <generalSettings>
     <option key="#Board#" value="board.s7g2dk"/>
     <option key="CPU" value="S7G2"/>
     <option key="#TargetName#" value="R7FS7G27H2A01CBD"/>
     <option key="#RTOS#" value="Express Logic ThreadX"/>
     <option key="#pinconfiguration#" value="R7FS7G27H2A01CBD.pincfg"/>
-    <option key="#SSPVersion#" value="1.0.0"/>
+    <option key="#SSPVersion#" value="1.1.0"/>
   </generalSettings>
   <synergyBspConfiguration>
     <config id="config.board.s7g2dk">
@@ -17,26 +17,25 @@
       <property id="config.board.s7g2dk.main" value="0x1000"/>
       <property id="config.board.s7g2dk.process" value="0"/>
       <property id="config.board.s7g2dk.heap" value="0x400"/>
-      <property id="config.board.s7g2dk.ofs0" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.ofs1" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_pc0_enable" value="config.board.s7g2dk.mpu_pc0_enable.disabled"/>
-      <property id="config.board.s7g2dk.mpu_pc0_start" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_pc0_end" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_pc1_enable" value="config.board.s7g2dk.mpu_pc1_enable.disabled"/>
-      <property id="config.board.s7g2dk.mpu_pc1_start" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_pc1_end" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_reg0_enable" value="config.board.s7g2dk.mpu_reg0_enable.disabled"/>
-      <property id="config.board.s7g2dk.mpu_reg0_start" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_reg0_end" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_reg1_enable" value="config.board.s7g2dk.mpu_reg1_enable.disabled"/>
-      <property id="config.board.s7g2dk.mpu_reg1_start" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_reg1_end" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_reg2_enable" value="config.board.s7g2dk.mpu_reg2_enable.disabled"/>
-      <property id="config.board.s7g2dk.mpu_reg2_start" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_reg2_end" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_reg3_enable" value="config.board.s7g2dk.mpu_reg3_enable.disabled"/>
-      <property id="config.board.s7g2dk.mpu_reg3_start" value="0xFFFFFFFF"/>
-      <property id="config.board.s7g2dk.mpu_reg3_end" value="0xFFFFFFFF"/>
+      <property id="config.mcu.s7g2.OFS0" value="config.mcu.s7g2.OFS0_Register.default"/>
+      <property id="config.mcu.s7g2.OFS0.iwdt_start_mode" value="config.mcu.s7g2.OFS0.iwdt_start_mode.disabled"/>
+      <property id="config.mcu.s7g2.OFS0.iwdt_timeout" value="config.mcu.s7g2.OFS0.iwdt_timeout.2048"/>
+      <property id="config.mcu.s7g2.OFS0.iwdt_divisor" value="config.mcu.s7g2.OFS0.iwdt_divisor.128"/>
+      <property id="config.mcu.s7g2.OFS0.iwdt_window_end" value="config.mcu.s7g2.OFS0.iwdt_window_end.0"/>
+      <property id="config.mcu.s7g2.OFS0.iwdt_window_start" value="config.mcu.s7g2.OFS0.iwdt_window_start.100"/>
+      <property id="config.mcu.s7g2.OFS0.iwdt_reset_interrupt" value="config.mcu.s7g2.OFS0.iwdt_reset_interrupt.Reset"/>
+      <property id="config.mcu.s7g2.OFS0.iwdt_stop_control" value="config.mcu.s7g2.OFS0.iwdt_stop_control.stops"/>
+      <property id="config.mcu.s7g2.OFS0.wdt_start_mode" value="config.mcu.s7g2.OFS0.wdt_start_mode.register"/>
+      <property id="config.mcu.s7g2.OFS0.wdt_timeout" value="config.mcu.s7g2.OFS0.wdt_timeout.16384"/>
+      <property id="config.mcu.s7g2.OFS0.wdt_divisor" value="config.mcu.s7g2.OFS0.wdt_divisor.128"/>
+      <property id="config.mcu.s7g2.OFS0.wdt_window_end" value="config.mcu.s7g2.OFS0.wdt_window_end.0"/>
+      <property id="config.mcu.s7g2.OFS0.wdt_window_start" value="config.mcu.s7g2.OFS0.wdt_window_start.100"/>
+      <property id="config.mcu.s7g2.OFS0.wdt_reset_interrupt" value="config.mcu.s7g2.OFS0.wdt_reset_interrupt.Reset"/>
+      <property id="config.mcu.s7g2.OFS0.wdt_stop_control" value="config.mcu.s7g2.OFS0.wdt_stop_control.stops"/>
+      <property id="config.mcu.s7g2.OFS1" value="config.mcu.s7g2.OFS1_Register.default"/>
+      <property id="config.mcu.s7g2.OFS1.voltage_detection0.start" value="config.mcu.s7g2.OFS1.voltage_detection0.start.disabled"/>
+      <property id="config.mcu.s7g2.OFS1.voltage_detection0_level" value="config.mcu.s7g2.OFS1.voltage_detection0_level.280"/>
+      <property id="config.mcu.s7g2.OFS1.hoco_osc" value="config.mcu.s7g2.OFS1.hoco_osc.disabled"/>
       <property id="config.board.s7g2dk.id1" value="0xFFFFFFFF"/>
       <property id="config.board.s7g2dk.id2" value="0xFFFFFFFF"/>
       <property id="config.board.s7g2dk.id3" value="0xFFFFFFFF"/>
@@ -81,25 +80,25 @@
     <node id="board.clock.fclk.display" option="board.clock.fclk.display.value"/>
   </synergyClockConfiguration>
   <synergyComponentSelection>
-    <component apiversion="" class="BSP" condition="" group="BSP" subgroup="s7g2_dk" variant="" vendor="Renesas" version="1.0.0">
-      <description>Board Support Package for S7G2_DK</description>
-      <originalPack>Renesas.Synergy.1.0.0.pack</originalPack>
-    </component>
-    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_cgc" variant="" vendor="Renesas" version="1.0.0">
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_cgc" variant="" vendor="Renesas" version="1.1.0">
       <description>Clock Generation Circuit: Provides=[CGC]</description>
-      <originalPack>Renesas.Synergy.1.0.0.pack</originalPack>
+      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
     </component>
-    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_elc" variant="" vendor="Renesas" version="1.0.0">
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_elc" variant="" vendor="Renesas" version="1.1.0">
       <description>Event Link Controller: Provides=[ELC]</description>
-      <originalPack>Renesas.Synergy.1.0.0.pack</originalPack>
+      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
     </component>
-    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_ioport" variant="" vendor="Renesas" version="1.0.0">
-      <description>I/O Port: Provides=[IO Port]</description>
-      <originalPack>Renesas.Synergy.1.0.0.pack</originalPack>
-    </component>
-    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_gpt" variant="" vendor="Renesas" version="1.0.0">
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_gpt" variant="" vendor="Renesas" version="1.1.0">
       <description>General Purpose Timer: Provides=[Timer ,GPT]</description>
-      <originalPack>Renesas.Synergy.1.0.0.pack</originalPack>
+      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+    </component>
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_ioport" variant="" vendor="Renesas" version="1.1.0">
+      <description>I/O Port: Provides=[IO Port]</description>
+      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+    </component>
+    <component apiversion="" class="BSP" condition="" group="BSP" subgroup="s7g2_dk" variant="" vendor="Renesas" version="1.1.0">
+      <description>Board Support Package for S7G2_DK</description>
+      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
     </component>
   </synergyComponentSelection>
   <synergyIcuConfiguration>
@@ -144,7 +143,6 @@
     <node id="board.icu.ctsu.write" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.ctsu.read" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.ctsu.end" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.divider.int" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.dmac.dmac0.int" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.dmac.dmac1.int" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.dmac.dmac2.int" option="board.icu.common.irq.disabled"/>
@@ -269,8 +267,6 @@
     <node id="board.icu.gpt.gpt8.compare_f" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt8.counter_overflow" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt8.counter_underflow" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt8.ad_trig_a" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt8.ad_trig_b" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt9.capture_compare_a" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt9.capture_compare_b" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt9.compare_c" option="board.icu.common.irq.disabled"/>
@@ -279,8 +275,6 @@
     <node id="board.icu.gpt.gpt9.compare_f" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt9.counter_overflow" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt9.counter_underflow" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt9.ad_trig_a" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt9.ad_trig_b" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt10.capture_compare_a" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt10.capture_compare_b" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt10.compare_c" option="board.icu.common.irq.disabled"/>
@@ -289,8 +283,6 @@
     <node id="board.icu.gpt.gpt10.compare_f" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt10.counter_overflow" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt10.counter_underflow" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt10.ad_trig_a" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt10.ad_trig_b" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt11.capture_compare_a" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt11.capture_compare_b" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt11.compare_c" option="board.icu.common.irq.disabled"/>
@@ -299,8 +291,6 @@
     <node id="board.icu.gpt.gpt11.compare_f" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt11.counter_overflow" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt11.counter_underflow" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt11.ad_trig_a" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt11.ad_trig_b" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt12.capture_compare_a" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt12.capture_compare_b" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt12.compare_c" option="board.icu.common.irq.disabled"/>
@@ -309,8 +299,6 @@
     <node id="board.icu.gpt.gpt12.compare_f" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt12.counter_overflow" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt12.counter_underflow" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt12.ad_trig_a" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt12.ad_trig_b" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt13.capture_compare_a" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt13.capture_compare_b" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt13.compare_c" option="board.icu.common.irq.disabled"/>
@@ -319,8 +307,6 @@
     <node id="board.icu.gpt.gpt13.compare_f" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt13.counter_overflow" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.gpt.gpt13.counter_underflow" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt13.ad_trig_a" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.gpt.gpt13.ad_trig_b" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.icu.irq0" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.icu.irq1" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.icu.irq2" option="board.icu.common.irq.disabled"/>
@@ -473,32 +459,37 @@
     <node id="board.icu.usbhs.usb_int_resume" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.wdt.underflow" option="board.icu.common.irq.disabled"/>
   </synergyIcuConfiguration>
+  <synergyMessagingConfiguration/>
   <synergyModuleConfiguration>
-    <context id="_hal.654483637">
-      <module id="module.driver.cgc_on_cgc.287496520">
-        <property id="module.driver.cgc.name" value="g_cgc"/>
-      </module>
-      <module id="module.driver.elc_on_elc.90050316">
-        <property id="module.driver.elc.name" value="g_elc"/>
-      </module>
-      <module id="module.driver.ioport_on_ioport.588805093">
-        <property id="module.driver.ioport.name" value="g_ioport"/>
-      </module>
-      <module id="module.driver.timer_on_gpt.471580547">
-        <property id="module.driver.timer.name" value="g_timer"/>
-        <property id="module.driver.timer.channel" value="0"/>
-        <property id="module.driver.timer.mode" value="module.driver.timer.mode.mode_periodic"/>
-        <property id="module.driver.timer.period" value="1000"/>
-        <property id="module.driver.timer.unit" value="module.driver.timer.unit.unit_period_msec"/>
-        <property id="module.driver.timer.duty_cycle" value="50"/>
-        <property id="module.driver.timer.duty_cycle_unit" value="module.driver.timer.duty_cycle_unit.unit_percent"/>
-        <property id="module.driver.timer.autostart" value="module.driver.timer.autostart.true"/>
-        <property id="module.driver.timer.gtioca_output_enabled" value="module.driver.timer.gtioca_output_enabled.false"/>
-        <property id="module.driver.timer.gtioca_stop_level" value="module.driver.timer.gtioca_stop_level.pin_level_low"/>
-        <property id="module.driver.timer.gtiocb_output_enabled" value="module.driver.timer.gtiocb_output_enabled.false"/>
-        <property id="module.driver.timer.gtiocb_stop_level" value="module.driver.timer.gtiocb_stop_level.pin_level_low"/>
-        <property id="module.driver.timer.p_callback" value="NULL"/>
-      </module>
+    <module id="module.driver.cgc_on_cgc.635483710">
+      <property id="module.driver.cgc.name" value="g_cgc"/>
+    </module>
+    <module id="module.driver.elc_on_elc.862343663">
+      <property id="module.driver.elc.name" value="g_elc"/>
+    </module>
+    <module id="module.driver.ioport_on_ioport.807495894">
+      <property id="module.driver.ioport.name" value="g_ioport"/>
+    </module>
+    <module id="module.driver.timer_on_gpt.310036725">
+      <property id="module.driver.timer.name" value="g_timer"/>
+      <property id="module.driver.timer.channel" value="0"/>
+      <property id="module.driver.timer.mode" value="module.driver.timer.mode.mode_periodic"/>
+      <property id="module.driver.timer.period" value="1000"/>
+      <property id="module.driver.timer.unit" value="module.driver.timer.unit.unit_period_msec"/>
+      <property id="module.driver.timer.duty_cycle" value="50"/>
+      <property id="module.driver.timer.duty_cycle_unit" value="module.driver.timer.duty_cycle_unit.unit_percent"/>
+      <property id="module.driver.timer.autostart" value="module.driver.timer.autostart.true"/>
+      <property id="module.driver.timer.gtioca_output_enabled" value="module.driver.timer.gtioca_output_enabled.false"/>
+      <property id="module.driver.timer.gtioca_stop_level" value="module.driver.timer.gtioca_stop_level.pin_level_low"/>
+      <property id="module.driver.timer.gtiocb_output_enabled" value="module.driver.timer.gtiocb_output_enabled.false"/>
+      <property id="module.driver.timer.gtiocb_stop_level" value="module.driver.timer.gtiocb_stop_level.pin_level_low"/>
+      <property id="module.driver.timer.p_callback" value="NULL"/>
+    </module>
+    <context id="_hal.1395169494">
+      <stack module="module.driver.timer_on_gpt.310036725"/>
+      <stack module="module.driver.ioport_on_ioport.807495894"/>
+      <stack module="module.driver.elc_on_elc.862343663"/>
+      <stack module="module.driver.cgc_on_cgc.635483710"/>
     </context>
     <config id="config.driver.elc">
       <property id="config.driver.elc.checking" value="config.driver.elc.checking.system"/>
@@ -517,4 +508,7 @@
       <property id="config.driver.gpt.param_checking_enable" value="config.driver.gpt.param_checking_enable.bsp"/>
     </config>
   </synergyModuleConfiguration>
+  <synergyPinConfiguration>
+    <pincfg active="true" name="R7FS7G27H2A01CBD.pincfg" symbol="g_bsp_pin_cfg"/>
+  </synergyPinConfiguration>
 </synergyConfiguration>

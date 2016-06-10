@@ -1,6 +1,6 @@
 /***********************************************************************************************************************
  * Copyright [2015] Renesas Electronics Corporation and/or its licensors. All Rights Reserved.
- * 
+ *
  * This file is part of Renesas SynergyTM Software Package (SSP)
  *
  * The contents of this file (the "contents") are proprietary and confidential to Renesas Electronics Corporation
@@ -162,6 +162,8 @@ typedef enum e_bsp_hw_lock
     BSP_HW_LOCK_MMPU,
     BSP_HW_LOCK_SMPU,
     BSP_HW_LOCK_SPMON,
+    BSP_HW_LOCK_LVD1,
+    BSP_HW_LOCK_LVD2,
     BSP_NUM_LOCKS //This entry is not a valid lock. It is used for sizing the HW lock array in the BSP. Do not touch!
 } bsp_hw_lock_t;
 

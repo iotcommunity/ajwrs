@@ -80,7 +80,6 @@
  **********************************************************************************************************************/
 __STATIC_INLINE void HW_ELC_PowerOn (void)
 {
-    /* TODO: Replace these direct register calls with calls to the LPM equivalent calls when they become available */
     p_mstp->MSTPCRC_b.MSTPC14 = 0;
 }
 
@@ -89,7 +88,6 @@ __STATIC_INLINE void HW_ELC_PowerOn (void)
  **********************************************************************************************************************/
 __STATIC_INLINE void HW_ELC_PowerOff (void)
 {
-    /* TODO: Replace these direct register calls with calls to the LPM equivalent calls when they become available */
     p_mstp->MSTPCRC_b.MSTPC14 = 1;
 }
 

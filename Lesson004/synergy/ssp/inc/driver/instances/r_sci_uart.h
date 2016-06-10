@@ -33,7 +33,9 @@
  * @section UARTonSCI_SUMMARY Summary
  * This module supports the UART on SCI. It implements the UART interface and drives SCI as a full-duplex UART
  * communication port. This module can drive all SCI channels as UART ports.
- * @see UART_API
+ *
+ * Extends @ref UART_API.
+ *
  * @note This module can use either the 16-stage hardware FIFO or a DTC transfer implementation to write multiple bytes.
  * @{
  **********************************************************************************************************************/
@@ -50,7 +52,7 @@
  * Macro definitions
  **********************************************************************************************************************/
 #define SCI_UART_CODE_VERSION_MAJOR (1)
-#define SCI_UART_CODE_VERSION_MINOR (0)
+#define SCI_UART_CODE_VERSION_MINOR (1)
 
 /**********************************************************************************************************************
  * Typedef definitions

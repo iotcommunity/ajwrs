@@ -35,6 +35,11 @@ Includes
 #ifdef BSP_MCU_GROUP_S3A7
 #include "..\..\..\src\driver\r_sci_common\hw\target\s3a7\hw_sci_common_s3a7.h"
 #endif
+
+#ifdef BSP_MCU_GROUP_S124
+#include "..\..\..\src\driver\r_sci_common\hw\target\s124\hw_sci_common_s124.h"
+#endif
+
 /***********************************************************************************************************************
 Macro definitions
 ***********************************************************************************************************************/

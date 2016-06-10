@@ -45,6 +45,13 @@
 /***********************************************************************************************************************
  * Private global variables
  **********************************************************************************************************************/
+#if defined(__GNUC__)
+/* This structure is affected by warnings from the GCC compiler bug https://gcc.gnu.org/bugzilla/show_bug.cgi?id=60784
+ * This pragma suppresses the warnings in this structure only, and will be removed when the SSP compiler is updated to
+ * v5.3.*/
+/*LDRA_INSPECTED 69 S */
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#endif
 /** Version data structure used by error logger macro. */
 static const ssp_version_t s_elc_version =
 {
@@ -53,6 +60,11 @@ static const ssp_version_t s_elc_version =
     .code_version_major = ELC_CODE_VERSION_MAJOR,
     .code_version_minor = ELC_CODE_VERSION_MINOR
 };
+#if defined(__GNUC__)
+/* Restore warning settings for 'missing-field-initializers' to as specified on command line. */
+/*LDRA_INSPECTED 69 S */
+#pragma GCC diagnostic pop
+#endif
 
 /***********************************************************************************************************************
  * Global Variables

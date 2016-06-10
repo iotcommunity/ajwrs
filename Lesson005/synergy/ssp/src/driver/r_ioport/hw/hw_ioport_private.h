@@ -75,7 +75,7 @@ ioport_level_t HW_IOPORT_PinRead (ioport_port_pin_t pin);
 ioport_size_t  HW_IOPORT_PortRead (ioport_port_t port);
 ioport_size_t  HW_IOPORT_PortDirectionRead (ioport_port_t port);
 void           HW_IOPORT_PortDirectionSet (ioport_port_t port, ioport_size_t value);
-void           HW_IOPORT_PinDirectionSet (ioport_port_pin_t pin, ioport_size_t direction);
+void           HW_IOPORT_PinDirectionSet (ioport_port_pin_t pin, ioport_direction_t direction);
 ioport_size_t  HW_IOPORT_PortOutputDataRead (ioport_port_t port);
 ioport_size_t  HW_IOPORT_PortOutputDataRead (ioport_port_t port);
 ioport_size_t  HW_IOPORT_PortEventInputDataRead (ioport_port_t port);
@@ -87,6 +87,7 @@ void     HW_IOPORT_PFSWrite (ioport_port_pin_t pin, uint32_t value);
 void     HW_IOPORT_PFSSetDirection (ioport_port_pin_t pin, ioport_direction_t direction);
 uint32_t HW_IOPORT_PFSRead (ioport_port_pin_t pin);
 void     HW_IOPORT_PFSAccess (ioport_pwpr_t value);
+void     HW_IOPORT_Init_Reference_Counter(void);
 
 /**********************************************************************************************************************
  * Includes

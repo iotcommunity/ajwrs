@@ -49,9 +49,9 @@
  * @section SCI_COMMON_SUMMARY Summary
  *
  * This module is common to the  SCI modes described below.
- *   * UART  - Asynchronous mode, Interface is defined in r_uart_api.h
- *   * SSPI  - Simple SPI mode,   Interface is defined in r_spi_api.h
- *   * SI2C  - Simple I2C mode,   Interface is defined in r_i2c_api.h
+ *   * UART  - Asynchronous mode. @ref UART_API is defined in r_uart_api.h.
+ *   * SSPI  - Simple SPI mode.   @ref SPI_API is defined in r_spi_api.h.
+ *   * SI2C  - Simple I2C mode.   @ref I2C_API is defined in r_i2c_api.h.
  * @{
  **********************************************************************************************************************/
 
@@ -63,14 +63,18 @@
 #define SCI_CH_MAX (10)                     /**< SCI total channel number (S7G2) */
 #elif (BSP_MCU_GROUP_S3A7 == 1)
 #define SCI_CH_MAX (6)                      /**< SCI total channel number (S3A7) */
-//#elif (BSP_MCU_GROUP_S124 == 1)
-//#define SCI_CH_MAX (3)                      /**< SCI total channel number (S124); BSP not ready yet */
+#elif (BSP_MCU_GROUP_S124 == 1)
+#define SCI_CH_MAX (3)                      /**< SCI total channel number (S124) */
 #else
 #error "No existing device group specified"
 #endif
 #endif // ifndef BSP_BOARD_MOCKED
 
 #define SCI_PHY_CH_MAX (10)                 /**< Maximum number of SCI physical channel */
+
+#ifndef SCI_COMMON_ERROR_RETURN
+#define SCI_COMMON_ERROR_RETURN(a, err)       SSP_ERROR_RETURN((a), (err), "sci_common", NULL)
+#endif
 
 /**********************************************************************************************************************
  * Typedef definitions

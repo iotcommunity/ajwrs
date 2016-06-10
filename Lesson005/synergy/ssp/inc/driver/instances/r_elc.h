@@ -29,7 +29,7 @@
  * @brief Driver for the Event Link Controller (ELC).
  *
  * This module supports the Event Link Controller (ELC).  It implements
- * the following interface: @ref ELC
+ * the following interface: @ref ELC_API
  *
  * @{
  **********************************************************************************************************************/
@@ -48,7 +48,7 @@
  * Macro definitions
  **********************************************************************************************************************/
 #define ELC_CODE_VERSION_MAJOR (1)
-#define ELC_CODE_VERSION_MINOR (0)
+#define ELC_CODE_VERSION_MINOR (1)
 
 /***********************************************************************************************************************
  * Typedef definitions

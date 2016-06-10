@@ -59,10 +59,10 @@ static elc_event_t rxi_event_list[] =
     ELC_EVENT_SCI2_RXI,
     ELC_EVENT_SCI3_RXI,
     ELC_EVENT_SCI4_RXI,
-    ELC_EVENT_SCI5_RXI,
-    ELC_EVENT_SCI6_RXI,
-    ELC_EVENT_SCI7_RXI,
-    ELC_EVENT_SCI8_RXI,
+	(elc_event_t) 0,
+	(elc_event_t) 0,
+	(elc_event_t) 0,
+	(elc_event_t) 0,
     ELC_EVENT_SCI9_RXI,
 };
 
@@ -73,10 +73,10 @@ static elc_event_t txi_event_list[] =
     ELC_EVENT_SCI2_TXI,
     ELC_EVENT_SCI3_TXI,
     ELC_EVENT_SCI4_TXI,
-    ELC_EVENT_SCI5_TXI,
-    ELC_EVENT_SCI6_TXI,
-    ELC_EVENT_SCI7_TXI,
-    ELC_EVENT_SCI8_TXI,
+	(elc_event_t) 0,
+	(elc_event_t) 0,
+	(elc_event_t) 0,
+	(elc_event_t) 0,
     ELC_EVENT_SCI9_TXI,
 };
 

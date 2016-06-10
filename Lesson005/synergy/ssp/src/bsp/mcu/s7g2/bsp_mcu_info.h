@@ -41,6 +41,54 @@ Includes   <System Includes> , "Project Includes"
 ***********************************************************************************************************************/
 /* Gets MCU configuration information. */
 #include "bsp_cfg.h"
+#include "bsp_clock_cfg.h"
+#include "bsp_irq_cfg.h"
+
+/* BSP Common Includes. */
+#include "../../src/bsp/mcu/all/bsp_common.h"
+#include "../../inc/ssp_common_api.h"
+
+#if defined(__GNUC__)
+/* CMSIS-CORE currently generates 2 warnings when compiling with GCC. One in core_cmInstr.h and one in core_cm4_simd.h.
+ * We are not modifying these files so we will ignore these warnings temporarily. */
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#endif
+
+/* CMSIS-CORE Renesas Device Files. */
+#include "../../src/bsp/cmsis/Device/RENESAS/S7G2/Include/R7FS7G2x.h"
+#include "../../src/bsp/cmsis/Device/RENESAS/S7G2/Include/system_S7G2.h"
+
+/* CMSIS-CORE Standard Files. */
+#include "core_cm4.h"
+#include "core_cmInstr.h"
+#include "core_cmFunc.h"
+#include "core_cm4_simd.h"
+
+#if defined(__GNUC__)
+/* Restore warning settings for 'conversion' and 'sign-conversion' to as specified on command line. */
+#pragma GCC diagnostic pop
+#endif
+
+/* BSP MCU Specific Includes. */
+#include "../../src/bsp/mcu/s7g2/bsp_mcu_info.h"
+#include "../../src/bsp/mcu/s7g2/bsp_register_protection.h"
+#include "../../src/bsp/mcu/s7g2/bsp_locking.h"
+#include "../../src/bsp/mcu/s7g2/bsp_hw_locks.h"
+#include "../../src/bsp/mcu/s7g2/bsp_irq.h"
+#include "../../src/bsp/mcu/s7g2/bsp_group_irq.h"
+#include "../../src/bsp/mcu/s7g2/bsp_clocks.h"
+#include "../../src/bsp/mcu/s7g2/bsp_elc.h"
+#include "../../src/bsp/mcu/s7g2/bsp_ioport.h"
+
+/* BSP MCU Specific Includes that depend on pin configuration. */
+#include "../../src/bsp/mcu/s7g2/bsp_vbatt.h"
+
+/* BSP Common Includes (Other than bsp_common.h) */
+#include "../../src/bsp/mcu/all/bsp_common_leds.h"
+#include "../../src/bsp/mcu/all/bsp_delay.h"
+
+#include "../../src/bsp/mcu/s7g2/bsp_mcu_api.h"
 
 /***********************************************************************************************************************
 Macro definitions
@@ -150,6 +198,12 @@ Macro definitions
 #else
     #error "Invalid HOCO frequency chosen (BSP_CFG_HOCO_FREQUENCY) in bsp_clock_cfg.h"
 #endif
+
+/* Number of NVIC slots. Includes 16 fixed exception vectors at the beginning. */
+#define BSP_VECTOR_TABLE_ENTRIES    (112)
+
+/* This MCU supports VBATT. */
+#define BSP_MCU_VBATT_SUPPORT       (1)
 
 /***********************************************************************************************************************
 Typedef definitions
