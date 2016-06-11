@@ -12,6 +12,8 @@
 
 #define POT_CHANNEL 0
 
+#define USE_VT100   (true)
+
 // Buffers
 char outputBuffer[OUTPUT_BUFFER_SIZE];
 
@@ -31,11 +33,7 @@ int _write(int file, char *buffer, int count)
     {
         // Start Transmission
         transmitComplete = false;
-        ssp_err_t err = g_uart.p_api->write (g_uart.p_ctrl, (uint8_t const *) (buffer + i), 1);
-        if (err != SSP_SUCCESS)
-        {
-            break;
-        }
+        g_uart.p_api->write (g_uart.p_ctrl, (uint8_t const *) (buffer + i), 1);
         while (!transmitComplete)
         {
         }
@@ -64,11 +62,8 @@ void user_uart_callback(uart_callback_args_t * p_args)
 void hal_entry(void)
 {
     // Variable to hold ADC Data
-    uint16_t adcData;
+    uint16_t adcCounts;
     float adcVoltage;
-
-    // Error Holder
-    ssp_err_t err;
 
     // Variable to hold counts
     timer_size_t counts = 0;
@@ -80,42 +75,21 @@ void hal_entry(void)
     setvbuf ( stdout, NULL, _IONBF, OUTPUT_BUFFER_SIZE);
 
     // Open the timer using the configured options from the configurator
-    err = g_timer.p_api->open (g_timer.p_ctrl, g_timer.p_cfg);
-    if (err != SSP_SUCCESS)
-    {
-        printf ("Error opening timer. Value: %d\r\n", (int) err);
-        while (1)
-        {
-            ;
-        }
-    }
+    g_timer.p_api->open (g_timer.p_ctrl, g_timer.p_cfg);
 
     // Open the ADC
-    err = g_adc.p_api->open (g_adc.p_ctrl, g_adc.p_cfg);
-    if (err != SSP_SUCCESS)
-    {
-        printf ("Error opening analog to digital converter 0. Value: %d\r\n", (int) err);
-        while (1)
-        {
-            ;
-        }
-    }
+    g_adc.p_api->open (g_adc.p_ctrl, g_adc.p_cfg);
 
     // Configure Scan
-    err = g_adc.p_api->scanCfg (g_adc.p_ctrl, g_adc.p_channel_cfg);
-    if (err != SSP_SUCCESS)
-    {
-        printf ("Error configuring ADC Scan 0. Value: %d\r\n", (int) err);
-        while (1)
-        {
-            ;
-        }
-    }
+    g_adc.p_api->scanCfg (g_adc.p_ctrl, g_adc.p_channel_cfg);
 
     // Use TTY100 commands to clear screen and reset screen pointer
-    printf ("\033[2J"); // Clear Screen
-    printf ("\033[H"); // Return Home
-    printf ("\033[3J"); // Clear Back Buffer
+    if (USE_VT100 == true)
+    {
+        printf ("\033[2J"); // Clear Screen
+        printf ("\033[H"); // Return Home
+        printf ("\033[3J"); // Clear Back Buffer
+    }
 
     // Print Header
     printf ("Lesson 008: ADC\r\n");
@@ -125,46 +99,40 @@ void hal_entry(void)
     while (true)
     {
         // Start ADC Scan
-        err = g_adc.p_api->scanStart (g_adc.p_ctrl);
-        if (err != SSP_SUCCESS)
-        {
-            printf ("Error starting ADC Scan 0. Value: %d\r\n", (int) err);
-            while (1)
-            {
-                ;
-            }
-        }
+        g_adc.p_api->scanStart (g_adc.p_ctrl);
+
         // Wait for scan to complete
         while (true)
         {
-            err = g_adc.p_api->scanStatusGet (g_adc.p_ctrl);
-            if (err != SSP_SUCCESS)
-            {
-                continue;
-            }
-            break;
+            if (g_adc.p_api->scanStatusGet (g_adc.p_ctrl) == SSP_SUCCESS)
+                break;
         }
 
         // Read ADC
-        err = g_adc.p_api->read (g_adc.p_ctrl, 0, &adcData);
+        g_adc.p_api->read (g_adc.p_ctrl, 0, &adcCounts);
 
-        if (err != SSP_SUCCESS)
+        // Convert Counts to Voltage
+        adcVoltage = ((adcCounts * 3.3f) / 4095.0f);
+
+        // Prep terminal to updated values (if using VT100)
+        if (USE_VT100 == true)
         {
-            printf ("Error starting ADC Scan. Value: %d\r\n", (int) err);
-            while (1)
-            {
-                ;
-            }
+            printf ("\033[2A"); // Move up two lines
+            printf ("\033[8C"); // Move right 8 characters
+            printf ("\033[K"); // Clear to end of line
         }
 
-        // Display Values
-        adcVoltage = ((adcData * 3.3f)/4095.0f);
-        printf("\033[2A"); // Move up two lines
-        printf("\033[8C"); // Move right 8 characters
-        printf("\033[K"); // Clear to end of line
-        printf ("%d\r\n", adcData);
-        printf("\033[8C"); // Move right 8 characters
-        printf("\033[K"); // Clear to end of line
+        // Print Counts
+        printf ("%d\r\n", adcCounts);
+
+        // Prep terminal to updated values (if using VT100)
+        if (USE_VT100 == true)
+        {
+            printf ("\033[8C"); // Move right 8 characters
+            printf ("\033[K"); // Clear to end of line
+        }
+
+        // Print Voltage
         printf ("%f\r\n", adcVoltage);
 
         // Wait 100ms before we do another read
