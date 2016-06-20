@@ -11,8 +11,11 @@
 #define COUNTS_PER_MILLISECOND  (120E6 / 1000)
 
 #define POT_CHANNEL 0
+#define TEMP_CHANNEL 28
+#define INTERNAL_VREF_CHANNEL 29
 
 #define USE_VT100   (true)
+
 
 // Buffers
 char outputBuffer[OUTPUT_BUFFER_SIZE];
@@ -63,7 +66,13 @@ void hal_entry(void)
 {
     // Variable to hold ADC Data
     uint16_t adcCounts;
+    uint16_t temperatureCounts;
+    uint16_t internalVRefCounts;
     float adcVoltage;
+    float temperatureVoltage;
+    float temperatureDegreesC;
+    float temperatureDegreesF;
+    float internalVRefVoltage;
 
     // Variable to hold counts
     timer_size_t counts = 0;
@@ -93,8 +102,14 @@ void hal_entry(void)
 
     // Print Header
     printf ("Lesson 008: ADC\r\n");
-    printf ("Counts: 0\r\n");
-    printf (" Value: 0\r\n");
+    printf ("Potentiometer Counts: 0\r\n");
+    printf ("Potentiometer  Value: 0\r\n");
+    printf ("  Temperature Counts: 0\r\n");
+    printf ("   Temperature Value: 0\r\n");
+    printf ("       Temperature C: 0\r\n");
+    printf ("       Temperature F: 0\r\n");
+    printf ("Internal VRef Counts: 0\r\n");
+    printf ("Internal VRef  Value: 0\r\n");
 
     while (true)
     {
@@ -109,16 +124,24 @@ void hal_entry(void)
         }
 
         // Read ADC
-        g_adc.p_api->read (g_adc.p_ctrl, 0, &adcCounts);
+        g_adc.p_api->read (g_adc.p_ctrl, POT_CHANNEL, &adcCounts);
+        g_adc.p_api->read (g_adc.p_ctrl, TEMP_CHANNEL, &temperatureCounts);
+        g_adc.p_api->read (g_adc.p_ctrl, INTERNAL_VREF_CHANNEL, &internalVRefCounts);
 
         // Convert Counts to Voltage
         adcVoltage = ((adcCounts * 3.3f) / 4095.0f);
+        temperatureVoltage = ((temperatureCounts * 3.3f) / 4095.0f);
+        internalVRefVoltage = ((internalVRefCounts * 3.3f) / 4095.0f);
+
+        // Convert Voltage to Degrees C and Degrees F
+        temperatureDegreesC = (float)(((temperatureVoltage - 1.24f) / 0.0041f) - 25.0f);
+        temperatureDegreesF = (float)(((temperatureDegreesC * 9.0f) / 5.0f) + 32.0f);
 
         // Prep terminal to updated values (if using VT100)
         if (USE_VT100 == true)
         {
-            printf ("\033[2A"); // Move up two lines
-            printf ("\033[8C"); // Move right 8 characters
+            printf ("\033[8A"); // Move up 8 lines
+            printf ("\033[22C"); // Move right 22 characters
             printf ("\033[K"); // Clear to end of line
         }
 
@@ -128,12 +151,72 @@ void hal_entry(void)
         // Prep terminal to updated values (if using VT100)
         if (USE_VT100 == true)
         {
-            printf ("\033[8C"); // Move right 8 characters
+            printf ("\033[22C"); // Move right 22 characters
             printf ("\033[K"); // Clear to end of line
         }
 
         // Print Voltage
         printf ("%f\r\n", adcVoltage);
+
+        // Prep terminal to updated values (if using VT100)
+        if (USE_VT100 == true)
+        {
+            printf ("\033[22C"); // Move right 22 characters
+            printf ("\033[K"); // Clear to end of line
+        }
+
+        // Print Voltage
+        printf ("%d\r\n", temperatureCounts);
+
+        // Prep terminal to updated values (if using VT100)
+        if (USE_VT100 == true)
+        {
+            printf ("\033[22C"); // Move right 22 characters
+            printf ("\033[K"); // Clear to end of line
+        }
+
+        // Print Voltage
+        printf ("%f\r\n", temperatureVoltage);
+
+        // Prep terminal to updated values (if using VT100)
+        if (USE_VT100 == true)
+        {
+            printf ("\033[22C"); // Move right 22 characters
+            printf ("\033[K"); // Clear to end of line
+        }
+
+        // Print Temp C
+        printf ("%f\r\n", temperatureDegreesC);
+
+        // Prep terminal to updated values (if using VT100)
+        if (USE_VT100 == true)
+        {
+            printf ("\033[22C"); // Move right 22 characters
+            printf ("\033[K"); // Clear to end of line
+        }
+
+        // Print Temp F
+        printf ("%f\r\n", temperatureDegreesF);
+
+        // Prep terminal to updated values (if using VT100)
+        if (USE_VT100 == true)
+        {
+            printf ("\033[22C"); // Move right 22 characters
+            printf ("\033[K"); // Clear to end of line
+        }
+
+        // Print Voltage
+        printf ("%d\r\n", internalVRefCounts);
+
+        // Prep terminal to updated values (if using VT100)
+        if (USE_VT100 == true)
+        {
+            printf ("\033[22C"); // Move right 22 characters
+            printf ("\033[K"); // Clear to end of line
+        }
+
+        // Print Voltage
+        printf ("%f\r\n", internalVRefVoltage);
 
         // Wait 100ms before we do another read
         // Reset the timer to 0

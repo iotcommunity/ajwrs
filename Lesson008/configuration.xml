@@ -477,16 +477,16 @@
   </synergyIcuConfiguration>
   <synergyMessagingConfiguration/>
   <synergyModuleConfiguration>
-    <module id="module.driver.cgc_on_cgc.272034698">
+    <module id="module.driver.cgc_on_cgc.550051599">
       <property id="module.driver.cgc.name" value="g_cgc"/>
     </module>
-    <module id="module.driver.elc_on_elc.403772861">
+    <module id="module.driver.elc_on_elc.906976441">
       <property id="module.driver.elc.name" value="g_elc"/>
     </module>
-    <module id="module.driver.ioport_on_ioport.1092888506">
+    <module id="module.driver.ioport_on_ioport.1176670911">
       <property id="module.driver.ioport.name" value="g_ioport"/>
     </module>
-    <module id="module.driver.uart_on_sci_uart.266349729">
+    <module id="module.driver.uart_on_sci_uart.292579729">
       <property id="module.driver.uart.name" value="g_uart"/>
       <property id="module.driver.uart.channel" value="8"/>
       <property id="module.driver.uart.baud_rate" value="9600"/>
@@ -501,8 +501,8 @@
       <property id="module.driver.uart.rx_edge_start" value="module.driver.uart.rx_edge_start.true"/>
       <property id="module.driver.uart.noisecancel_en" value="module.driver.uart.noisecancel_en.false"/>
     </module>
-    <module id="module.driver.sci_common.82925359"/>
-    <module id="module.driver.adc_on_adc.770948895">
+    <module id="module.driver.sci_common.1597728945"/>
+    <module id="module.driver.adc_on_adc.1376998259">
       <property id="module.driver.adc.name" value="g_adc"/>
       <property id="module.driver.adc.unit" value="module.driver.adc.unit.unit0"/>
       <property id="module.driver.adc.resolution" value="module.driver.adc.resolution.resolution_12_bit"/>
@@ -511,7 +511,7 @@
       <property id="module.driver.adc.mode" value="module.driver.adc.mode.mode_single_scan"/>
       <property id="module.driver.adc.scan_mask" value="module.driver.adc.scan_mask.default"/>
       <property id="module.driver.adc.channel_0" value="module.driver.adc.channel_0.used"/>
-      <property id="module.driver.adc.channel_1" value="module.driver.adc.channel_1.used"/>
+      <property id="module.driver.adc.channel_1" value="module.driver.adc.scan_mask.channel_1.unused"/>
       <property id="module.driver.adc.channel_2" value="module.driver.adc.scan_mask.channel_2.unused"/>
       <property id="module.driver.adc.channel_3" value="module.driver.adc.scan_mask.channel_3.unused"/>
       <property id="module.driver.adc.channel_4" value="module.driver.adc.scan_mask.channel_4.unused"/>
@@ -582,7 +582,7 @@
       <property id="module.driver.adc.sample_hold_states" value="24"/>
       <property id="module.driver.adc.p_callback" value="NULL"/>
     </module>
-    <module id="module.driver.timer_on_gpt.55046191">
+    <module id="module.driver.timer_on_gpt.1347534066">
       <property id="module.driver.timer.name" value="g_timer"/>
       <property id="module.driver.timer.channel" value="0"/>
       <property id="module.driver.timer.mode" value="module.driver.timer.mode.mode_periodic"/>
@@ -597,15 +597,15 @@
       <property id="module.driver.timer.gtiocb_stop_level" value="module.driver.timer.gtiocb_stop_level.pin_level_low"/>
       <property id="module.driver.timer.p_callback" value="NULL"/>
     </module>
-    <context id="_hal.1308618146">
-      <stack module="module.driver.cgc_on_cgc.272034698"/>
-      <stack module="module.driver.ioport_on_ioport.1092888506"/>
-      <stack module="module.driver.elc_on_elc.403772861"/>
-      <stack module="module.driver.uart_on_sci_uart.266349729">
-        <stack module="module.driver.sci_common.82925359" requires="module.driver.uart_on_sci_uart.requires.sci_common"/>
+    <context id="_hal.1257461401">
+      <stack module="module.driver.cgc_on_cgc.550051599"/>
+      <stack module="module.driver.ioport_on_ioport.1176670911"/>
+      <stack module="module.driver.elc_on_elc.906976441"/>
+      <stack module="module.driver.uart_on_sci_uart.292579729">
+        <stack module="module.driver.sci_common.1597728945" requires="module.driver.uart_on_sci_uart.requires.sci_common"/>
       </stack>
-      <stack module="module.driver.adc_on_adc.770948895"/>
-      <stack module="module.driver.timer_on_gpt.55046191"/>
+      <stack module="module.driver.adc_on_adc.1376998259"/>
+      <stack module="module.driver.timer_on_gpt.1347534066"/>
     </context>
     <config id="config.driver.sci_common">
       <property id="config.driver.sci_common.async" value="config.driver.sci_common.async.enabled"/>
