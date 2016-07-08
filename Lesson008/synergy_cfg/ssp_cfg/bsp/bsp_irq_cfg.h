@@ -270,10 +270,10 @@
 #define BSP_IRQ_CFG_SCE_RDRDY_1 (BSP_IRQ_DISABLED) /* SCE RDRDY 1: Disabled */
 #define BSP_IRQ_CFG_SCE_INTEGRATE_WRRDY (BSP_IRQ_DISABLED) /* SCE INTEGRATE WRRDY: Disabled */
 #define BSP_IRQ_CFG_SCE_INTEGRATE_RDRDY (BSP_IRQ_DISABLED) /* SCE INTEGRATE RDRDY: Disabled */
-#define BSP_IRQ_CFG_SCI0_RXI (15) /* SCI0 RXI: Priority 15 (lowest, not valid if using ThreadX) */
-#define BSP_IRQ_CFG_SCI0_TXI (15) /* SCI0 TXI: Priority 15 (lowest, not valid if using ThreadX) */
-#define BSP_IRQ_CFG_SCI0_TEI (15) /* SCI0 TEI: Priority 15 (lowest, not valid if using ThreadX) */
-#define BSP_IRQ_CFG_SCI0_ERI (15) /* SCI0 ERI: Priority 15 (lowest, not valid if using ThreadX) */
+#define BSP_IRQ_CFG_SCI0_RXI (BSP_IRQ_DISABLED) /* SCI0 RXI: Disabled */
+#define BSP_IRQ_CFG_SCI0_TXI (BSP_IRQ_DISABLED) /* SCI0 TXI: Disabled */
+#define BSP_IRQ_CFG_SCI0_TEI (BSP_IRQ_DISABLED) /* SCI0 TEI: Disabled */
+#define BSP_IRQ_CFG_SCI0_ERI (BSP_IRQ_DISABLED) /* SCI0 ERI: Disabled */
 #define BSP_IRQ_CFG_SCI0_AM (BSP_IRQ_DISABLED) /* SCI0 AM: Disabled */
 #define BSP_IRQ_CFG_SCI0_RXI_OR_ERI (BSP_IRQ_DISABLED) /* SCI0 RXI OR ERI: Disabled */
 #define BSP_IRQ_CFG_SCI1_RXI (BSP_IRQ_DISABLED) /* SCI1 RXI: Disabled */

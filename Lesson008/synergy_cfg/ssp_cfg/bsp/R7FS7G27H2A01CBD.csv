@@ -4,7 +4,7 @@
 "AVSS0","N9","","","","","","","",""
 "AVSS_USBHS","G14","","","","","","","",""
 "NC","A1","","","","","","","",""
-"P000","R12","ANALOG0_AN000 / GPIO","GPIO8","","","Analog mode","","","INPUT ONLY pin. DO NOT set to Output Mode!
+"P000","R12","","","","None","Input mode","","","INPUT ONLY pin. DO NOT set to Output Mode!
 (Only Input Mode or Analog Mode are allowed.)"
 "P001","P11","","","","None","Input mode","","","INPUT ONLY pin. DO NOT set to Output Mode!
 (Only Input Mode or Analog Mode are allowed.)"

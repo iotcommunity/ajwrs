@@ -765,15 +765,4 @@
   <v1:configSetting configurationId="p404.gpio_drivecapacity" altId="p404.gpio_speed.gpio_speed_medium"/>
   <v1:configSetting configurationId="p405.gpio_drivecapacity" altId="p405.gpio_speed.gpio_speed_high"/>
   <v1:configSetting configurationId="p403.gpio_drivecapacity" altId="p403.gpio_speed.gpio_speed_medium"/>
-  <v1:configSetting configurationId="an_pins.analog0.an000.cfg" altId="an_pins.analog0.an000.enabled">
-    <v1:connectionSetting altId="p000.an000"/>
-  </v1:configSetting>
-  <v1:configSetting configurationId="p000.gpio_mode" altId="p000.gpio_mode.gpio_mode_an"/>
-  <v1:configSetting configurationId="p000" altId="p000.an000">
-    <v1:connectionSetting altId="an_pins.analog0.an000.enabled"/>
-  </v1:configSetting>
-  <v1:propertySetting propertyId="p000.symbolicname" value="GPIO8"/>
-  <v1:configSetting configurationId="an_pins.analog1.an118.cfg" altId="an_pins.analog1.an118.none"/>
-  <v1:configSetting configurationId="an_pins.analog1.an100.cfg" altId="an_pins.analog1.an100.none"/>
-  <v1:configSetting configurationId="an_pins.analog1.an120.cfg" altId="an_pins.analog1.an120.none"/>
 </v1:pinSettings>

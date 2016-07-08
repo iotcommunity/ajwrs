@@ -92,6 +92,13 @@ void hal_entry(void)
     // Configure Scan
     g_adc.p_api->scanCfg (g_adc.p_ctrl, g_adc.p_channel_cfg);
 
+    // Work around for temperature reading in Scan Mode. Thanks Josh! (http://en-eu.knowledgebase.renesas.com/English_Content/Renesas_Synergy%E2%84%A2_Platform/Renesas_Synergy_Knowledge_Base/ADC_Temperature_Sensor_Issue-_S7G2)
+    adc_sample_state_t tempsensor_sample_state = {ADC_SAMPLE_STATE_TEMPERATURE, 0x80};
+    g_adc.p_api->sampleStateCountSet(g_adc.p_ctrl, &tempsensor_sample_state);
+
+    // Start ADC Scan
+    g_adc.p_api->scanStart (g_adc.p_ctrl);
+
     // Use TTY100 commands to clear screen and reset screen pointer
     if (USE_VT100 == true)
     {
@@ -113,16 +120,6 @@ void hal_entry(void)
 
     while (true)
     {
-        // Start ADC Scan
-        g_adc.p_api->scanStart (g_adc.p_ctrl);
-
-        // Wait for scan to complete
-        while (true)
-        {
-            if (g_adc.p_api->scanStatusGet (g_adc.p_ctrl) == SSP_SUCCESS)
-                break;
-        }
-
         // Read ADC
         g_adc.p_api->read (g_adc.p_ctrl, POT_CHANNEL, &adcCounts);
         g_adc.p_api->read (g_adc.p_ctrl, TEMP_CHANNEL, &temperatureCounts);
@@ -134,7 +131,7 @@ void hal_entry(void)
         internalVRefVoltage = ((internalVRefCounts * 3.3f) / 4095.0f);
 
         // Convert Voltage to Degrees C and Degrees F
-        temperatureDegreesC = (float)(((temperatureVoltage - 1.24f) / 0.0041f) - 25.0f);
+        temperatureDegreesC = (float)(((temperatureVoltage - 1.24f) / 0.0041f) + 25.0f);
         temperatureDegreesF = (float)(((temperatureDegreesC * 9.0f) / 5.0f) + 32.0f);
 
         // Prep terminal to updated values (if using VT100)

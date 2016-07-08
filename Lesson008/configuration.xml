@@ -6,7 +6,7 @@
     <option key="#TargetName#" value="R7FS7G27H2A01CBD"/>
     <option key="#RTOS#" value="Express Logic ThreadX"/>
     <option key="#pinconfiguration#" value="R7FS7G27H2A01CBD.pincfg"/>
-    <option key="#SSPVersion#" value="1.1.0"/>
+    <option key="#SSPVersion#" value="1.1.1"/>
   </generalSettings>
   <synergyBspConfiguration>
     <config id="config.board.s7g2dk">
@@ -80,41 +80,41 @@
     <node id="board.clock.fclk.display" option="board.clock.fclk.display.value"/>
   </synergyClockConfiguration>
   <synergyComponentSelection>
-    <component apiversion="" class="Common" condition="" group="all" subgroup="ssp_common" variant="" vendor="Renesas" version="1.1.0">
+    <component apiversion="" class="Common" condition="" group="all" subgroup="ssp_common" variant="" vendor="Renesas" version="1.1.1">
       <description>SSP Common Code</description>
-      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+      <originalPack>Renesas.Synergy.1.1.1.pack</originalPack>
     </component>
-    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_cgc" variant="" vendor="Renesas" version="1.1.0">
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_cgc" variant="" vendor="Renesas" version="1.1.1">
       <description>Clock Generation Circuit: Provides=[CGC]</description>
-      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+      <originalPack>Renesas.Synergy.1.1.1.pack</originalPack>
+    </component>
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_ioport" variant="" vendor="Renesas" version="1.1.1">
+      <description>I/O Port: Provides=[IO Port]</description>
+      <originalPack>Renesas.Synergy.1.1.1.pack</originalPack>
+    </component>
+    <component apiversion="" class="BSP" condition="" group="BSP" subgroup="s7g2_dk" variant="" vendor="Renesas" version="1.1.1">
+      <description>Board Support Package for S7G2_DK</description>
+      <originalPack>Renesas.Synergy.1.1.1.pack</originalPack>
     </component>
     <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_elc" variant="" vendor="Renesas" version="1.1.0">
       <description>Event Link Controller: Provides=[ELC]</description>
       <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
     </component>
-    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_ioport" variant="" vendor="Renesas" version="1.1.0">
-      <description>I/O Port: Provides=[IO Port]</description>
-      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
-    </component>
-    <component apiversion="" class="BSP" condition="" group="BSP" subgroup="s7g2_dk" variant="" vendor="Renesas" version="1.1.0">
-      <description>Board Support Package for S7G2_DK</description>
-      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
-    </component>
-    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_adc" variant="" vendor="Renesas" version="1.1.0">
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_adc" variant="" vendor="Renesas" version="1.1.1">
       <description>A/D Converter: Provides=[ADC]</description>
-      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+      <originalPack>Renesas.Synergy.1.1.1.pack</originalPack>
     </component>
-    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_gpt" variant="" vendor="Renesas" version="1.1.0">
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_gpt" variant="" vendor="Renesas" version="1.1.1">
       <description>General Purpose Timer: Provides=[Timer ,GPT]</description>
-      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+      <originalPack>Renesas.Synergy.1.1.1.pack</originalPack>
     </component>
-    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_sci_common" variant="" vendor="Renesas" version="1.1.0">
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_sci_common" variant="" vendor="Renesas" version="1.1.1">
       <description>SCI Common: Provides=[SCI]</description>
-      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+      <originalPack>Renesas.Synergy.1.1.1.pack</originalPack>
     </component>
-    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_sci_uart" variant="" vendor="Renesas" version="1.1.0">
+    <component apiversion="" class="HAL Drivers" condition="" group="all" subgroup="r_sci_uart" variant="" vendor="Renesas" version="1.1.1">
       <description>SCI UART: Provides=[UART] , Requires=[SCI Common]</description>
-      <originalPack>Renesas.Synergy.1.1.0.pack</originalPack>
+      <originalPack>Renesas.Synergy.1.1.1.pack</originalPack>
     </component>
   </synergyComponentSelection>
   <synergyIcuConfiguration>
@@ -387,10 +387,10 @@
     <node id="board.icu.sce.rdrdy_1" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.sce.integrate_wrrdy" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.sce.integrate_rdrdy" option="board.icu.common.irq.disabled"/>
-    <node id="board.icu.sci.sci0.rxi" option="board.icu.common.irq.priority15"/>
-    <node id="board.icu.sci.sci0.txi" option="board.icu.common.irq.priority15"/>
-    <node id="board.icu.sci.sci0.tei" option="board.icu.common.irq.priority15"/>
-    <node id="board.icu.sci.sci0.eri" option="board.icu.common.irq.priority15"/>
+    <node id="board.icu.sci.sci0.rxi" option="board.icu.common.irq.disabled"/>
+    <node id="board.icu.sci.sci0.txi" option="board.icu.common.irq.disabled"/>
+    <node id="board.icu.sci.sci0.tei" option="board.icu.common.irq.disabled"/>
+    <node id="board.icu.sci.sci0.eri" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.sci.sci0.am" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.sci.sci0.rxi_or_eri" option="board.icu.common.irq.disabled"/>
     <node id="board.icu.sci.sci1.rxi" option="board.icu.common.irq.disabled"/>
@@ -477,38 +477,37 @@
   </synergyIcuConfiguration>
   <synergyMessagingConfiguration/>
   <synergyModuleConfiguration>
-    <module id="module.driver.cgc_on_cgc.550051599">
+    <module id="module.driver.cgc_on_cgc.2065758391">
       <property id="module.driver.cgc.name" value="g_cgc"/>
     </module>
-    <module id="module.driver.elc_on_elc.906976441">
+    <module id="module.driver.elc_on_elc.1598694519">
       <property id="module.driver.elc.name" value="g_elc"/>
     </module>
-    <module id="module.driver.ioport_on_ioport.1176670911">
+    <module id="module.driver.ioport_on_ioport.660486843">
       <property id="module.driver.ioport.name" value="g_ioport"/>
     </module>
-    <module id="module.driver.uart_on_sci_uart.292579729">
-      <property id="module.driver.uart.name" value="g_uart"/>
-      <property id="module.driver.uart.channel" value="8"/>
-      <property id="module.driver.uart.baud_rate" value="9600"/>
-      <property id="module.driver.uart.data_bits" value="module.driver.uart.data_bits.data_bits_8"/>
-      <property id="module.driver.uart.parity" value="module.driver.uart.parity.parity_off"/>
-      <property id="module.driver.uart.stop_bits" value="module.driver.uart.stop_bits.stop_bits_1"/>
-      <property id="module.driver.uart.ctsrts_en" value="module.driver.uart.ctsrts_en.false"/>
-      <property id="module.driver.uart.callback" value="user_uart_callback"/>
-      <property id="module.driver.uart.callback.rts_pin_ctrl" value="NULL"/>
-      <property id="module.driver.uart.clk_src" value="module.driver.uart.clk_src.int_clk"/>
-      <property id="module.driver.uart.baudclk_out" value="module.driver.uart.baudclk_out.false"/>
-      <property id="module.driver.uart.rx_edge_start" value="module.driver.uart.rx_edge_start.true"/>
-      <property id="module.driver.uart.noisecancel_en" value="module.driver.uart.noisecancel_en.false"/>
+    <module id="module.driver.timer_on_gpt.915302561">
+      <property id="module.driver.timer.name" value="g_timer"/>
+      <property id="module.driver.timer.channel" value="0"/>
+      <property id="module.driver.timer.mode" value="module.driver.timer.mode.mode_periodic"/>
+      <property id="module.driver.timer.period" value="1500"/>
+      <property id="module.driver.timer.unit" value="module.driver.timer.unit.unit_period_msec"/>
+      <property id="module.driver.timer.duty_cycle" value="50"/>
+      <property id="module.driver.timer.duty_cycle_unit" value="module.driver.timer.duty_cycle_unit.unit_percent"/>
+      <property id="module.driver.timer.autostart" value="module.driver.timer.autostart.true"/>
+      <property id="module.driver.timer.gtioca_output_enabled" value="module.driver.timer.gtioca_output_enabled.false"/>
+      <property id="module.driver.timer.gtioca_stop_level" value="module.driver.timer.gtioca_stop_level.pin_level_low"/>
+      <property id="module.driver.timer.gtiocb_output_enabled" value="module.driver.timer.gtiocb_output_enabled.false"/>
+      <property id="module.driver.timer.gtiocb_stop_level" value="module.driver.timer.gtiocb_stop_level.pin_level_low"/>
+      <property id="module.driver.timer.p_callback" value="NULL"/>
     </module>
-    <module id="module.driver.sci_common.1597728945"/>
-    <module id="module.driver.adc_on_adc.1376998259">
+    <module id="module.driver.adc_on_adc.236106019">
       <property id="module.driver.adc.name" value="g_adc"/>
-      <property id="module.driver.adc.unit" value="module.driver.adc.unit.unit0"/>
+      <property id="module.driver.adc.unit" value="0"/>
       <property id="module.driver.adc.resolution" value="module.driver.adc.resolution.resolution_12_bit"/>
       <property id="module.driver.adc.alignment" value="module.driver.adc.alignment.alignment_right"/>
       <property id="module.driver.adc.clearing" value="module.driver.adc.clearing.clear_after_read_on"/>
-      <property id="module.driver.adc.mode" value="module.driver.adc.mode.mode_single_scan"/>
+      <property id="module.driver.adc.mode" value="module.driver.adc.mode.mode_continuous_scan"/>
       <property id="module.driver.adc.scan_mask" value="module.driver.adc.scan_mask.default"/>
       <property id="module.driver.adc.channel_0" value="module.driver.adc.channel_0.used"/>
       <property id="module.driver.adc.channel_1" value="module.driver.adc.scan_mask.channel_1.unused"/>
@@ -582,38 +581,36 @@
       <property id="module.driver.adc.sample_hold_states" value="24"/>
       <property id="module.driver.adc.p_callback" value="NULL"/>
     </module>
-    <module id="module.driver.timer_on_gpt.1347534066">
-      <property id="module.driver.timer.name" value="g_timer"/>
-      <property id="module.driver.timer.channel" value="0"/>
-      <property id="module.driver.timer.mode" value="module.driver.timer.mode.mode_periodic"/>
-      <property id="module.driver.timer.period" value="1500"/>
-      <property id="module.driver.timer.unit" value="module.driver.timer.unit.unit_period_msec"/>
-      <property id="module.driver.timer.duty_cycle" value="50"/>
-      <property id="module.driver.timer.duty_cycle_unit" value="module.driver.timer.duty_cycle_unit.unit_percent"/>
-      <property id="module.driver.timer.autostart" value="module.driver.timer.autostart.true"/>
-      <property id="module.driver.timer.gtioca_output_enabled" value="module.driver.timer.gtioca_output_enabled.false"/>
-      <property id="module.driver.timer.gtioca_stop_level" value="module.driver.timer.gtioca_stop_level.pin_level_low"/>
-      <property id="module.driver.timer.gtiocb_output_enabled" value="module.driver.timer.gtiocb_output_enabled.false"/>
-      <property id="module.driver.timer.gtiocb_stop_level" value="module.driver.timer.gtiocb_stop_level.pin_level_low"/>
-      <property id="module.driver.timer.p_callback" value="NULL"/>
+    <module id="module.driver.uart_on_sci_uart.370776452">
+      <property id="module.driver.uart.name" value="g_uart"/>
+      <property id="module.driver.uart.channel" value="8"/>
+      <property id="module.driver.uart.baud_rate" value="9600"/>
+      <property id="module.driver.uart.data_bits" value="module.driver.uart.data_bits.data_bits_8"/>
+      <property id="module.driver.uart.parity" value="module.driver.uart.parity.parity_off"/>
+      <property id="module.driver.uart.stop_bits" value="module.driver.uart.stop_bits.stop_bits_1"/>
+      <property id="module.driver.uart.ctsrts_en" value="module.driver.uart.ctsrts_en.false"/>
+      <property id="module.driver.uart.callback" value="user_uart_callback"/>
+      <property id="module.driver.uart.callback.rts_pin_ctrl" value="NULL"/>
+      <property id="module.driver.uart.clk_src" value="module.driver.uart.clk_src.int_clk"/>
+      <property id="module.driver.uart.baudclk_out" value="module.driver.uart.baudclk_out.false"/>
+      <property id="module.driver.uart.rx_edge_start" value="module.driver.uart.rx_edge_start.true"/>
+      <property id="module.driver.uart.noisecancel_en" value="module.driver.uart.noisecancel_en.false"/>
     </module>
-    <context id="_hal.1257461401">
-      <stack module="module.driver.cgc_on_cgc.550051599"/>
-      <stack module="module.driver.ioport_on_ioport.1176670911"/>
-      <stack module="module.driver.elc_on_elc.906976441"/>
-      <stack module="module.driver.uart_on_sci_uart.292579729">
-        <stack module="module.driver.sci_common.1597728945" requires="module.driver.uart_on_sci_uart.requires.sci_common"/>
+    <module id="module.driver.sci_common.1120089864"/>
+    <context id="_hal.297875864">
+      <stack module="module.driver.cgc_on_cgc.2065758391"/>
+      <stack module="module.driver.elc_on_elc.1598694519"/>
+      <stack module="module.driver.ioport_on_ioport.660486843"/>
+      <stack module="module.driver.timer_on_gpt.915302561"/>
+      <stack module="module.driver.adc_on_adc.236106019"/>
+      <stack module="module.driver.uart_on_sci_uart.370776452">
+        <stack module="module.driver.sci_common.1120089864" requires="module.driver.uart_on_sci_uart.requires.sci_common"/>
       </stack>
-      <stack module="module.driver.adc_on_adc.1376998259"/>
-      <stack module="module.driver.timer_on_gpt.1347534066"/>
     </context>
     <config id="config.driver.sci_common">
       <property id="config.driver.sci_common.async" value="config.driver.sci_common.async.enabled"/>
       <property id="config.driver.sci_common.spi" value="config.driver.sci_common.spi.disabled"/>
       <property id="config.driver.sci_common.i2c" value="config.driver.sci_common.i2c.disabled"/>
-    </config>
-    <config id="config.driver.elc">
-      <property id="config.driver.elc.checking" value="config.driver.elc.checking.system"/>
     </config>
     <config id="config.driver.cgc">
       <property id="config.driver.cgc.param_checking_enable" value="config.driver.cgc.param_checking_enable.bsp"/>
@@ -636,6 +633,9 @@
     </config>
     <config id="config.driver.gpt">
       <property id="config.driver.gpt.param_checking_enable" value="config.driver.gpt.param_checking_enable.bsp"/>
+    </config>
+    <config id="config.driver.elc">
+      <property id="config.driver.elc.checking" value="config.driver.elc.checking.system"/>
     </config>
   </synergyModuleConfiguration>
   <synergyPinConfiguration>

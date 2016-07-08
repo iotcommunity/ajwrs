@@ -11,7 +11,7 @@
  * 1 : included
  * 0 : not included
  */
-#define SCI_CFG_SSPI_INCLUDED (0)
+#define SCI_CFG_SPI_INCLUDED (0)
 
 /** SPECIFY WHETHER TO INCLUDE Simple I2C TRANSFER MODE
  * 1 : included
