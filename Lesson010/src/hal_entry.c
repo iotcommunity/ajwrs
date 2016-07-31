@@ -7,13 +7,6 @@
 // Buffer Size
 #define OUTPUT_BUFFER_SIZE 1024
 
-#define USE_VT100   (true)
-
-#define FLASH_ADDRESS BSP_PRV_QSPI_DEVICE_PHYSICAL_ADDRESS
-
-// Tick Rate
-#define COUNTS_PER_MILLISECOND  (120E6 / 1000)
-
 // Buffers
 char outputBuffer[OUTPUT_BUFFER_SIZE];
 
@@ -78,12 +71,9 @@ void hal_entry(void)
     g_qspi.p_api->open (g_qspi.p_ctrl, g_qspi.p_cfg);
 
     // Use TTY100 commands to clear screen and reset screen pointer
-    if (USE_VT100 == true)
-    {
-        printf ("\033[2J"); // Clear Screen
-        printf ("\033[H"); // Return Home
-        printf ("\033[3J"); // Clear Back Buffer
-    }
+    printf ("\033[2J"); // Clear Screen
+    printf ("\033[H"); // Return Home
+    printf ("\033[3J"); // Clear Back Buffer
 
     // Print Header
     printf ("Lesson 010: QSPI Flash\r\n\r\n");
