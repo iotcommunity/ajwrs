@@ -6,10 +6,10 @@
 #include <stdarg.h>
 
 // Buffer Sizes
-#define OUTPUT_BUFFER_SIZE 1024
+#define UART_BUFFER_SIZE 1024
 
 // Output Buffer
-char outputBuffer[OUTPUT_BUFFER_SIZE];
+char outputBuffer[UART_BUFFER_SIZE];
 
 volatile bool transmitComplete;
 
@@ -20,7 +20,7 @@ int _printf (const char *format, ...);
 int _printf (const char *format, ...)
 {
     // Temporary Buffer
-   char buffer[OUTPUT_BUFFER_SIZE];
+   char buffer[UART_BUFFER_SIZE];
 
    // Variable Argument List
    va_list arg;
@@ -31,7 +31,7 @@ int _printf (const char *format, ...)
    va_start (arg, format);
 
    // Pass format string and arguments to string formatter
-   done = vsnprintf(buffer, OUTPUT_BUFFER_SIZE, format, arg);
+   done = vsnprintf(buffer, UART_BUFFER_SIZE, format, arg);
 
    // Start Transmission
    transmitComplete = false;

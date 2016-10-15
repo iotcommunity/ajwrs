@@ -5,10 +5,10 @@
 #include <string.h>
 
 // Buffer Size
-#define OUTPUT_BUFFER_SIZE 1024
+#define UART_BUFFER_SIZE 1024
 
 // Buffers
-char outputBuffer[OUTPUT_BUFFER_SIZE];
+char outputBuffer[UART_BUFFER_SIZE];
 
 // Flags
 volatile bool transmitComplete;
@@ -65,7 +65,7 @@ void hal_entry(void)
     g_uart.p_api->open (g_uart.p_ctrl, g_uart.p_cfg);
 
     // Disable Output Buffering
-    setvbuf ( stdout, NULL, _IONBF, OUTPUT_BUFFER_SIZE);
+    setvbuf ( stdout, NULL, _IONBF, UART_BUFFER_SIZE);
 
     // Open QSPI
     g_qspi.p_api->open (g_qspi.p_ctrl, g_qspi.p_cfg);

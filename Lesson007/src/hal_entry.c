@@ -5,11 +5,11 @@
 #include <string.h>
 
 // Buffer Sizes
-#define OUTPUT_BUFFER_SIZE 1024
+#define UART_BUFFER_SIZE 1024
 #define INPUT_BUFFER_SIZE 1024
 
 // Buffers
-char outputBuffer[OUTPUT_BUFFER_SIZE];
+char outputBuffer[UART_BUFFER_SIZE];
 char inputBuffer[INPUT_BUFFER_SIZE];
 
 volatile int inputBufferIndex;
@@ -95,7 +95,7 @@ void hal_entry(void)
     g_uart.p_api->open (g_uart.p_ctrl, g_uart.p_cfg);
 
     // Disable Output Buffering
-    setvbuf ( stdout, NULL, _IONBF, OUTPUT_BUFFER_SIZE);
+    setvbuf ( stdout, NULL, _IONBF, UART_BUFFER_SIZE);
 
     // Use TTY100 commands to clear screen and reset screen pointer
     printf ("\033[2J"); // Clear Screen

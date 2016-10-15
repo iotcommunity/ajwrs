@@ -4,10 +4,10 @@
 #include <stdbool.h>
 
 // Buffer Size
-#define OUTPUT_BUFFER_SIZE 1024
+#define UART_BUFFER_SIZE 1024
 
 // Buffers
-char outputBuffer[OUTPUT_BUFFER_SIZE];
+char outputBuffer[UART_BUFFER_SIZE];
 
 // Flags
 volatile bool transmitComplete;
@@ -78,7 +78,7 @@ void new_thread_entry(void)
     g_uart.p_api->open (g_uart.p_ctrl, g_uart.p_cfg);
 
     // Disable Output Buffering
-    setvbuf ( stdout, NULL, _IONBF, OUTPUT_BUFFER_SIZE);
+    setvbuf ( stdout, NULL, _IONBF, UART_BUFFER_SIZE);
 
     // Use TTY100 commands to clear screen and reset screen pointer
     printf ("\033[2J"); // Clear Screen
