@@ -119,9 +119,8 @@ char MenuRead()
 {
     char input;
 
-// Get Single Character
+    // Get Single Character
     scanf ("%c", &input);
 
-// Convert to integer
     return input;
 }
