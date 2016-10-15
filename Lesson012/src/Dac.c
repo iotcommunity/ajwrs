@@ -25,12 +25,12 @@ ssp_err_t DacWrite(float value)
 
     // Check Bounds of Value
     if (value > 3.30)
-        value = 3.30;
+        value = 3.30f;
 
     if (value < 0)
-        value = 0;
+        value = 0.0f;
 
-    dacValue = (value / 3.30f) * 4095;
+    dacValue = (dac_size_t)((value / 3.30f) * 4095);
 
     error = g_dac.p_api->write (g_dac.p_ctrl, dacValue);
     if (error != SSP_SUCCESS)
