@@ -1,5 +1,7 @@
-This code was developed by Eric Jordan as part of his blog. We will be featuring his articles on 
+Note from the IoTcommunity.io team:  This code was developed by Eric Jordan as part of his blog A Journey With Renesas Synergy (ajwrs). We will be featuring his articles on 
 [IoTcommunity.io](http://learn.iotcommunity.io/). Eric is called [lycannon](http://learn.iotcommunity.io/users/lycannon/activity) in IoTcommunity.io.
+
+---
 
 # ajwrs
 A Journey Through Renesas Synergy Code Base
