@@ -13,11 +13,6 @@ volatile bool receiveComplete;
 int _write(int file, char *buffer, int count);
 int _read(int file, char *buffer, int count);
 
-/*
- * \brief   Writes a single character to the UART
- * \details _write is an overwrite of the syscall of the same name.
- * \warning This is a blocking function.
- */
 int _write(int file, char *buffer, int count)
 {
     ssp_err_t error;

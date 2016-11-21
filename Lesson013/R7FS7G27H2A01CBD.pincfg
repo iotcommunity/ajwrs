@@ -1,0 +1,50 @@
+<v1:pinSettings xmlns:v1="http://www.tasking.com/schema/pinsettings/v1.1">
+  <v1:pinMappingsRef version="1.3" file=""/>
+  <v1:deviceSetting id="renesas.s7g2" pattern="Renesas Synergy S7G2 224 BGA">
+    <v1:packageSetting id="renesas.224bga"/>
+  </v1:deviceSetting>
+  <v1:configSetting configurationId="p110.gpio_mode" altId="p110.gpio_mode.gpio_mode_peripheral"/>
+  <v1:configSetting configurationId="jtag.tck" altId="jtag.tck.p300">
+    <v1:connectionSetting altId="p300.jtag.tck"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="jtag.tms" altId="jtag.tms.p108">
+    <v1:connectionSetting altId="p108.jtag.tms"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="jtag.tdi" altId="jtag.tdi.p110">
+    <v1:connectionSetting altId="p110.jtag.tdi"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="p300" altId="p300.jtag.tck">
+    <v1:connectionSetting altId="jtag.tck.p300"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="p110" altId="p110.jtag.tdi">
+    <v1:connectionSetting altId="jtag.tdi.p110"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="p109.gpio_mode" altId="p109.gpio_mode.gpio_mode_peripheral"/>
+  <v1:configSetting configurationId="jtag.tdo" altId="jtag.tdo.p109">
+    <v1:connectionSetting altId="p109.jtag.tdo"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="jtag.mode" altId="jtag.mode.enabled"/>
+  <v1:configSetting configurationId="p109" altId="p109.jtag.tdo">
+    <v1:connectionSetting altId="jtag.tdo.p109"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="p108.gpio_mode" altId="p108.gpio_mode.gpio_mode_peripheral"/>
+  <v1:configSetting configurationId="p108" altId="p108.jtag.tms">
+    <v1:connectionSetting altId="jtag.tms.p108"/>
+  </v1:configSetting>
+  <v1:configSetting configurationId="p300.gpio_mode" altId="p300.gpio_mode.gpio_mode_peripheral"/>
+  <v1:propertySetting propertyId="p109.symbolicname" value="JTAG_TDO"/>
+  <v1:propertySetting propertyId="p300.symbolicname" value="JTAG_TCK"/>
+  <v1:propertySetting propertyId="p108.symbolicname" value="JTAG_TMS"/>
+  <v1:propertySetting propertyId="p110.symbolicname" value="JTAG_TDI"/>
+  <v1:configSetting configurationId="p807.gpio_mode" altId="p807.gpio_mode.gpio_mode_out"/>
+  <v1:configSetting configurationId="p807" altId="p807.gpio"/>
+  <v1:propertySetting propertyId="p807.symbolicname" value="GPIO1"/>
+  <v1:configSetting configurationId="p809" altId="p809.none"/>
+  <v1:configSetting configurationId="p809.gpio_mode" altId="p809.gpio_mode.gpio_mode_in"/>
+  <v1:configSetting configurationId="p810.gpio_mode" altId="p810.gpio_mode.gpio_mode_out"/>
+  <v1:configSetting configurationId="p810" altId="p810.gpio"/>
+  <v1:configSetting configurationId="p808.gpio_mode" altId="p808.gpio_mode.gpio_mode_out"/>
+  <v1:propertySetting propertyId="p810.symbolicname" value="GPIO2"/>
+  <v1:configSetting configurationId="p808" altId="p808.gpio"/>
+  <v1:propertySetting propertyId="p808.symbolicname" value="GPIO3"/>
+</v1:pinSettings>
