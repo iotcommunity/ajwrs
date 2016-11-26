@@ -347,7 +347,7 @@ Synergy Configuration
       Name: g_timer
       Channel: 0
       Mode: Periodic
-      Period Value: 35791
+      Period Value: 0
       Period Unit: Milliseconds
       Duty Cycle Value: 50
       Duty Cycle Unit: Unit Raw Counts
