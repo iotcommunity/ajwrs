@@ -304,6 +304,9 @@ Synergy Configuration
   Module "I2C Driver on r_sci_i2c"
     Parameter Checking: Default (BSP)
     
+  Module "Timer Driver on r_gpt"
+    Parameter Checking: Default (BSP)
+    
   HAL
     Instance "g_ioport I/O Port Driver on r_ioport"
       Name [Fixed]: g_ioport
@@ -340,4 +343,19 @@ Synergy Configuration
       Callback: NULL
       
       Instance "SCI Common"
+    Instance "g_timer Timer Driver on r_gpt"
+      Name: g_timer
+      Channel: 0
+      Mode: Periodic
+      Period Value: 35791
+      Period Unit: Milliseconds
+      Duty Cycle Value: 50
+      Duty Cycle Unit: Unit Raw Counts
+      Auto Start: True
+      GTIOCA Output Enabled: False
+      GTIOCA Stop Level: Pin Level Low
+      GTIOCB Output Enabled: False
+      GTIOCB Stop Level: Pin Level Low
+      Callback: NULL
+      
   Messaging

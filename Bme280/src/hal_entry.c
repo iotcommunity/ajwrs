@@ -5,6 +5,7 @@
 #include "Uart.h"
 #include "I2C.h"
 #include "Bme280.h"
+#include "Timer.h"
 
 #define USE_VT100
 
@@ -48,6 +49,20 @@ void hal_entry(void)
         printf ("\033[3J"); // Clear Back Buffer
     }
 #endif
+    /************************************
+     * Init Timer
+     ************************************/
+    printf ("Initializing Timer: ");
+    error = TimerInitialize ();
+    if (error != SSP_SUCCESS)
+    {
+        printf ("Failed.\r\n");
+        while (true)
+        {
+        }
+    }
+    printf ("OK.\r\n");
+
     /************************************
      * Init I2C
      ************************************/
@@ -109,24 +124,50 @@ void hal_entry(void)
     }
     printf ("0x%02x\r\n", chipId);
 
+    printf ("Retrieving BME280 Calibration Factors: ");
     // Get Calibration Factors
-    Bme280GetCalibrationFactors (bme280Address, &calibrationFactors);
+    error = Bme280GetCalibrationFactors (bme280Address, &calibrationFactors);
+    if (error != SSP_SUCCESS)
+    {
+        printf ("Failed.\r\n");
+        while (true)
+        {
+        }
+    }
+    printf ("OK.\r\n");
 
-    // Get Temperature
-    Bme280GetTemperature (bme280Address, &calibrationFactors, &temperature);
+    printf ("\r\n");
 
-    // Get Barometric Pressure
-    Bme280GetPressure (bme280Address, &calibrationFactors, &pressure);
-
-    // Get Humidity
-    Bme280GetHumidity (bme280Address, &calibrationFactors, &humidity);
-
-    // Print Results To Screen
-    printf ("    Current Temp: %fC (%fF)\r\n", temperature, ((temperature * 9.0) / 5.0) + 32.0);
-    printf ("Current Pressure: %fhPa\r\n", pressure);
-    printf ("Current Humidity: %f%%\r\n", humidity);
+#ifdef USE_VT100
+    {
+        // Save Cursor Position
+        printf ("\0337");
+    }
+#endif
 
     while (true)
     {
+        // Get Temperature
+        Bme280GetTemperature (bme280Address, &calibrationFactors, &temperature);
+
+        // Get Barometric Pressure
+        Bme280GetPressure (bme280Address, &calibrationFactors, &pressure);
+
+        // Get Humidity
+        Bme280GetHumidity (bme280Address, &calibrationFactors, &humidity);
+
+        // Print Results To Screen
+        printf ("    Current Temp: %fC (%fF)\r\n", temperature, ((temperature * 9.0) / 5.0) + 32.0);
+        printf ("Current Pressure: %fhPa\r\n", pressure);
+        printf ("Current Humidity: %f%%\r\n", humidity);
+
+#ifdef USE_VT100
+        {
+            // Restore Cursor Position
+            printf ("\0338");
+        }
+#endif
+
+        TimerSleepMs (500);
     }
 }
