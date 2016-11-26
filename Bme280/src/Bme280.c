@@ -49,7 +49,7 @@ ssp_err_t Bme280Open(uint8_t const deviceAddress)
 
     // Set Config
     const uint8_t config[] =
-    { BME280_CONFIG_ADDRESS, 0b0001000 };
+    { BME280_CONFIG_ADDRESS, 0b00010000 };
     error = I2CWrite (deviceAddress, (uint8_t * const ) config, sizeof(config), false);
     if (error != SSP_SUCCESS)
     {
